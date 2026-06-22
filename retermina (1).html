@@ -1623,24 +1623,19 @@
           <svg class="rt-icon" width="18" height="18" viewBox="0 0 24 24" stroke-width="2"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.01.28-2.09 0-3.09 0 0-.79-.25-2.65 1.01A9.64 9.64 0 0 0 12 3c-2.35 0-4.27 1.02-5.4 2.01-1.86-1.26-2.65-1.01-2.65-1.01-.28 1-.28 2.09 0 3.09A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65S8.93 17.38 9 18v4"/><path d="M9 18c-4.51 2-5-2-7-2"/></svg>
           View on GitHub
         </a>
-        <button class="rt-btn-outline" style="padding: 0.75rem 1.25rem; font-size: 0.9rem;" onclick="document.getElementById('features').scrollIntoView({behavior:'smooth'})">
-          Explore features
-        </button>
-      </div>
-      <p class="hero-version rt-text-faint">
-        <span class="hero-version-dot"></span>
-        Retermina <span class="hero-version-beta">beta</span> · v1.0.0 — early access, expect rough edges
-      </p>
-      <div class="hero-dmg-wrap">
         <a class="hero-dmg-btn" href="https://github.com/matthewhamilton3141/Retermina/releases/latest" target="_blank" rel="noopener">
           <svg class="rt-icon" width="14" height="14" viewBox="0 0 24 24" stroke-width="2">
             <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
             <polyline points="7 10 12 15 17 10"/>
             <line x1="12" x2="12" y1="3" y2="15"/>
           </svg>
-          Download Desktop App (.dmg)
+          Download for Mac
         </a>
       </div>
+      <p class="hero-version rt-text-faint">
+        <span class="hero-version-dot"></span>
+        Retermina <span class="hero-version-beta">beta</span> · v1.0.0 — early access, expect rough edges
+      </p>
 
       <!-- Live terminal demo -->
       <div class="terminal-demo-wrap rt-panel" id="terminal-demo">
@@ -1790,15 +1785,6 @@
         <h2 class="section-title">Retermina Loom Marketplace</h2>
         <p class="rt-text-muted">One streamlined destination for curated top-rated layouts and all available workplace configurations. Browse, rate, and publish setups in the same flow.</p>
       </div>
-      <div class="loom-favorites rt-panel">
-        <div class="loom-favorites-head">
-          <h3 class="loom-favorites-title">My Favorites</h3>
-          <span class="rt-text-faint">Tap hearts to build your quick shelf</span>
-        </div>
-        <p class="loom-favorites-copy">Favorited loom configurations appear here instantly so you can compare your saved setups in one place.</p>
-        <p class="favorites-empty rt-text-muted" id="favorites-empty">No favorites yet — click a heart on any loom card to save it.</p>
-        <div class="favorites-grid" id="favorites-grid" aria-live="polite"></div>
-      </div>
 
       <div class="loom-subsection">
         <h3 class="loom-subtitle">Most Highly Rated Looms</h3>
@@ -1850,53 +1836,71 @@
       </div>
 
       <div class="loom-subsection">
-        <div class="loom-search-tools">
-          <div class="loom-search-wrap">
-            <input id="loom-search" class="loom-search-input" type="search" placeholder="Search available configurations by title, description, or tag..." aria-label="Search available loom configurations">
+        <div class="loom-favorites rt-panel">
+          <div class="loom-favorites-head">
+            <h3 class="loom-favorites-title">My Saved Favorites</h3>
+            <span class="rt-text-faint">Tap hearts to build your quick shelf</span>
           </div>
-          <div class="loom-filter-tags" id="loom-filter-tags" role="group" aria-label="Quick preset filters"></div>
+          <p class="loom-favorites-copy">Favorited loom configurations appear here instantly so you can compare your saved setups in one place.</p>
+          <p class="favorites-empty rt-text-muted" id="favorites-empty">No favorites yet — click a heart on any loom card to save it.</p>
+          <div class="favorites-grid" id="favorites-grid" aria-live="polite"></div>
         </div>
-        <h3 class="loom-subtitle">All Available Workplace Configurations</h3>
-        <p class="loom-subcopy rt-text-muted">Explore full preset inventory, filter by style, then create and add your own workspace. Every configuration supports live 5-star reviews.</p>
-        <div class="loom-toolbar">
-        <div class="loom-spacer"></div>
-        <button class="loom-submit-btn" id="loom-open-modal">
-          <svg class="rt-icon" width="14" height="14" viewBox="0 0 24 24" stroke-width="2.5"><line x1="12" x2="12" y1="5" y2="19"/><line x1="5" x2="19" y1="12" y2="12"/></svg>
-          Submit preset
-        </button>
-      </div>
-      <div class="loom-add-panel rt-panel">
-        <h3>Create/Add More Workspace Config</h3>
-        <p>Add a new workspace configuration directly to the marketplace list.</p>
-        <form class="loom-add-form" id="add-config-form">
-          <div class="loom-field">
-            <label for="add-name">Configuration name</label>
-            <input id="add-name" type="text" maxlength="36" placeholder="e.g. Neon Build Station">
-          </div>
-          <div class="loom-field">
-            <label for="add-author">Author</label>
-            <input id="add-author" type="text" maxlength="28" placeholder="e.g. yourhandle">
-          </div>
-          <div class="loom-field">
-            <label for="add-category">Category</label>
-            <select id="add-category">
-              <option value="dark">Dark</option>
-              <option value="light">Light</option>
-              <option value="glass">Glass</option>
-              <option value="community">Community</option>
-            </select>
-          </div>
-          <div class="loom-field">
-            <label for="add-description">Description</label>
-            <input id="add-description" type="text" maxlength="120" placeholder="Describe the setup in one sentence">
-          </div>
-          <div class="loom-add-submit-wrap">
-            <button type="submit" class="loom-submit-btn">Create/Add More</button>
-          </div>
-        </form>
       </div>
 
-      <div class="loom-grid" id="loom-grid">
+      <div class="loom-subsection">
+        <h3 class="loom-subtitle">Create Workspace Config</h3>
+        <p class="loom-subcopy rt-text-muted">Build and add a new workspace configuration directly to the marketplace list.</p>
+        <div class="loom-toolbar">
+          <div class="loom-spacer"></div>
+          <button class="loom-submit-btn" id="loom-open-modal">
+            <svg class="rt-icon" width="14" height="14" viewBox="0 0 24 24" stroke-width="2.5"><line x1="12" x2="12" y1="5" y2="19"/><line x1="5" x2="19" y1="12" y2="12"/></svg>
+            Submit preset
+          </button>
+        </div>
+        <div class="loom-add-panel rt-panel">
+          <h3>Create Workspace Config</h3>
+          <p>Add a new workspace configuration directly to the marketplace list.</p>
+          <form class="loom-add-form" id="add-config-form">
+            <div class="loom-field">
+              <label for="add-name">Configuration name</label>
+              <input id="add-name" type="text" maxlength="36" placeholder="e.g. Neon Build Station">
+            </div>
+            <div class="loom-field">
+              <label for="add-author">Author</label>
+              <input id="add-author" type="text" maxlength="28" placeholder="e.g. yourhandle">
+            </div>
+            <div class="loom-field">
+              <label for="add-category">Category</label>
+              <select id="add-category">
+                <option value="dark">Dark</option>
+                <option value="light">Light</option>
+                <option value="glass">Glass</option>
+                <option value="community">Community</option>
+              </select>
+            </div>
+            <div class="loom-field">
+              <label for="add-description">Description</label>
+              <input id="add-description" type="text" maxlength="120" placeholder="Describe the setup in one sentence">
+            </div>
+            <div class="loom-add-submit-wrap">
+              <button type="submit" class="loom-submit-btn">Create Workspace Config</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <div class="loom-subsection loom-search-tools">
+        <div class="loom-search-wrap">
+          <input id="loom-search" class="loom-search-input" type="search" placeholder="Search available configurations by title, description, or tag..." aria-label="Search available loom configurations">
+        </div>
+        <div class="loom-filter-tags" id="loom-filter-tags" role="group" aria-label="Quick preset filters"></div>
+      </div>
+
+      <div class="loom-subsection">
+        <h3 class="loom-subtitle">All Available Workplace Configurations</h3>
+        <p class="loom-subcopy rt-text-muted">Explore full preset inventory, filter by style, then create and add your own workspace. Every configuration supports live 5-star reviews.</p>
+
+        <div class="loom-grid" id="loom-grid">
 
         <!-- Carbon Noir -->
         <div class="rt-card preset-card revealed" data-preset="carbon" data-tags="dark">
