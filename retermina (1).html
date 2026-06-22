@@ -1,0 +1,2624 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="sleek">
+<head>
+  <meta charset="UTF-8">
+  <title>Retermina — Terminal Workspace</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Retermina is a highly-customizable terminal workspace built with Tauri & React. Modular drag-and-drop panels, Iris command bar, and five structural theme engines.">
+  <style>
+    /* ── Theme engine tokens (from retermina/src/index.css) ── */
+    :root {
+      color-scheme: dark;
+      --rt-bg: #0a0a0a;
+      --rt-bg-image: none;
+      --rt-surface: rgba(23, 23, 23, 0.6);
+      --rt-surface-strong: rgba(23, 23, 23, 0.85);
+      --rt-surface-hover: #262626;
+      --rt-subsurface: rgba(10, 10, 10, 0.4);
+      --rt-border: #262626;
+      --rt-border-width: 1px;
+      --rt-text: #f5f5f5;
+      --rt-text-muted: #737373;
+      --rt-text-faint: #525252;
+      --rt-accent: #34d399;
+      --rt-accent-soft: rgba(16, 185, 129, 0.1);
+      --rt-radius-sm: 0.5rem;
+      --rt-radius: 0.75rem;
+      --rt-radius-lg: 1rem;
+      --rt-shadow-panel: 0 10px 15px -3px rgba(0, 0, 0, 0.25);
+      --rt-btn-shadow: none;
+      --rt-backdrop: none;
+      --rt-ring: rgba(16, 185, 129, 0.6);
+      --rt-terminal-bg: #0a0a0a;
+      --rt-grid-placeholder: #10b981;
+      --rt-accent-fg: #0a0a0a;
+      --rt-font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+    [data-theme="pastel"] {
+      color-scheme: light;
+      --rt-bg: #f6f4fb;
+      --rt-bg-image: radial-gradient(circle at 18% 0%, rgba(167,139,250,0.16), transparent 42%), radial-gradient(circle at 100% 100%, rgba(236,72,153,0.12), transparent 45%);
+      --rt-surface: rgba(255,255,255,0.75);
+      --rt-surface-strong: rgba(255,255,255,0.9);
+      --rt-surface-hover: rgba(139,92,246,0.1);
+      --rt-subsurface: rgba(255,255,255,0.5);
+      --rt-border: #e7e1f5;
+      --rt-text: #4c4361;
+      --rt-text-muted: #8b80a3;
+      --rt-text-faint: #aaa1c0;
+      --rt-accent: #8b5cf6;
+      --rt-accent-soft: rgba(139,92,246,0.12);
+      --rt-radius-sm: 0.75rem; --rt-radius: 1rem; --rt-radius-lg: 1.5rem;
+      --rt-shadow-panel: 0 12px 32px -8px rgba(139,92,246,0.25);
+      --rt-backdrop: blur(4px);
+      --rt-ring: rgba(139,92,246,0.5);
+      --rt-terminal-bg: #faf7ff;
+      --rt-grid-placeholder: #8b5cf6;
+    }
+    [data-theme="glass"] {
+      color-scheme: dark;
+      --rt-bg: #0b1220;
+      --rt-bg-image: radial-gradient(circle at 15% 15%, rgba(56,189,248,0.18), transparent 35%), radial-gradient(circle at 85% 0%, rgba(168,85,247,0.16), transparent 40%), linear-gradient(160deg, #0b1220, #0a0f1c);
+      --rt-surface: rgba(30,41,59,0.45);
+      --rt-surface-strong: rgba(30,41,59,0.6);
+      --rt-surface-hover: rgba(56,189,248,0.12);
+      --rt-subsurface: rgba(15,23,42,0.35);
+      --rt-border: rgba(148,163,184,0.25);
+      --rt-text: #e2e8f0;
+      --rt-text-muted: #94a3b8;
+      --rt-text-faint: #64748b;
+      --rt-accent: #38bdf8;
+      --rt-accent-soft: rgba(56,189,248,0.15);
+      --rt-shadow-panel: 0 8px 32px -6px rgba(2,6,23,0.55);
+      --rt-backdrop: blur(14px) saturate(140%);
+      --rt-ring: rgba(56,189,248,0.6);
+      --rt-terminal-bg: #0b1220;
+      --rt-grid-placeholder: #38bdf8;
+    }
+    [data-theme="minimalist"] {
+      color-scheme: light;
+      --rt-bg: #ffffff;
+      --rt-surface: #ffffff;
+      --rt-surface-strong: #fafafa;
+      --rt-surface-hover: #f4f4f5;
+      --rt-subsurface: #fafafa;
+      --rt-border: #ececec;
+      --rt-text: #18181b;
+      --rt-text-muted: #71717a;
+      --rt-text-faint: #a1a1aa;
+      --rt-accent: #111111;
+      --rt-accent-soft: rgba(0,0,0,0.06);
+      --rt-radius-sm: 0.25rem; --rt-radius: 0.375rem; --rt-radius-lg: 0.5rem;
+      --rt-shadow-panel: none;
+      --rt-terminal-bg: #fafafa;
+      --rt-grid-placeholder: #d4d4d8;
+      --rt-accent-fg: #ffffff;
+    }
+    [data-theme="brutalism"] {
+      color-scheme: light;
+      --rt-bg: #fafaf5;
+      --rt-surface: #ffffff;
+      --rt-surface-strong: #ffffff;
+      --rt-surface-hover: #f4f4f0;
+      --rt-subsurface: #fafaf5;
+      --rt-border: #000000;
+      --rt-border-width: 2px;
+      --rt-text: #0a0a0a;
+      --rt-text-muted: #3f3f46;
+      --rt-text-faint: #52525b;
+      --rt-accent: #16a34a;
+      --rt-accent-soft: #bbf7d0;
+      --rt-radius-sm: 0; --rt-radius: 0; --rt-radius-lg: 0;
+      --rt-shadow-panel: 6px 6px 0 0 #000000;
+      --rt-btn-shadow: 3px 3px 0 0 #000000;
+      --rt-terminal-bg: #ffffff;
+      --rt-grid-placeholder: #16a34a;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+
+    ::selection {
+      background: color-mix(in srgb, var(--rt-accent) 35%, transparent);
+      color: var(--rt-text);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background-color: var(--rt-bg);
+      background-image: var(--rt-bg-image);
+      color: var(--rt-text);
+      font-family: var(--rt-font-sans);
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+      transition: background-color 0.6s ease, color 0.4s ease;
+    }
+
+    /* ── Animated ambient background ── */
+    .ambient {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+    .orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0.35;
+      animation: orb-drift 18s ease-in-out infinite;
+    }
+    .orb-1 {
+      width: 420px; height: 420px;
+      background: var(--rt-accent);
+      top: -8%; left: -6%;
+      animation-delay: 0s;
+    }
+    .orb-2 {
+      width: 320px; height: 320px;
+      background: #7162e4;
+      bottom: 10%; right: -4%;
+      animation-delay: -6s;
+      animation-duration: 22s;
+    }
+    .orb-3 {
+      width: 260px; height: 260px;
+      background: #ff6396;
+      top: 45%; left: 55%;
+      animation-delay: -11s;
+      animation-duration: 16s;
+      opacity: 0.2;
+    }
+    @keyframes orb-drift {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      33% { transform: translate(40px, -30px) scale(1.08); }
+      66% { transform: translate(-25px, 35px) scale(0.94); }
+    }
+
+    .grid-bg {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      background-image:
+        linear-gradient(var(--rt-border) 1px, transparent 1px),
+        linear-gradient(90deg, var(--rt-border) 1px, transparent 1px);
+      background-size: 48px 48px;
+      opacity: 0.04;
+      mask-image: radial-gradient(ellipse 70% 60% at 50% 30%, black, transparent);
+    }
+
+    /* ── Semantic classes (from index.css) ── */
+    .rt-surface {
+      background-color: var(--rt-surface);
+      border: var(--rt-border-width) solid var(--rt-border);
+      border-radius: var(--rt-radius);
+      backdrop-filter: var(--rt-backdrop);
+      -webkit-backdrop-filter: var(--rt-backdrop);
+      transition: background-color 0.5s, border-color 0.5s, border-radius 0.5s, box-shadow 0.5s;
+    }
+    .rt-panel {
+      background-color: var(--rt-surface);
+      border: var(--rt-border-width) solid var(--rt-border);
+      border-radius: var(--rt-radius-lg);
+      box-shadow: var(--rt-shadow-panel);
+      backdrop-filter: var(--rt-backdrop);
+      -webkit-backdrop-filter: var(--rt-backdrop);
+      transition: background-color 0.5s, border-color 0.5s, border-radius 0.5s, box-shadow 0.5s;
+    }
+    .rt-text-muted { color: var(--rt-text-muted); transition: color 0.4s; }
+    .rt-text-faint { color: var(--rt-text-faint); }
+    .rt-accent-text { color: var(--rt-accent); transition: color 0.4s; }
+
+    .rt-btn-outline {
+      color: var(--rt-text-muted);
+      background: transparent;
+      border: var(--rt-border-width) solid var(--rt-border);
+      border-radius: var(--rt-radius-sm);
+      box-shadow: var(--rt-btn-shadow);
+      cursor: pointer;
+      font-family: inherit;
+      transition: color 0.15s, background-color 0.15s, border-color 0.15s, transform 0.2s;
+    }
+    .rt-btn-outline:hover {
+      color: var(--rt-text);
+      background-color: var(--rt-surface-hover);
+      transform: translateY(-1px);
+    }
+
+    .rt-card {
+      color: var(--rt-text);
+      background-color: var(--rt-surface);
+      border: var(--rt-border-width) solid var(--rt-border);
+      border-radius: var(--rt-radius-lg);
+      box-shadow: var(--rt-btn-shadow);
+      transition: border-color 0.25s, background-color 0.25s, transform 0.3s cubic-bezier(.34,1.56,.64,1), box-shadow 0.25s;
+    }
+    .rt-card:hover {
+      border-color: var(--rt-accent);
+      background-color: var(--rt-surface-strong);
+      transform: translateY(-4px);
+      box-shadow: 0 12px 40px -8px color-mix(in srgb, var(--rt-accent) 25%, transparent);
+    }
+    .rt-card-icon {
+      color: var(--rt-text-muted);
+      background-color: var(--rt-surface-hover);
+      border-radius: var(--rt-radius-sm);
+      transition: color 0.25s, background-color 0.25s;
+    }
+    .rt-card:hover .rt-card-icon {
+      color: var(--rt-accent);
+      background-color: var(--rt-accent-soft);
+    }
+
+    .rt-icon { stroke: currentColor; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+
+    /* ── Layout ── */
+    .page { position: relative; z-index: 1; }
+    .spa-view { position: relative; }
+    .spa-view[hidden] { display: none !important; }
+    .spa-view.active { animation: fade-up 0.35s ease both; }
+
+    .top-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem;
+      pointer-events: none;
+    }
+    .top-bar > * { pointer-events: auto; }
+
+    .social-links {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+    .social-link {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 2.25rem;
+      height: 2.25rem;
+      color: var(--rt-text-muted);
+      border: var(--rt-border-width) solid var(--rt-border);
+      border-radius: var(--rt-radius-sm);
+      box-shadow: var(--rt-btn-shadow);
+      background: var(--rt-surface);
+      backdrop-filter: var(--rt-backdrop);
+      -webkit-backdrop-filter: var(--rt-backdrop);
+      transition: color 0.2s, background-color 0.2s, border-color 0.2s, transform 0.2s;
+      text-decoration: none;
+      animation: fade-down 0.6s ease both;
+    }
+    .social-link:nth-child(1) { animation-delay: 0.05s; }
+    .social-link:nth-child(2) { animation-delay: 0.12s; }
+    .social-link:nth-child(3) { animation-delay: 0.19s; }
+    .social-link:nth-child(4) { animation-delay: 0.26s; }
+    .social-link:hover {
+      color: var(--rt-accent);
+      background-color: var(--rt-surface-hover);
+      border-color: var(--rt-accent);
+      transform: translateY(-2px);
+    }
+    .social-link svg { stroke: currentColor; }
+
+    .top-bar-right {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 0.5rem;
+    }
+    .top-bar-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .theme-switcher {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.35rem 0.5rem;
+      font-size: 0.75rem;
+      font-weight: 500;
+      animation: fade-down 0.8s ease 0.2s both;
+    }
+
+    .loom-btn {
+      position: relative;
+      overflow: hidden;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      padding: 0.4rem 0.9rem;
+      font-size: 0.78rem;
+      font-weight: 700;
+      font-family: inherit;
+      color: var(--rt-accent-fg);
+      background: var(--rt-accent);
+      border: none;
+      border-radius: var(--rt-radius-sm);
+      box-shadow: 0 0 18px -4px color-mix(in srgb, var(--rt-accent) 50%, transparent);
+      cursor: pointer;
+      text-decoration: none;
+      transition: transform 0.2s, box-shadow 0.2s, background-color 0.4s;
+      animation: fade-down 0.8s ease 0.32s both;
+      white-space: nowrap;
+    }
+    .loom-btn:hover {
+      transform: translateY(-2px) scale(1.02);
+      box-shadow: 0 0 28px -4px color-mix(in srgb, var(--rt-accent) 60%, transparent);
+    }
+    .marketplace-nav-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.4rem 0.8rem;
+      font-size: 0.78rem;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    .theme-dots { display: flex; gap: 5px; }
+    .theme-dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      border: 1px solid var(--rt-border);
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .theme-dot:hover { transform: scale(1.25); }
+    .theme-dot.active {
+      box-shadow: 0 0 0 2px var(--rt-bg), 0 0 0 4px var(--rt-accent);
+      transform: scale(1.15);
+    }
+    .theme-dot[data-theme="sleek"] { background: #34d399; }
+    .theme-dot[data-theme="pastel"] { background: #8b5cf6; }
+    .theme-dot[data-theme="glass"] { background: #38bdf8; }
+    .theme-dot[data-theme="minimalist"] { background: #18181b; }
+    .theme-dot[data-theme="brutalism"] { background: #16a34a; border-color: #000; }
+
+    /* ── Hero ── */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 5rem 1.5rem 3rem;
+      text-align: center;
+    }
+
+    .logo-box {
+      width: 3.5rem; height: 3.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1rem;
+      animation: float 4s ease-in-out infinite, fade-up 0.7s ease both;
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+
+    .hero h1 {
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      margin: 0;
+      animation: fade-up 0.7s ease 0.1s both;
+    }
+    .hero-tagline {
+      margin: 0.75rem 0 0;
+      font-size: 0.95rem;
+      animation: fade-up 0.7s ease 0.2s both;
+    }
+    .hero-typed {
+      display: inline-block;
+      min-height: 1.4em;
+      color: var(--rt-accent);
+      font-weight: 500;
+      border-right: 2px solid var(--rt-accent);
+      padding-right: 2px;
+      animation: blink-cursor 0.8s step-end infinite;
+    }
+    @keyframes blink-cursor {
+      50% { border-color: transparent; }
+    }
+
+    .hero-cta {
+      margin-top: 2rem;
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      justify-content: center;
+      animation: fade-up 0.7s ease 0.35s both;
+    }
+    .cta-primary {
+      position: relative;
+      overflow: hidden;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1.75rem;
+      font-size: 0.95rem;
+      font-weight: 600;
+      font-family: inherit;
+      color: var(--rt-accent-fg);
+      background: var(--rt-accent);
+      border: none;
+      border-radius: var(--rt-radius-sm);
+      cursor: pointer;
+      text-decoration: none;
+      transition: transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 0 24px -4px color-mix(in srgb, var(--rt-accent) 50%, transparent);
+    }
+    .cta-primary::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.35) 50%, transparent 60%);
+      transform: translateX(-120%);
+      animation: shimmer 3s ease infinite;
+    }
+    @keyframes shimmer {
+      0%, 70%, 100% { transform: translateX(-120%); }
+      85% { transform: translateX(120%); }
+    }
+    .cta-primary:hover { transform: translateY(-2px) scale(1.02); }
+
+    .hero-version {
+      margin-top: 1rem;
+      font-size: 0.72rem;
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      animation: fade-up 0.7s ease 0.45s both;
+    }
+    .hero-version-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--rt-accent);
+      opacity: 0.5;
+      flex-shrink: 0;
+    }
+    .hero-version-beta {
+      display: inline-block;
+      font-size: 0.62rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      padding: 0.1rem 0.4rem;
+      border-radius: 999px;
+      border: 1px solid var(--rt-border);
+      color: var(--rt-text-faint);
+      vertical-align: middle;
+      margin: 0 0.1rem;
+    }
+
+    /* ── Terminal demo ── */
+    .terminal-demo-wrap {
+      width: min(720px, 92vw);
+      margin-top: 3rem;
+      animation: fade-up 0.9s ease 0.5s both;
+    }
+    .terminal-chrome {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.65rem 1rem;
+      border-bottom: var(--rt-border-width) solid var(--rt-border);
+      background: var(--rt-surface-strong);
+      border-radius: var(--rt-radius-lg) var(--rt-radius-lg) 0 0;
+    }
+    .chrome-dot { width: 10px; height: 10px; border-radius: 50%; }
+    .chrome-dot.red { background: #f87171; }
+    .chrome-dot.yellow { background: #fbbf24; }
+    .chrome-dot.green { background: #34d399; }
+    .chrome-title {
+      flex: 1;
+      text-align: center;
+      font-size: 0.72rem;
+      color: var(--rt-text-muted);
+      font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    }
+
+    .terminal-body {
+      padding: 1.25rem 1.25rem 1.5rem;
+      background: var(--rt-terminal-bg);
+      border-radius: 0 0 var(--rt-radius-lg) var(--rt-radius-lg);
+      font-family: ui-monospace, "SF Mono", Menlo, "JetBrains Mono", monospace;
+      font-size: 0.82rem;
+      line-height: 1.65;
+      min-height: 220px;
+      text-align: left;
+      transition: background 0.5s;
+    }
+    .term-line { opacity: 0; transform: translateY(6px); }
+    .term-line.visible { animation: term-in 0.35s ease forwards; }
+    @keyframes term-in {
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .term-prompt { color: var(--rt-accent); }
+    .term-dim { color: var(--rt-text-muted); }
+    .term-green { color: #34d399; }
+    .term-blue { color: #60a5fa; }
+    .term-yellow { color: #fbbf24; }
+    .term-magenta { color: #c084fc; }
+    .term-cursor-line .term-prompt::after {
+      content: '▋';
+      animation: blink-cursor 0.8s step-end infinite;
+      margin-left: 1px;
+    }
+
+    /* ── Workspace grid mock ── */
+    .workspace-mock {
+      width: min(720px, 92vw);
+      margin-top: 1.5rem;
+      padding: 1rem;
+      position: relative;
+      animation: fade-up 0.9s ease 0.65s both;
+    }
+    .mock-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: 120px 100px;
+      gap: 10px;
+      position: relative;
+    }
+    .mock-panel {
+      border: var(--rt-border-width) solid var(--rt-border);
+      border-radius: var(--rt-radius-lg);
+      background: var(--rt-terminal-bg);
+      overflow: hidden;
+      cursor: grab;
+      transition: border-color 0.25s ease, background 0.25s ease;
+      animation: panel-pop 0.6s cubic-bezier(.34,1.56,.64,1) both;
+    }
+    .mock-panel:nth-child(1) { animation-delay: 0.7s; grid-column: 1 / -1; }
+    .mock-panel:nth-child(2) { animation-delay: 0.85s; }
+    .mock-panel:nth-child(3) { animation-delay: 1s; }
+    @keyframes panel-pop {
+      from { opacity: 0; transform: scale(0.92); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    .mock-panel-header {
+      padding: 0.35rem 0.6rem;
+      font-size: 0.65rem;
+      color: var(--rt-text-muted);
+      background: var(--rt-surface-strong);
+      border-bottom: var(--rt-border-width) solid var(--rt-border);
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+    .mock-panel-body {
+      padding: 0.5rem 0.6rem;
+      font-family: ui-monospace, monospace;
+      font-size: 0.68rem;
+      color: var(--rt-text-muted);
+    }
+    .mock-placeholder {
+      position: absolute;
+      border: 2px dashed var(--rt-grid-placeholder);
+      border-radius: var(--rt-radius-lg);
+      background: color-mix(in srgb, var(--rt-grid-placeholder) 10%, transparent);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.35s ease;
+    }
+    .mock-panel.dragging,
+    .mock-panel:hover {
+      border-color: var(--rt-grid-placeholder);
+      border-style: dashed;
+      background: color-mix(in srgb, var(--rt-grid-placeholder) 8%, var(--rt-terminal-bg));
+      transition: border-color 0.3s ease, background 0.3s ease;
+    }
+
+    /* ── Iris bar mock ── */
+    .iris-mock {
+      margin-top: 1rem;
+      padding: 0.65rem 0.85rem;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      animation: fade-up 0.9s ease 0.8s both;
+    }
+    .iris-input {
+      flex: 1;
+      background: var(--rt-subsurface);
+      border: var(--rt-border-width) solid var(--rt-border);
+      border-radius: var(--rt-radius-sm);
+      padding: 0.45rem 0.65rem;
+      font-size: 0.78rem;
+      font-family: inherit;
+      color: var(--rt-text);
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+    .iris-typed { color: var(--rt-text); }
+    .iris-suggest {
+      margin-top: 0.5rem;
+      padding: 0.35rem;
+      opacity: 0;
+      transform: translateY(-4px);
+      transition: opacity 0.25s ease, transform 0.25s ease;
+      pointer-events: none;
+    }
+    .iris-suggest.shown {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+    .iris-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.4rem 0.5rem;
+      border-radius: var(--rt-radius-sm);
+      font-size: 0.75rem;
+      transition: background 0.15s;
+    }
+    .iris-item.active {
+      background: var(--rt-surface-hover);
+      color: var(--rt-accent);
+    }
+
+    /* ── Sections ── */
+    section.block {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 4rem 1.5rem;
+    }
+    .section-label {
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 1rem;
+    }
+    .section-title {
+      font-size: clamp(1.4rem, 3vw, 1.85rem);
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      margin: 0 0 0.5rem;
+    }
+
+    .start-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 0.75rem;
+    }
+    .start-card {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      padding: 1.25rem;
+      text-align: left;
+      cursor: default;
+    }
+    .start-card-icon {
+      width: 2.75rem; height: 2.75rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .start-card-title { font-size: 0.875rem; font-weight: 600; }
+    .start-card-desc { font-size: 0.75rem; }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+    .feature-card {
+      padding: 1.5rem;
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.6s ease, transform 0.6s cubic-bezier(.34,1.56,.64,1);
+    }
+    .feature-card.revealed {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .feature-card h3 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin: 0.75rem 0 0.4rem;
+      color: var(--rt-accent);
+      transition: color 0.4s;
+    }
+    .feature-card p { margin: 0; font-size: 0.875rem; line-height: 1.55; }
+
+    .theme-showcase {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-top: 1.5rem;
+    }
+    .theme-chip {
+      padding: 0.5rem 1rem;
+      font-size: 0.78rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.25s;
+    }
+    .theme-chip.active {
+      border-color: var(--rt-accent);
+      box-shadow: inset 0 0 0 1px var(--rt-accent);
+    }
+
+    /* ── Footer ── */
+    footer {
+      margin-top: 2rem;
+      padding: 1.5rem;
+      text-align: center;
+      font-size: 0.85rem;
+      border-top: var(--rt-border-width) solid var(--rt-border);
+      background: var(--rt-surface);
+      transition: background 0.5s, border-color 0.5s;
+    }
+    footer a { color: var(--rt-accent); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+
+    /* ── Reveal animations ── */
+    @keyframes fade-up {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fade-down {
+      from { opacity: 0; transform: translateY(-12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 600px) {
+      .mock-grid { grid-template-columns: 1fr; grid-template-rows: auto; }
+      .mock-panel:nth-child(1) { grid-column: 1; }
+      .top-bar { padding: 0.5rem; }
+      .social-link { width: 2rem; height: 2rem; }
+      .theme-switcher { font-size: 0.68rem; padding: 0.3rem 0.4rem; }
+      .loom-btn { font-size: 0.72rem; padding: 0.35rem 0.7rem; }
+    }
+
+    /* ── Loom Marketplace section ── */
+    #loom {
+      border-top: var(--rt-border-width) solid var(--rt-border);
+      transition: border-color 0.5s;
+    }
+
+    .loom-hero {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.4rem;
+      margin-bottom: 2.5rem;
+    }
+    .loom-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.3rem 0.7rem;
+      border-radius: 999px;
+      border: var(--rt-border-width) solid var(--rt-accent);
+      background: var(--rt-accent-soft);
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: var(--rt-accent);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      margin-bottom: 0.25rem;
+    }
+    .loom-badge .loom-dot { width: 6px; height: 6px; flex-shrink: 0; }
+    .loom-hero h2 { margin: 0; }
+    .loom-hero p { margin: 0.4rem 0 0; max-width: 560px; }
+    .loom-view-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      flex-wrap: wrap;
+      margin-top: 1.5rem;
+    }
+    .loom-subsection + .loom-subsection { margin-top: 2.25rem; }
+    .loom-subtitle {
+      margin: 0;
+      font-size: 1.08rem;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+    }
+    .loom-subcopy {
+      margin: 0.45rem 0 1.1rem;
+      font-size: 0.82rem;
+      line-height: 1.55;
+      max-width: 640px;
+    }
+
+    .top-looms-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1rem;
+      margin-top: 1.6rem;
+    }
+    .top-loom-card {
+      padding: 1rem 1.1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.7rem;
+      min-height: 170px;
+    }
+    .top-loom-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.65rem;
+    }
+    .top-loom-title {
+      font-size: 0.95rem;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+    }
+    .top-loom-badge {
+      font-size: 0.64rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      border: var(--rt-border-width) solid var(--rt-border);
+      border-radius: 999px;
+      padding: 0.16rem 0.42rem;
+      color: var(--rt-text-faint);
+      background: var(--rt-subsurface);
+      flex-shrink: 0;
+    }
+    .top-loom-desc {
+      margin: 0;
+      font-size: 0.8rem;
+      line-height: 1.52;
+      color: var(--rt-text-muted);
+    }
+    .top-loom-meta {
+      margin-top: auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+      font-size: 0.74rem;
+      color: var(--rt-text-faint);
+      padding-top: 0.55rem;
+      border-top: var(--rt-border-width) solid var(--rt-border);
+    }
+
+    .loom-toolbar {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.75rem;
+    }
+    .loom-add-panel {
+      margin-bottom: 1.25rem;
+      padding: 1rem;
+    }
+    .loom-add-panel h3 {
+      margin: 0;
+      font-size: 1rem;
+      letter-spacing: -0.01em;
+    }
+    .loom-add-panel > p {
+      margin: 0.35rem 0 0.95rem;
+      font-size: 0.8rem;
+      color: var(--rt-text-muted);
+    }
+    .loom-add-form {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.75rem;
+    }
+    .loom-add-form .loom-field:last-child { grid-column: 1 / -1; }
+    .loom-add-submit-wrap {
+      grid-column: 1 / -1;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+    }
+    .loom-filter {
+      padding: 0.35rem 0.85rem;
+      font-size: 0.75rem;
+      font-weight: 500;
+      font-family: inherit;
+      cursor: pointer;
+      transition: color 0.15s, background 0.15s, border-color 0.15s;
+    }
+    .loom-filter.active {
+      color: var(--rt-accent);
+      border-color: var(--rt-accent);
+      background: var(--rt-accent-soft);
+    }
+    .loom-spacer { flex: 1; }
+    .loom-submit-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.4rem 1rem;
+      font-size: 0.78rem;
+      font-weight: 600;
+      font-family: inherit;
+      color: var(--rt-accent-fg);
+      background: var(--rt-accent);
+      border: none;
+      border-radius: var(--rt-radius-sm);
+      cursor: pointer;
+      transition: opacity 0.15s, transform 0.2s;
+      box-shadow: 0 0 16px -4px color-mix(in srgb, var(--rt-accent) 45%, transparent);
+    }
+    .loom-submit-btn:hover { opacity: 0.88; transform: translateY(-1px); }
+
+    /* Preset grid */
+    .loom-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 1rem;
+    }
+    .preset-card {
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      cursor: default;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.5s ease, transform 0.5s cubic-bezier(.34,1.56,.64,1), border-color 0.25s, box-shadow 0.25s;
+    }
+    .preset-card.revealed { opacity: 1; transform: translateY(0); }
+    .preset-card:hover { border-color: var(--rt-accent); box-shadow: 0 12px 40px -8px color-mix(in srgb, var(--rt-accent) 20%, transparent); }
+
+    .preset-preview {
+      height: 120px;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-bottom: var(--rt-border-width) solid var(--rt-border);
+    }
+    .preset-preview-inner {
+      width: 90%;
+      height: 80%;
+      border-radius: calc(var(--rt-radius-sm) * 0.7);
+      border: 1px solid rgba(255,255,255,0.08);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      font-family: ui-monospace, monospace;
+      font-size: 0.52rem;
+    }
+    .pp-chrome {
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      padding: 3px 6px;
+      flex-shrink: 0;
+    }
+    .pp-dot { width: 5px; height: 5px; border-radius: 50%; }
+    .pp-body { flex: 1; padding: 5px 6px; line-height: 1.5; overflow: hidden; }
+
+    /* Per-preset colour schemes for the preview swatches */
+    .preset-card[data-preset="carbon"] .preset-preview { background: #0a0a0a; }
+    .preset-card[data-preset="carbon"] .preset-preview-inner { background: #111; border-color: #2a2a2a; }
+    .preset-card[data-preset="carbon"] .pp-chrome { background: #1a1a1a; }
+    .preset-card[data-preset="carbon"] .pp-body { color: #34d399; }
+
+    .preset-card[data-preset="aurora"] .preset-preview { background: #0b1220; background-image: radial-gradient(circle at 20% 20%, rgba(56,189,248,0.25), transparent 50%), radial-gradient(circle at 80% 80%, rgba(168,85,247,0.2), transparent 50%); }
+    .preset-card[data-preset="aurora"] .preset-preview-inner { background: rgba(15,25,45,0.7); border-color: rgba(148,163,184,0.2); backdrop-filter: blur(6px); }
+    .preset-card[data-preset="aurora"] .pp-chrome { background: rgba(30,41,59,0.6); }
+    .preset-card[data-preset="aurora"] .pp-body { color: #38bdf8; }
+
+    .preset-card[data-preset="sakura"] .preset-preview { background: #f6f4fb; background-image: radial-gradient(circle at 20% 0%, rgba(167,139,250,0.2), transparent 40%), radial-gradient(circle at 80% 100%, rgba(236,72,153,0.15), transparent 40%); }
+    .preset-card[data-preset="sakura"] .preset-preview-inner { background: rgba(255,255,255,0.85); border-color: #e7e1f5; }
+    .preset-card[data-preset="sakura"] .pp-chrome { background: rgba(255,255,255,0.9); border-bottom: 1px solid #e7e1f5; }
+    .preset-card[data-preset="sakura"] .pp-body { color: #8b5cf6; }
+
+    .preset-card[data-preset="mono"] .preset-preview { background: #fff; }
+    .preset-card[data-preset="mono"] .preset-preview-inner { background: #fafafa; border-color: #ececec; }
+    .preset-card[data-preset="mono"] .pp-chrome { background: #fff; border-bottom: 1px solid #ececec; }
+    .preset-card[data-preset="mono"] .pp-body { color: #18181b; }
+
+    .preset-card[data-preset="brutus"] .preset-preview { background: #fafaf5; }
+    .preset-card[data-preset="brutus"] .preset-preview-inner { background: #fff; border: 2px solid #000; border-radius: 0; box-shadow: 3px 3px 0 #000; }
+    .preset-card[data-preset="brutus"] .pp-chrome { background: #fff; border-bottom: 2px solid #000; }
+    .preset-card[data-preset="brutus"] .pp-body { color: #16a34a; }
+
+    .preset-card[data-preset="midnight"] .preset-preview { background: #0d0d1a; background-image: radial-gradient(circle at 50% 0%, rgba(99,102,241,0.3), transparent 60%); }
+    .preset-card[data-preset="midnight"] .preset-preview-inner { background: #13131f; border-color: #1e1e3a; }
+    .preset-card[data-preset="midnight"] .pp-chrome { background: #1a1a2e; }
+    .preset-card[data-preset="midnight"] .pp-body { color: #818cf8; }
+
+    .preset-card[data-preset="neonforge"] .preset-preview { background: #090716; background-image: radial-gradient(circle at 20% 20%, rgba(56,189,248,0.25), transparent 55%), radial-gradient(circle at 85% 75%, rgba(236,72,153,0.25), transparent 58%); }
+    .preset-card[data-preset="neonforge"] .preset-preview-inner { background: rgba(17, 24, 39, 0.82); border-color: rgba(94, 234, 212, 0.3); }
+    .preset-card[data-preset="neonforge"] .pp-chrome { background: rgba(30, 41, 59, 0.75); }
+    .preset-card[data-preset="neonforge"] .pp-body { color: #22d3ee; }
+
+    .preset-card[data-preset="solarized"] .preset-preview { background: #fdf6e3; background-image: radial-gradient(circle at 16% 8%, rgba(234, 179, 8, 0.25), transparent 45%), radial-gradient(circle at 78% 88%, rgba(59, 130, 246, 0.2), transparent 48%); }
+    .preset-card[data-preset="solarized"] .preset-preview-inner { background: rgba(255, 251, 235, 0.88); border-color: #e4dcc8; }
+    .preset-card[data-preset="solarized"] .pp-chrome { background: rgba(255, 250, 241, 0.9); border-bottom: 1px solid #e4dcc8; }
+    .preset-card[data-preset="solarized"] .pp-body { color: #b45309; }
+
+    .preset-card[data-preset="matrix"] .preset-preview { background: #020a04; background-image: radial-gradient(circle at 30% 30%, rgba(16, 185, 129, 0.25), transparent 58%); }
+    .preset-card[data-preset="matrix"] .preset-preview-inner { background: #07150a; border-color: #14532d; }
+    .preset-card[data-preset="matrix"] .pp-chrome { background: #0b1f10; }
+    .preset-card[data-preset="matrix"] .pp-body { color: #4ade80; }
+
+    .preset-card[data-preset="rustlab"] .preset-preview { background: #120d0a; background-image: radial-gradient(circle at 70% 20%, rgba(251, 146, 60, 0.28), transparent 52%); }
+    .preset-card[data-preset="rustlab"] .preset-preview-inner { background: #1b120d; border-color: #7c2d12; }
+    .preset-card[data-preset="rustlab"] .pp-chrome { background: #25160f; }
+    .preset-card[data-preset="rustlab"] .pp-body { color: #fb923c; }
+
+    .preset-body {
+      padding: 1rem 1.1rem 1.1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      flex: 1;
+    }
+    .preset-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .preset-name { font-size: 0.875rem; font-weight: 600; }
+    .preset-tag {
+      font-size: 0.65rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      padding: 0.15rem 0.45rem;
+      border-radius: 999px;
+      border: var(--rt-border-width) solid var(--rt-border);
+      color: var(--rt-text-faint);
+      background: var(--rt-subsurface);
+    }
+    .preset-desc { font-size: 0.78rem; line-height: 1.5; margin: 0; }
+    .preset-author {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.72rem;
+      margin-top: 0.15rem;
+    }
+    .preset-avatar {
+      width: 18px; height: 18px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.55rem;
+      font-weight: 700;
+      color: var(--rt-accent-fg);
+      background: var(--rt-accent);
+      flex-shrink: 0;
+    }
+    .preset-footer {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-top: auto;
+      padding-top: 0.6rem;
+      border-top: var(--rt-border-width) solid var(--rt-border);
+    }
+    .preset-dl-btn {
+      flex: 1;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.35rem;
+      padding: 0.45rem 0.75rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      transition: color 0.15s, background 0.15s, border-color 0.15s, transform 0.15s;
+    }
+    .preset-dl-btn:hover { color: var(--rt-accent); border-color: var(--rt-accent); transform: translateY(-1px); }
+    .preset-dl-btn.downloading {
+      color: var(--rt-accent);
+      border-color: var(--rt-accent);
+      pointer-events: none;
+    }
+    .preset-review-btn {
+      padding: 0.45rem 0.65rem;
+      font-size: 0.72rem;
+      font-weight: 600;
+      line-height: 1;
+    }
+    .preset-stars {
+      display: flex;
+      align-items: center;
+      gap: 0.2rem;
+      font-size: 0.72rem;
+      color: var(--rt-text-faint);
+    }
+    .preset-stars svg { color: #fbbf24; }
+
+    /* Submit modal */
+    .loom-modal-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 200;
+      background: rgba(0,0,0,0.55);
+      backdrop-filter: blur(4px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+    }
+    .loom-modal-overlay.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .loom-modal {
+      width: min(520px, 100%);
+      padding: 2rem;
+      position: relative;
+      transform: translateY(16px) scale(0.97);
+      transition: transform 0.3s cubic-bezier(.34,1.56,.64,1);
+    }
+    .loom-modal-overlay.open .loom-modal { transform: translateY(0) scale(1); }
+    .loom-modal h3 { margin: 0 0 0.25rem; font-size: 1.1rem; font-weight: 600; }
+    .loom-modal > p { margin: 0 0 1.5rem; font-size: 0.83rem; }
+    .loom-modal-close {
+      position: absolute;
+      top: 1.1rem; right: 1.1rem;
+      width: 2rem; height: 2rem;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1rem;
+      cursor: pointer;
+      border-radius: var(--rt-radius-sm);
+      background: transparent;
+      border: none;
+      color: var(--rt-text-muted);
+      transition: background 0.15s, color 0.15s;
+    }
+    .loom-modal-close:hover { background: var(--rt-surface-hover); color: var(--rt-text); }
+
+    .loom-form { display: flex; flex-direction: column; gap: 1rem; }
+    .loom-field { display: flex; flex-direction: column; gap: 0.35rem; }
+    .loom-field label { font-size: 0.75rem; font-weight: 600; color: var(--rt-text-muted); }
+    .loom-field input,
+    .loom-field textarea,
+    .loom-field select {
+      background: var(--rt-subsurface);
+      border: var(--rt-border-width) solid var(--rt-border);
+      border-radius: var(--rt-radius-sm);
+      padding: 0.55rem 0.75rem;
+      font-size: 0.82rem;
+      font-family: inherit;
+      color: var(--rt-text);
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      resize: vertical;
+    }
+    .loom-field input:focus,
+    .loom-field textarea:focus,
+    .loom-field select:focus {
+      border-color: var(--rt-accent);
+      box-shadow: 0 0 0 3px color-mix(in srgb, var(--rt-accent) 18%, transparent);
+    }
+    .loom-field select option { background: var(--rt-bg); color: var(--rt-text); }
+    .loom-form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+    .loom-form-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+      padding-top: 0.25rem;
+    }
+    .loom-form-note { font-size: 0.72rem; }
+    .loom-form-submit {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.6rem 1.4rem;
+      font-size: 0.82rem;
+      font-weight: 600;
+      font-family: inherit;
+      color: var(--rt-accent-fg);
+      background: var(--rt-accent);
+      border: none;
+      border-radius: var(--rt-radius-sm);
+      cursor: pointer;
+      transition: opacity 0.15s, transform 0.2s;
+      flex-shrink: 0;
+    }
+    .loom-form-submit:hover { opacity: 0.88; transform: translateY(-1px); }
+
+    .loom-success {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 0.75rem;
+      padding: 1rem 0 0.5rem;
+    }
+    .loom-success.shown { display: flex; }
+    .loom-success-icon {
+      width: 3rem; height: 3rem;
+      border-radius: 50%;
+      background: var(--rt-accent-soft);
+      border: var(--rt-border-width) solid var(--rt-accent);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--rt-accent);
+    }
+    .loom-success h4 { margin: 0; font-size: 1rem; }
+    .loom-success p { margin: 0; font-size: 0.82rem; }
+    .review-modal { width: min(420px, 100%); }
+    .review-target {
+      margin: 0;
+      font-size: 0.82rem;
+      color: var(--rt-text-muted);
+    }
+    .review-stars {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.35rem;
+      margin: 1.25rem 0 1rem;
+    }
+    .review-star {
+      width: 2rem;
+      height: 2rem;
+      border: var(--rt-border-width) solid var(--rt-border);
+      border-radius: var(--rt-radius-sm);
+      background: var(--rt-subsurface);
+      color: var(--rt-text-faint);
+      font-size: 1.15rem;
+      line-height: 1;
+      cursor: pointer;
+      transition: color 0.15s, border-color 0.15s, transform 0.15s, background 0.15s;
+    }
+    .review-star.active,
+    .review-star:hover {
+      color: #fbbf24;
+      border-color: #fbbf24;
+      background: color-mix(in srgb, #fbbf24 12%, transparent);
+      transform: translateY(-1px);
+    }
+    .review-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.5rem;
+    }
+    .review-submit-msg {
+      margin: 0.75rem 0 0;
+      font-size: 0.75rem;
+      color: var(--rt-text-faint);
+      min-height: 1em;
+    }
+
+    @media (max-width: 600px) {
+      .loom-form-row { grid-template-columns: 1fr; }
+      .loom-form-footer { flex-direction: column; align-items: stretch; }
+      .loom-add-form { grid-template-columns: 1fr; }
+      .top-bar-actions { flex-wrap: wrap; justify-content: flex-end; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="ambient" aria-hidden="true">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+  </div>
+  <div class="grid-bg" aria-hidden="true"></div>
+
+  <div class="page">
+    <div class="top-bar">
+      <nav class="social-links" aria-label="Social links">
+        <a class="social-link" href="https://linkedin.com/in/matthewhamilton3141" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
+          <svg class="rt-icon" width="16" height="16" viewBox="0 0 24 24" stroke-width="2" fill="none">
+            <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/>
+            <rect width="4" height="12" x="2" y="9"/>
+            <circle cx="4" cy="4" r="2"/>
+          </svg>
+        </a>
+        <a class="social-link" href="https://github.com/matthewhamilton3141" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
+          <svg class="rt-icon" width="16" height="16" viewBox="0 0 24 24" stroke-width="2" fill="none">
+            <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.01.28-2.09 0-3.09 0 0-.79-.25-2.65 1.01A9.64 9.64 0 0 0 12 3c-2.35 0-4.27 1.02-5.4 2.01-1.86-1.26-2.65-1.01-2.65-1.01-.28 1-.28 2.09 0 3.09A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65S8.93 17.38 9 18v4"/>
+            <path d="M9 18c-4.51 2-5-2-7-2"/>
+          </svg>
+        </a>
+        <a class="social-link" href="https://instagram.com/mxtth2w" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+          <svg class="rt-icon" width="16" height="16" viewBox="0 0 24 24" stroke-width="2" fill="none">
+            <rect width="20" height="20" x="2" y="2" rx="5" ry="5"/>
+            <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
+            <line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/>
+          </svg>
+        </a>
+        <a class="social-link" href="https://matthewhamilton.dev" target="_blank" rel="noopener noreferrer" aria-label="Personal Website">
+          <svg width="16" height="16" viewBox="0 0 800 1000" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <polygon points="400,0 456,215 400,312 344,215" />
+            <polygon points="0,183 283,222 186,253 371,995" />
+            <polygon points="800,183 517,222 614,253 429,995" />
+          </svg>
+        </a>
+      </nav>
+
+      <div class="top-bar-right">
+        <div class="theme-switcher rt-btn-outline">
+          <svg class="rt-icon" width="14" height="14" viewBox="0 0 24 24" stroke-width="2"><circle cx="13.5" cy="6.5" r=".5" fill="currentColor"/><circle cx="17.5" cy="10.5" r=".5" fill="currentColor"/><circle cx="8.5" cy="7.5" r=".5" fill="currentColor"/><circle cx="6.5" cy="12.5" r=".5" fill="currentColor"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"/></svg>
+          <span id="theme-label">Sleek</span>
+          <div class="theme-dots" role="group" aria-label="Theme engines">
+            <button class="theme-dot active" data-theme="sleek" title="Sleek" aria-label="Sleek"></button>
+            <button class="theme-dot" data-theme="pastel" title="Soft Pastel" aria-label="Soft Pastel"></button>
+            <button class="theme-dot" data-theme="glass" title="Transparent Glass" aria-label="Transparent Glass"></button>
+            <button class="theme-dot" data-theme="minimalist" title="Minimalist" aria-label="Minimalist"></button>
+            <button class="theme-dot" data-theme="brutalism" title="Neo-Brutalism" aria-label="Neo-Brutalism"></button>
+          </div>
+        </div>
+        <div class="top-bar-actions">
+          <button type="button" class="rt-btn-outline marketplace-nav-btn" data-nav-view="home">Home</button>
+          <button type="button" class="loom-btn" id="nav-loom" data-nav-view="marketplace" aria-label="Browse Retermina Loom marketplace">
+            Retermina Loom
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <header class="hero spa-view active" data-view="home">
+      <div class="logo-box rt-surface">
+        <svg class="rt-icon rt-accent-text" width="28" height="28" viewBox="0 0 24 24" stroke-width="2">
+          <polyline points="4 17 10 11 4 5"/><line x1="12" x2="20" y1="19" y2="19"/>
+        </svg>
+      </div>
+      <h1>Retermina</h1>
+      <p class="hero-tagline rt-text-muted">
+        A customizable terminal workspace — <span class="hero-typed" id="hero-typed"></span>
+      </p>
+      <div class="hero-cta">
+        <a class="cta-primary" href="https://github.com/matthewhamilton3141/Retermina" target="_blank" rel="noopener">
+          <svg class="rt-icon" width="18" height="18" viewBox="0 0 24 24" stroke-width="2"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.01.28-2.09 0-3.09 0 0-.79-.25-2.65 1.01A9.64 9.64 0 0 0 12 3c-2.35 0-4.27 1.02-5.4 2.01-1.86-1.26-2.65-1.01-2.65-1.01-.28 1-.28 2.09 0 3.09A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65S8.93 17.38 9 18v4"/><path d="M9 18c-4.51 2-5-2-7-2"/></svg>
+          View on GitHub
+        </a>
+        <button class="rt-btn-outline" style="padding: 0.75rem 1.25rem; font-size: 0.9rem;" onclick="document.getElementById('features').scrollIntoView({behavior:'smooth'})">
+          Explore features
+        </button>
+      </div>
+      <p class="hero-version rt-text-faint">
+        <span class="hero-version-dot"></span>
+        Retermina <span class="hero-version-beta">beta</span> · v1.0.0 — early access, expect rough edges
+      </p>
+
+      <!-- Live terminal demo -->
+      <div class="terminal-demo-wrap rt-panel" id="terminal-demo">
+        <div class="terminal-chrome">
+          <span class="chrome-dot red"></span>
+          <span class="chrome-dot yellow"></span>
+          <span class="chrome-dot green"></span>
+          <span class="chrome-title">retermina — zsh — 80×24</span>
+        </div>
+        <div class="terminal-body" id="terminal-body"></div>
+      </div>
+
+      <!-- Workspace grid mock -->
+      <div class="workspace-mock rt-panel">
+        <div class="mock-grid" id="mock-grid">
+          <div class="mock-panel">
+            <div class="mock-panel-header">
+              <svg class="rt-icon rt-accent-text" width="12" height="12" viewBox="0 0 24 24" stroke-width="2"><polyline points="4 17 10 11 4 5"/><line x1="12" x2="20" y1="19" y2="19"/></svg>
+              Terminal
+            </div>
+            <div class="mock-panel-body"><span class="rt-accent-text">$</span> npm run dev</div>
+          </div>
+          <div class="mock-panel">
+            <div class="mock-panel-header">
+              <svg class="rt-icon" width="12" height="12" viewBox="0 0 24 24" stroke-width="2"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
+              Localhost
+            </div>
+            <div class="mock-panel-body"><span class="term-green">●</span> :5173 <span class="term-dim">vite</span></div>
+          </div>
+          <div class="mock-panel">
+            <div class="mock-panel-header">
+              <svg class="rt-icon" width="12" height="12" viewBox="0 0 24 24" stroke-width="2"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg>
+              Explorer
+            </div>
+            <div class="mock-panel-body term-dim">src/ components/ lib/</div>
+          </div>
+        </div>
+
+        <!-- Iris bar mock -->
+        <div class="iris-mock rt-surface" style="border-radius: var(--rt-radius-sm);">
+          <svg class="rt-icon rt-accent-text" width="16" height="16" viewBox="0 0 24 24" stroke-width="2"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/><path d="M20 3v4"/><path d="M22 5h-4"/><path d="M4 17v2"/><path d="M5 18H3"/></svg>
+          <div class="iris-input" id="iris-input">
+            <span class="iris-typed" id="iris-typed"></span><span class="rt-text-faint" id="iris-cursor">▋</span>
+          </div>
+        </div>
+        <div class="iris-suggest rt-panel" id="iris-suggest">
+          <div class="iris-item active">
+            <svg class="rt-icon" width="14" height="14" viewBox="0 0 24 24" stroke-width="2"><line x1="6" x2="6" y1="3" y2="15"/><circle cx="18" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M18 9a9 9 0 0 1-9 9"/></svg>
+            git push origin main
+          </div>
+          <div class="iris-item rt-text-muted">
+            <svg class="rt-icon" width="14" height="14" viewBox="0 0 24 24" stroke-width="2"><path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/><path d="M16 16h5v5"/></svg>
+            git pull --rebase
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <section class="block spa-view active" id="features" data-view="home">
+      <p class="section-label rt-text-muted">Start</p>
+      <h2 class="section-title">Everything from the Launch Hub</h2>
+      <p class="rt-text-muted" style="max-width: 520px;">The same primary actions that greet you when Retermina opens — recreated here with the real card interactions from <code style="font-size:0.85em;">LaunchActionCard</code>.</p>
+
+      <div class="start-grid" style="margin-top: 1.5rem;">
+        <div class="rt-card start-card">
+          <span class="rt-card-icon start-card-icon">
+            <svg class="rt-icon" width="22" height="22" viewBox="0 0 24 24" stroke-width="2"><polygon points="6 3 20 12 6 21 6 3"/></svg>
+          </span>
+          <span>
+            <span class="start-card-title">Launch Blank Terminal</span>
+            <span class="start-card-desc rt-text-muted" style="display:block;margin-top:0.2rem;">Start a fresh shell session</span>
+          </span>
+        </div>
+        <div class="rt-card start-card">
+          <span class="rt-card-icon start-card-icon">
+            <svg class="rt-icon" width="22" height="22" viewBox="0 0 24 24" stroke-width="2"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M12 18v-6"/><path d="M9 15h6"/></svg>
+          </span>
+          <span>
+            <span class="start-card-title">New File</span>
+            <span class="start-card-desc rt-text-muted" style="display:block;margin-top:0.2rem;">Create and edit a new file</span>
+          </span>
+        </div>
+        <div class="rt-card start-card">
+          <span class="rt-card-icon start-card-icon">
+            <svg class="rt-icon" width="22" height="22" viewBox="0 0 24 24" stroke-width="2"><path d="m6 14 1.5-2.9A2 2 0 0 1 9.24 10H20a2 2 0 0 1 1.94 2.5l-1.54 6a2 2 0 0 1-1.95 1.5H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.67.9H18a2 2 0 0 1 2 2v2"/></svg>
+          </span>
+          <span>
+            <span class="start-card-title">Open Folder</span>
+            <span class="start-card-desc rt-text-muted" style="display:block;margin-top:0.2rem;">Open an existing project</span>
+          </span>
+        </div>
+        <div class="rt-card start-card">
+          <span class="rt-card-icon start-card-icon">
+            <svg class="rt-icon" width="22" height="22" viewBox="0 0 24 24" stroke-width="2"><line x1="6" x2="6" y1="3" y2="15"/><circle cx="18" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M18 9a9 9 0 0 1-9 9"/></svg>
+          </span>
+          <span>
+            <span class="start-card-title">Clone Git Repository</span>
+            <span class="start-card-desc rt-text-muted" style="display:block;margin-top:0.2rem;">Clone from a remote URL</span>
+          </span>
+        </div>
+      </div>
+    </section>
+
+    <section class="block spa-view active" data-view="home">
+      <p class="section-label rt-text-muted">Engines</p>
+      <h2 class="section-title">Five structural theme engines</h2>
+      <p class="rt-text-muted" style="max-width: 560px;">Each engine swaps far more than accent colors — corner radius, border weight, shadows, backdrop blur, fonts, and icon stroke weight all change. Click a chip or use the switcher above.</p>
+
+      <div class="theme-showcase">
+        <button class="rt-btn-outline theme-chip active" data-theme="sleek">Sleek</button>
+        <button class="rt-btn-outline theme-chip" data-theme="pastel">Soft Pastel</button>
+        <button class="rt-btn-outline theme-chip" data-theme="glass">Transparent Glass</button>
+        <button class="rt-btn-outline theme-chip" data-theme="minimalist">Minimalist</button>
+        <button class="rt-btn-outline theme-chip" data-theme="brutalism">Neo-Brutalism</button>
+      </div>
+
+      <div class="features-grid">
+        <div class="feature-card rt-panel">
+          <svg class="rt-icon rt-accent-text" width="24" height="24" viewBox="0 0 24 24" stroke-width="2"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
+          <h3>Modular Workspace</h3>
+          <p class="rt-text-muted">Drag-and-drop panels powered by react-grid-layout. Resize terminals, localhost tracker, and explorer side by side.</p>
+        </div>
+        <div class="feature-card rt-panel">
+          <svg class="rt-icon rt-accent-text" width="24" height="24" viewBox="0 0 24 24" stroke-width="2"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/></svg>
+          <h3>Iris Command Bar</h3>
+          <p class="rt-text-muted">Zero-token local macros and contextual Git suggestions. Type naturally — Iris ranks push, pull, and shell helpers from live repo state.</p>
+        </div>
+        <div class="feature-card rt-panel">
+          <svg class="rt-icon rt-accent-text" width="24" height="24" viewBox="0 0 24 24" stroke-width="2"><polyline points="4 17 10 11 4 5"/><line x1="12" x2="20" y1="19" y2="19"/></svg>
+          <h3>xterm.js Terminal</h3>
+          <p class="rt-text-muted">High-fidelity terminal emulation with per-engine color palettes tuned to match each structural theme's surface.</p>
+        </div>
+        <div class="feature-card rt-panel">
+          <svg class="rt-icon rt-accent-text" width="24" height="24" viewBox="0 0 24 24" stroke-width="2"><rect width="20" height="8" x="2" y="2" rx="2" ry="2"/><rect width="20" height="8" x="2" y="14" rx="2" ry="2"/><line x1="6" x2="6.01" y1="6" y2="6"/><line x1="6" x2="6.01" y1="18" y2="18"/></svg>
+          <h3>Tauri + React</h3>
+          <p class="rt-text-muted">Native desktop performance with a modern React UI. Built with Vite, Zustand, and @tauri-apps for a fast, extensible shell.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════ LOOM MARKETPLACE ══════════════════════════════════════════ -->
+    <section class="block spa-view" id="loom" data-view="marketplace" hidden>
+      <div class="loom-hero">
+        <span class="loom-badge">
+          Live marketplace
+        </span>
+        <h2 class="section-title">Retermina Loom Marketplace</h2>
+        <p class="rt-text-muted">One streamlined destination for curated top-rated layouts and all available workplace configurations. Browse, rate, and publish setups in the same flow.</p>
+      </div>
+
+      <div class="loom-subsection">
+        <h3 class="loom-subtitle">Most Highly Rated Looms</h3>
+        <p class="loom-subcopy rt-text-muted">Featured community workspaces with standout usability, thoughtful panel architecture, and reliable daily-driver ergonomics.</p>
+        <div class="top-looms-grid">
+          <article class="rt-card top-loom-card">
+            <div class="top-loom-head">
+              <span class="top-loom-title">Carbon Noir Pro</span>
+              <span class="top-loom-badge">Top 1</span>
+            </div>
+            <p class="top-loom-desc">Ultra-clean dark command center with dense terminal multiplexing and pinned Iris shortcuts for fast Git automation.</p>
+            <div class="top-loom-meta">
+              <span>by k_terminal</span>
+              <span>★ 4.9 · 312 reviews</span>
+            </div>
+          </article>
+          <article class="rt-card top-loom-card">
+            <div class="top-loom-head">
+              <span class="top-loom-title">Aurora Ops Grid</span>
+              <span class="top-loom-badge">Top 2</span>
+            </div>
+            <p class="top-loom-desc">Glassmorphism-heavy layout for monitoring logs, build output, and localhost status side-by-side in a vivid neon stack.</p>
+            <div class="top-loom-meta">
+              <span>by astrodev_</span>
+              <span>★ 4.8 · 187 reviews</span>
+            </div>
+          </article>
+          <article class="rt-card top-loom-card">
+            <div class="top-loom-head">
+              <span class="top-loom-title">Midnight Indigo</span>
+              <span class="top-loom-badge">Top 3</span>
+            </div>
+            <p class="top-loom-desc">Balanced full-stack workflow tuned for long coding sessions: calm contrast, focused pane hierarchy, and expressive syntax glow.</p>
+            <div class="top-loom-meta">
+              <span>by t3dotgg</span>
+              <span>★ 4.8 · 143 reviews</span>
+            </div>
+          </article>
+        </div>
+      </div>
+
+      <div class="loom-subsection">
+        <h3 class="loom-subtitle">All Available Workplace Configurations</h3>
+        <p class="loom-subcopy rt-text-muted">Explore full preset inventory, filter by style, then create and add your own workspace. Every configuration supports live 5-star reviews.</p>
+        <div class="loom-toolbar">
+        <button class="rt-btn-outline loom-filter active" data-filter="all">All presets</button>
+        <button class="rt-btn-outline loom-filter" data-filter="dark">Dark</button>
+        <button class="rt-btn-outline loom-filter" data-filter="light">Light</button>
+        <button class="rt-btn-outline loom-filter" data-filter="glass">Glass</button>
+        <button class="rt-btn-outline loom-filter" data-filter="community">Community</button>
+        <div class="loom-spacer"></div>
+        <button class="loom-submit-btn" id="loom-open-modal">
+          <svg class="rt-icon" width="14" height="14" viewBox="0 0 24 24" stroke-width="2.5"><line x1="12" x2="12" y1="5" y2="19"/><line x1="5" x2="19" y1="12" y2="12"/></svg>
+          Submit preset
+        </button>
+      </div>
+      <div class="loom-add-panel rt-panel">
+        <h3>Create/Add More Workspace Config</h3>
+        <p>Add a new workspace configuration directly to the marketplace list.</p>
+        <form class="loom-add-form" id="add-config-form">
+          <div class="loom-field">
+            <label for="add-name">Configuration name</label>
+            <input id="add-name" type="text" maxlength="36" placeholder="e.g. Neon Build Station">
+          </div>
+          <div class="loom-field">
+            <label for="add-author">Author</label>
+            <input id="add-author" type="text" maxlength="28" placeholder="e.g. yourhandle">
+          </div>
+          <div class="loom-field">
+            <label for="add-category">Category</label>
+            <select id="add-category">
+              <option value="dark">Dark</option>
+              <option value="light">Light</option>
+              <option value="glass">Glass</option>
+              <option value="community">Community</option>
+            </select>
+          </div>
+          <div class="loom-field">
+            <label for="add-description">Description</label>
+            <input id="add-description" type="text" maxlength="120" placeholder="Describe the setup in one sentence">
+          </div>
+          <div class="loom-add-submit-wrap">
+            <button type="submit" class="loom-submit-btn">Create/Add More</button>
+          </div>
+        </form>
+      </div>
+
+      <div class="loom-grid" id="loom-grid">
+
+        <!-- Carbon Noir -->
+        <div class="rt-card preset-card revealed" data-preset="carbon" data-tags="dark">
+          <div class="preset-preview">
+            <div class="preset-preview-inner">
+              <div class="pp-chrome">
+                <span class="pp-dot" style="background:#f87171"></span>
+                <span class="pp-dot" style="background:#fbbf24"></span>
+                <span class="pp-dot" style="background:#34d399"></span>
+              </div>
+              <div class="pp-body">
+                <div><span style="color:#34d399">$</span> npm run tauri dev</div>
+                <div style="color:#525252">  VITE ready in 310ms</div>
+                <div><span style="color:#34d399">➜</span> localhost:1420</div>
+              </div>
+            </div>
+          </div>
+          <div class="preset-body">
+            <div class="preset-meta">
+              <span class="preset-name">Carbon Noir</span>
+              <span class="preset-tag">Dark</span>
+            </div>
+            <p class="preset-desc rt-text-muted">Pure black surfaces with emerald accents. The default Sleek engine pushed to its darkest extreme — zero visual noise.</p>
+            <div class="preset-author rt-text-muted">
+              <span class="preset-avatar">K</span>
+              <span>by k_terminal</span>
+              <span style="margin-left:auto" class="rt-text-faint">community</span>
+            </div>
+            <div class="preset-footer">
+              <button class="rt-btn-outline preset-dl-btn" onclick="handleDownload(this,'carbon-noir.json')">
+                <svg class="rt-icon" width="13" height="13" viewBox="0 0 24 24" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="3" y2="15"/></svg>
+                Download
+              </button>
+              <span class="preset-stars">
+                <svg class="rt-icon" width="12" height="12" viewBox="0 0 24 24" stroke-width="2" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                4.9 · 312
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Aurora Glass -->
+        <div class="rt-card preset-card" data-preset="aurora" data-tags="dark glass">
+          <div class="preset-preview">
+            <div class="preset-preview-inner">
+              <div class="pp-chrome">
+                <span class="pp-dot" style="background:#f87171"></span>
+                <span class="pp-dot" style="background:#fbbf24"></span>
+                <span class="pp-dot" style="background:#34d399"></span>
+              </div>
+              <div class="pp-body">
+                <div><span style="color:#38bdf8">$</span> iris git push</div>
+                <div style="color:#64748b">✦ running macro…</div>
+                <div style="color:#38bdf8">→ pushed to main</div>
+              </div>
+            </div>
+          </div>
+          <div class="preset-body">
+            <div class="preset-meta">
+              <span class="preset-name">Aurora Glass</span>
+              <span class="preset-tag">Glass</span>
+            </div>
+            <p class="preset-desc rt-text-muted">Deep navy backdrop with translucent panels, sky-blue accents, and heavy blur. Pairs perfectly with macOS wallpapers.</p>
+            <div class="preset-author rt-text-muted">
+              <span class="preset-avatar" style="background:#38bdf8;color:#0b1220">A</span>
+              <span>by astrodev_</span>
+              <span style="margin-left:auto" class="rt-text-faint">community</span>
+            </div>
+            <div class="preset-footer">
+              <button class="rt-btn-outline preset-dl-btn" onclick="handleDownload(this,'aurora-glass.json')">
+                <svg class="rt-icon" width="13" height="13" viewBox="0 0 24 24" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="3" y2="15"/></svg>
+                Download
+              </button>
+              <span class="preset-stars">
+                <svg class="rt-icon" width="12" height="12" viewBox="0 0 24 24" stroke-width="2" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                4.8 · 187
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sakura -->
+        <div class="rt-card preset-card" data-preset="sakura" data-tags="light">
+          <div class="preset-preview">
+            <div class="preset-preview-inner">
+              <div class="pp-chrome">
+                <span class="pp-dot" style="background:#f87171"></span>
+                <span class="pp-dot" style="background:#fbbf24"></span>
+                <span class="pp-dot" style="background:#34d399"></span>
+              </div>
+              <div class="pp-body">
+                <div><span style="color:#8b5cf6">$</span> npm install</div>
+                <div style="color:#aaa1c0">added 142 packages</div>
+                <div style="color:#8b5cf6">✓ done in 2.4s</div>
+              </div>
+            </div>
+          </div>
+          <div class="preset-body">
+            <div class="preset-meta">
+              <span class="preset-name">Sakura</span>
+              <span class="preset-tag">Light</span>
+            </div>
+            <p class="preset-desc rt-text-muted">Soft violet gradients on a light lavender base. Gentle on the eyes during long daytime sessions with the Soft Pastel engine.</p>
+            <div class="preset-author rt-text-muted">
+              <span class="preset-avatar" style="background:#8b5cf6">S</span>
+              <span>by sakuracodes</span>
+              <span style="margin-left:auto" class="rt-text-faint">community</span>
+            </div>
+            <div class="preset-footer">
+              <button class="rt-btn-outline preset-dl-btn" onclick="handleDownload(this,'sakura.json')">
+                <svg class="rt-icon" width="13" height="13" viewBox="0 0 24 24" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="3" y2="15"/></svg>
+                Download
+              </button>
+              <span class="preset-stars">
+                <svg class="rt-icon" width="12" height="12" viewBox="0 0 24 24" stroke-width="2" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                4.7 · 94
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Mono -->
+        <div class="rt-card preset-card" data-preset="mono" data-tags="light">
+          <div class="preset-preview">
+            <div class="preset-preview-inner">
+              <div class="pp-chrome">
+                <span class="pp-dot" style="background:#f87171"></span>
+                <span class="pp-dot" style="background:#fbbf24"></span>
+                <span class="pp-dot" style="background:#34d399"></span>
+              </div>
+              <div class="pp-body">
+                <div><span style="color:#18181b">$</span> git status</div>
+                <div style="color:#71717a">On branch main</div>
+                <div style="color:#18181b">nothing to commit</div>
+              </div>
+            </div>
+          </div>
+          <div class="preset-body">
+            <div class="preset-meta">
+              <span class="preset-name">Mono</span>
+              <span class="preset-tag">Light</span>
+            </div>
+            <p class="preset-desc rt-text-muted">Pure white canvas, near-zero radius, no shadows. Built on the Minimalist engine for a distraction-free paper-like workflow.</p>
+            <div class="preset-author rt-text-muted">
+              <span class="preset-avatar" style="background:#18181b">M</span>
+              <span>by mxkl</span>
+              <span style="margin-left:auto" class="rt-text-faint">community</span>
+            </div>
+            <div class="preset-footer">
+              <button class="rt-btn-outline preset-dl-btn" onclick="handleDownload(this,'mono.json')">
+                <svg class="rt-icon" width="13" height="13" viewBox="0 0 24 24" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="3" y2="15"/></svg>
+                Download
+              </button>
+              <span class="preset-stars">
+                <svg class="rt-icon" width="12" height="12" viewBox="0 0 24 24" stroke-width="2" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                4.6 · 78
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Brutus -->
+        <div class="rt-card preset-card" data-preset="brutus" data-tags="light community">
+          <div class="preset-preview">
+            <div class="preset-preview-inner">
+              <div class="pp-chrome">
+                <span class="pp-dot" style="background:#f87171"></span>
+                <span class="pp-dot" style="background:#fbbf24"></span>
+                <span class="pp-dot" style="background:#34d399"></span>
+              </div>
+              <div class="pp-body">
+                <div><span style="color:#16a34a">$</span> make build</div>
+                <div style="color:#3f3f46">gcc -o out main.c</div>
+                <div style="color:#16a34a">BUILD SUCCESS</div>
+              </div>
+            </div>
+          </div>
+          <div class="preset-body">
+            <div class="preset-meta">
+              <span class="preset-name">Brutus</span>
+              <span class="preset-tag">Community</span>
+            </div>
+            <p class="preset-desc rt-text-muted">Hard black borders, zero radius, offset box shadows. Neo-Brutalism at full blast — makes every panel feel bolted to the screen.</p>
+            <div class="preset-author rt-text-muted">
+              <span class="preset-avatar" style="background:#16a34a">J</span>
+              <span>by jxnblk</span>
+              <span style="margin-left:auto" class="rt-text-faint">community</span>
+            </div>
+            <div class="preset-footer">
+              <button class="rt-btn-outline preset-dl-btn" onclick="handleDownload(this,'brutus.json')">
+                <svg class="rt-icon" width="13" height="13" viewBox="0 0 24 24" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="3" y2="15"/></svg>
+                Download
+              </button>
+              <span class="preset-stars">
+                <svg class="rt-icon" width="12" height="12" viewBox="0 0 24 24" stroke-width="2" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                4.5 · 61
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Midnight Indigo -->
+        <div class="rt-card preset-card" data-preset="midnight" data-tags="dark community">
+          <div class="preset-preview">
+            <div class="preset-preview-inner">
+              <div class="pp-chrome">
+                <span class="pp-dot" style="background:#f87171"></span>
+                <span class="pp-dot" style="background:#fbbf24"></span>
+                <span class="pp-dot" style="background:#34d399"></span>
+              </div>
+              <div class="pp-body">
+                <div><span style="color:#818cf8">$</span> node server.js</div>
+                <div style="color:#1e1e3a">listening on :3000</div>
+                <div style="color:#818cf8">✓ server ready</div>
+              </div>
+            </div>
+          </div>
+          <div class="preset-body">
+            <div class="preset-meta">
+              <span class="preset-name">Midnight Indigo</span>
+              <span class="preset-tag">Community</span>
+            </div>
+            <p class="preset-desc rt-text-muted">Deep blue-black with indigo panel accents and a subtle purple glow at the top. Inspired by late-night Tokyo dev sessions.</p>
+            <div class="preset-author rt-text-muted">
+              <span class="preset-avatar" style="background:#818cf8;color:#0d0d1a">T</span>
+              <span>by t3dotgg</span>
+              <span style="margin-left:auto" class="rt-text-faint">community</span>
+            </div>
+            <div class="preset-footer">
+              <button class="rt-btn-outline preset-dl-btn" onclick="handleDownload(this,'midnight-indigo.json')">
+                <svg class="rt-icon" width="13" height="13" viewBox="0 0 24 24" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="3" y2="15"/></svg>
+                Download
+              </button>
+              <span class="preset-stars">
+                <svg class="rt-icon" width="12" height="12" viewBox="0 0 24 24" stroke-width="2" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                4.8 · 143
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Neon Forge Stack -->
+        <div class="rt-card preset-card" data-preset="neonforge" data-tags="dark glass community">
+          <div class="preset-preview">
+            <div class="preset-preview-inner">
+              <div class="pp-chrome">
+                <span class="pp-dot" style="background:#f87171"></span>
+                <span class="pp-dot" style="background:#fbbf24"></span>
+                <span class="pp-dot" style="background:#34d399"></span>
+              </div>
+              <div class="pp-body">
+                <div><span style="color:#22d3ee">$</span> pnpm turbo run dev</div>
+                <div style="color:#94a3b8">web, api, worker all online</div>
+                <div style="color:#f472b6">hot reload synced</div>
+              </div>
+            </div>
+          </div>
+          <div class="preset-body">
+            <div class="preset-meta">
+              <span class="preset-name">Neon Forge Stack</span>
+              <span class="preset-tag">Glass</span>
+            </div>
+            <p class="preset-desc rt-text-muted">A neon cyberglass multi-pane setup optimized for monorepo iteration with side-by-side service health and package task streams.</p>
+            <div class="preset-author rt-text-muted">
+              <span class="preset-avatar" style="background:#22d3ee;color:#082f49">N</span>
+              <span>by neonoperator</span>
+              <span style="margin-left:auto" class="rt-text-faint">community</span>
+            </div>
+            <div class="preset-footer">
+              <button class="rt-btn-outline preset-dl-btn" onclick="handleDownload(this,'neon-forge-stack.json')">
+                <svg class="rt-icon" width="13" height="13" viewBox="0 0 24 24" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="3" y2="15"/></svg>
+                Download
+              </button>
+              <span class="preset-stars">
+                <svg class="rt-icon" width="12" height="12" viewBox="0 0 24 24" stroke-width="2" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                4.8 · 129
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Solarized Build Grid -->
+        <div class="rt-card preset-card" data-preset="solarized" data-tags="light community">
+          <div class="preset-preview">
+            <div class="preset-preview-inner">
+              <div class="pp-chrome">
+                <span class="pp-dot" style="background:#f87171"></span>
+                <span class="pp-dot" style="background:#fbbf24"></span>
+                <span class="pp-dot" style="background:#34d399"></span>
+              </div>
+              <div class="pp-body">
+                <div><span style="color:#b45309">$</span> npm run lint && npm test</div>
+                <div style="color:#9a3412">lint clean · tests green</div>
+                <div style="color:#2563eb">coverage 91.2%</div>
+              </div>
+            </div>
+          </div>
+          <div class="preset-body">
+            <div class="preset-meta">
+              <span class="preset-name">Solarized Build Grid</span>
+              <span class="preset-tag">Light</span>
+            </div>
+            <p class="preset-desc rt-text-muted">Warm low-glare palette with focused diagnostics panels and compact split terminals for TDD cycles and review-heavy workflows.</p>
+            <div class="preset-author rt-text-muted">
+              <span class="preset-avatar" style="background:#f59e0b;color:#422006">S</span>
+              <span>by sierra_ci</span>
+              <span style="margin-left:auto" class="rt-text-faint">community</span>
+            </div>
+            <div class="preset-footer">
+              <button class="rt-btn-outline preset-dl-btn" onclick="handleDownload(this,'solarized-build-grid.json')">
+                <svg class="rt-icon" width="13" height="13" viewBox="0 0 24 24" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="3" y2="15"/></svg>
+                Download
+              </button>
+              <span class="preset-stars">
+                <svg class="rt-icon" width="12" height="12" viewBox="0 0 24 24" stroke-width="2" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                4.6 · 82
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Matrix CI Watchtower -->
+        <div class="rt-card preset-card" data-preset="matrix" data-tags="dark community">
+          <div class="preset-preview">
+            <div class="preset-preview-inner">
+              <div class="pp-chrome">
+                <span class="pp-dot" style="background:#f87171"></span>
+                <span class="pp-dot" style="background:#fbbf24"></span>
+                <span class="pp-dot" style="background:#34d399"></span>
+              </div>
+              <div class="pp-body">
+                <div><span style="color:#4ade80">$</span> gh run watch</div>
+                <div style="color:#22c55e">build matrix: linux/mac/win</div>
+                <div style="color:#4ade80">status: all passing</div>
+              </div>
+            </div>
+          </div>
+          <div class="preset-body">
+            <div class="preset-meta">
+              <span class="preset-name">Matrix CI Watchtower</span>
+              <span class="preset-tag">Dark</span>
+            </div>
+            <p class="preset-desc rt-text-muted">Green phosphor observability theme with dedicated panes for CI status, release logs, and git history while coding in parallel.</p>
+            <div class="preset-author rt-text-muted">
+              <span class="preset-avatar" style="background:#16a34a;color:#052e16">M</span>
+              <span>by matrixrunner</span>
+              <span style="margin-left:auto" class="rt-text-faint">community</span>
+            </div>
+            <div class="preset-footer">
+              <button class="rt-btn-outline preset-dl-btn" onclick="handleDownload(this,'matrix-ci-watchtower.json')">
+                <svg class="rt-icon" width="13" height="13" viewBox="0 0 24 24" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="3" y2="15"/></svg>
+                Download
+              </button>
+              <span class="preset-stars">
+                <svg class="rt-icon" width="12" height="12" viewBox="0 0 24 24" stroke-width="2" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                4.7 · 104
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Rust Kernel Lab -->
+        <div class="rt-card preset-card" data-preset="rustlab" data-tags="dark community">
+          <div class="preset-preview">
+            <div class="preset-preview-inner">
+              <div class="pp-chrome">
+                <span class="pp-dot" style="background:#f87171"></span>
+                <span class="pp-dot" style="background:#fbbf24"></span>
+                <span class="pp-dot" style="background:#34d399"></span>
+              </div>
+              <div class="pp-body">
+                <div><span style="color:#fb923c">$</span> cargo test --workspace</div>
+                <div style="color:#9a3412">running 286 tests...</div>
+                <div style="color:#fb923c">ok · 286 passed</div>
+              </div>
+            </div>
+          </div>
+          <div class="preset-body">
+            <div class="preset-meta">
+              <span class="preset-name">Rust Kernel Lab</span>
+              <span class="preset-tag">Community</span>
+            </div>
+            <p class="preset-desc rt-text-muted">Burnt-orange systems theme purpose-built for Rust and low-level work: diagnostics on the right, perf probes below, shell atop.</p>
+            <div class="preset-author rt-text-muted">
+              <span class="preset-avatar" style="background:#ea580c;color:#431407">R</span>
+              <span>by rustacean_ops</span>
+              <span style="margin-left:auto" class="rt-text-faint">community</span>
+            </div>
+            <div class="preset-footer">
+              <button class="rt-btn-outline preset-dl-btn" onclick="handleDownload(this,'rust-kernel-lab.json')">
+                <svg class="rt-icon" width="13" height="13" viewBox="0 0 24 24" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="3" y2="15"/></svg>
+                Download
+              </button>
+              <span class="preset-stars">
+                <svg class="rt-icon" width="12" height="12" viewBox="0 0 24 24" stroke-width="2" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                4.9 · 167
+              </span>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /loom-grid -->
+      </div>
+    </section>
+
+    <!-- Submit preset modal -->
+    <div class="loom-modal-overlay" id="loom-modal" role="dialog" aria-modal="true" aria-labelledby="loom-modal-title">
+      <div class="loom-modal rt-panel">
+        <button class="loom-modal-close" id="loom-close-modal" aria-label="Close">
+          <svg class="rt-icon" width="16" height="16" viewBox="0 0 24 24" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+
+        <div id="loom-form-wrap">
+          <h3 id="loom-modal-title">Submit your preset</h3>
+          <p class="rt-text-muted">Share your Retermina workspace config with the community. Accepted presets appear in Loom within 48 hours.</p>
+          <div class="loom-form">
+            <div class="loom-form-row">
+              <div class="loom-field">
+                <label for="pf-name">Preset name</label>
+                <input id="pf-name" type="text" placeholder="e.g. Neon Dusk" maxlength="32">
+              </div>
+              <div class="loom-field">
+                <label for="pf-author">Your name / handle</label>
+                <input id="pf-author" type="text" placeholder="e.g. yourhandle" maxlength="32">
+              </div>
+            </div>
+            <div class="loom-form-row">
+              <div class="loom-field">
+                <label for="pf-engine">Base theme engine</label>
+                <select id="pf-engine">
+                  <option value="">Select engine…</option>
+                  <option value="sleek">Sleek</option>
+                  <option value="pastel">Soft Pastel</option>
+                  <option value="glass">Transparent Glass</option>
+                  <option value="minimalist">Minimalist</option>
+                  <option value="brutalism">Neo-Brutalism</option>
+                </select>
+              </div>
+              <div class="loom-field">
+                <label for="pf-tag">Category</label>
+                <select id="pf-tag">
+                  <option value="">Select…</option>
+                  <option value="dark">Dark</option>
+                  <option value="light">Light</option>
+                  <option value="glass">Glass</option>
+                  <option value="community">Community</option>
+                </select>
+              </div>
+            </div>
+            <div class="loom-field">
+              <label for="pf-desc">Short description</label>
+              <textarea id="pf-desc" rows="2" placeholder="What makes this preset unique? Max 120 chars." maxlength="120"></textarea>
+            </div>
+            <div class="loom-field">
+              <label for="pf-config">Config JSON or GitHub Gist URL</label>
+              <textarea id="pf-config" rows="3" placeholder='{"theme":"sleek","accent":"#ff6396","panels":[…]} or https://gist.github.com/…'></textarea>
+            </div>
+            <div class="loom-form-footer">
+              <p class="rt-text-faint loom-form-note">Submissions are reviewed before going live. No accounts needed.</p>
+              <button class="loom-form-submit" id="loom-submit-form">
+                <svg class="rt-icon" width="14" height="14" viewBox="0 0 24 24" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                Send preset
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="loom-success" id="loom-success">
+          <div class="loom-success-icon">
+            <svg class="rt-icon" width="22" height="22" viewBox="0 0 24 24" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <h4>Preset received!</h4>
+          <p class="rt-text-muted">Thanks for contributing to Loom. Your preset will be reviewed and published within 48 hours.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="loom-modal-overlay" id="review-modal" role="dialog" aria-modal="true" aria-labelledby="review-modal-title">
+      <div class="loom-modal review-modal rt-panel">
+        <button class="loom-modal-close" id="review-close-modal" aria-label="Close review dialog">
+          <svg class="rt-icon" width="16" height="16" viewBox="0 0 24 24" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+        <h3 id="review-modal-title">Review this configuration</h3>
+        <p class="review-target" id="review-target-name"></p>
+        <div class="review-stars" id="review-stars">
+          <button type="button" class="review-star" data-value="1" aria-label="1 star">★</button>
+          <button type="button" class="review-star" data-value="2" aria-label="2 stars">★</button>
+          <button type="button" class="review-star" data-value="3" aria-label="3 stars">★</button>
+          <button type="button" class="review-star" data-value="4" aria-label="4 stars">★</button>
+          <button type="button" class="review-star" data-value="5" aria-label="5 stars">★</button>
+        </div>
+        <div class="review-actions">
+          <button type="button" class="rt-btn-outline marketplace-nav-btn" id="review-cancel-btn">Cancel</button>
+          <button type="button" class="loom-form-submit" id="review-submit-btn">Submit rating</button>
+        </div>
+        <p class="review-submit-msg" id="review-submit-msg"></p>
+      </div>
+    </div>
+
+    <footer class="rt-text-muted">
+      &copy; 2026 <a href="https://github.com/matthewhamilton3141/Retermina" target="_blank" rel="noopener">Retermina</a> &mdash; MIT License &mdash; Made with <span class="rt-accent-text">&#10084;</span> <a href="https://matthewhamilton.dev" target="_blank" rel="noopener">by Matthew Hamilton</a>
+    </footer>
+  </div>
+
+  <script>
+    /* Theme engine switcher — mirrors ThemeProvider + data-theme attribute swap */
+    const THEME_LABELS = {
+      sleek: 'Sleek',
+      pastel: 'Soft Pastel',
+      glass: 'Transparent Glass',
+      minimalist: 'Minimalist',
+      brutalism: 'Neo-Brutalism',
+    };
+
+    function setTheme(id) {
+      document.documentElement.setAttribute('data-theme', id);
+      document.getElementById('theme-label').textContent = THEME_LABELS[id];
+      document.querySelectorAll('.theme-dot, .theme-chip').forEach(el => {
+        el.classList.toggle('active', el.dataset.theme === id);
+      });
+    }
+
+    document.querySelectorAll('[data-theme]').forEach(el => {
+      if (el.classList.contains('theme-dot') || el.classList.contains('theme-chip')) {
+        el.addEventListener('click', () => setTheme(el.dataset.theme));
+      }
+    });
+    const SPA_DEFAULT_VIEW = 'home';
+    const spaViews = Array.from(document.querySelectorAll('.spa-view[data-view]'));
+    function showView(viewName, options = {}) {
+      const shouldSmoothScroll = options.smooth !== false;
+      spaViews.forEach(viewEl => {
+        const isActive = viewEl.dataset.view === viewName;
+        viewEl.hidden = !isActive;
+        viewEl.classList.toggle('active', isActive);
+      });
+      window.scrollTo({ top: 0, behavior: shouldSmoothScroll ? 'smooth' : 'auto' });
+    }
+
+    document.querySelectorAll('[data-nav-view]').forEach(btn => {
+      btn.addEventListener('click', () => showView(btn.dataset.navView));
+    });
+    showView(SPA_DEFAULT_VIEW, { smooth: false });
+
+
+
+    /* Hero tagline typewriter */
+    const heroPhrases = [
+      'modular workspaces',
+      'five theme engines',
+      'Iris command macros',
+      'drag-and-drop panels',
+      'native Tauri speed',
+    ];
+    const heroEl = document.getElementById('hero-typed');
+    let phraseIdx = 0, charIdx = 0, deleting = false;
+
+    function typeHero() {
+      const phrase = heroPhrases[phraseIdx];
+      if (!deleting) {
+        heroEl.textContent = phrase.slice(0, ++charIdx);
+        if (charIdx === phrase.length) {
+          deleting = true;
+          setTimeout(typeHero, 2200);
+          return;
+        }
+        setTimeout(typeHero, 55);
+      } else {
+        heroEl.textContent = phrase.slice(0, --charIdx);
+        if (charIdx === 0) {
+          deleting = false;
+          phraseIdx = (phraseIdx + 1) % heroPhrases.length;
+          setTimeout(typeHero, 400);
+          return;
+        }
+        setTimeout(typeHero, 30);
+      }
+    }
+    typeHero();
+
+    /* Terminal typing demo — uses xterm sleek palette colors */
+    const termLines = [
+      { html: '<span class="term-dim"># Launch Retermina dev server</span>', delay: 400 },
+      { html: '<span class="term-prompt">$</span> npm run tauri dev', delay: 900, type: true },
+      { html: '<span class="term-dim">  VITE v7.0.4  ready in 312 ms</span>', delay: 1800 },
+      { html: '<span class="term-green">  ➜</span>  Local:   <span class="term-blue">http://localhost:1420/</span>', delay: 2300 },
+      { html: '<span class="term-prompt">$</span> iris git push', delay: 3200, type: true },
+      { html: '<span class="term-magenta">✦ Iris</span> <span class="term-dim">→ running contextual macro…</span>', delay: 4100 },
+      { html: '<span class="term-yellow">Enumerating objects: 12, done.</span>', delay: 4700 },
+      { html: '<span class="term-green">To github.com:matthewhamilton3141/Retermina.git</span>', delay: 5300 },
+      { html: '<span class="term-prompt term-cursor-line">$</span>', delay: 6000, cursor: true },
+    ];
+
+    const termBody = document.getElementById('terminal-body');
+    let _termCycle = 0;
+    let _termTimer = null;
+
+    function doTerminal() {
+      if (_termTimer) clearTimeout(_termTimer);
+      const myCycle = ++_termCycle;
+      termBody.innerHTML = '';
+
+      termLines.forEach((line) => {
+        setTimeout(() => {
+          if (_termCycle !== myCycle) return;
+          const div = document.createElement('div');
+          div.className = 'term-line' + (line.cursor ? ' term-cursor-line' : '');
+          if (line.type) {
+            /* Extract just the command text after the "$ " prefix */
+            const cmd = line.html.replace(/<[^>]+>/g, '').replace(/^\$\s*/, '').trim();
+            const promptSpan = document.createElement('span');
+            promptSpan.className = 'term-prompt';
+            promptSpan.textContent = '$';
+            div.appendChild(promptSpan);
+            div.appendChild(document.createTextNode(' '));
+            const cmdSpan = document.createElement('span');
+            div.appendChild(cmdSpan);
+            termBody.appendChild(div);
+            requestAnimationFrame(() => div.classList.add('visible'));
+            let ci = 0;
+            const tick = () => {
+              if (_termCycle !== myCycle) return;
+              cmdSpan.textContent = cmd.slice(0, ci);
+              if (ci < cmd.length) {
+                ci++;
+                setTimeout(tick, 42);
+              }
+            };
+            tick();
+          } else {
+            div.innerHTML = line.html;
+            termBody.appendChild(div);
+            requestAnimationFrame(() => div.classList.add('visible'));
+          }
+        }, line.delay);
+      });
+
+      /* Last line lands at 6000ms. Give ~3s reading time then restart. */
+      _termTimer = setTimeout(doTerminal, 9500);
+    }
+    setTimeout(doTerminal, 1200);
+
+    /* Iris bar typing demo */
+    const irisText = 'git push origin main';
+    const irisEl = document.getElementById('iris-typed');
+    const irisSuggest = document.getElementById('iris-suggest');
+    const irisCursor = document.getElementById('iris-cursor');
+    let irisIdx = 0;
+    let irisDeleting = false;
+
+    function typeIris() {
+      if (!irisDeleting) {
+        irisEl.textContent = irisText.slice(0, irisIdx);
+        /* Show suggestion dropdown once user has typed enough */
+        if (irisIdx >= 4) {
+          irisSuggest.classList.add('shown');
+        } else {
+          irisSuggest.classList.remove('shown');
+        }
+        if (irisIdx < irisText.length) {
+          irisIdx++;
+          setTimeout(typeIris, 110);
+        } else {
+          /* Fully typed — pause, then delete */
+          irisDeleting = true;
+          setTimeout(typeIris, 2200);
+        }
+      } else {
+        irisEl.textContent = irisText.slice(0, irisIdx);
+        if (irisIdx <= 4) irisSuggest.classList.remove('shown');
+        if (irisIdx > 0) {
+          irisIdx--;
+          setTimeout(typeIris, 55);
+        } else {
+          /* Fully deleted — pause, then type again */
+          irisDeleting = false;
+          irisSuggest.classList.remove('shown');
+          setTimeout(typeIris, 1400);
+        }
+      }
+    }
+    setTimeout(typeIris, 2500);
+
+    /* Grid placeholder animation — simulates react-grid-layout drag */
+    const mockPanels = document.querySelectorAll('.mock-panel');
+
+    function animatePlaceholder() {
+      // Highlight Explorer (panel 3, index 2) first, then Localhost (index 1)
+      const targets = [mockPanels[2], mockPanels[1]];
+
+      targets[0].classList.add('dragging');
+
+      setTimeout(() => {
+        targets[0].classList.remove('dragging');
+        targets[1].classList.add('dragging');
+      }, 1400);
+
+      setTimeout(() => {
+        targets[1].classList.remove('dragging');
+      }, 2600);
+    }
+
+    setTimeout(animatePlaceholder, 3000);
+    setInterval(animatePlaceholder, 6000);
+
+    /* Scroll reveal for feature cards */
+    const cards = document.querySelectorAll('.feature-card');
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach((entry, i) => {
+        if (entry.isIntersecting) {
+          setTimeout(() => entry.target.classList.add('revealed'), i * 100);
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15 });
+    cards.forEach(c => observer.observe(c));
+
+    /* Stagger start cards on scroll */
+    const startCards = document.querySelectorAll('.start-card');
+    const startObs = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          startCards.forEach((card, i) => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(16px)';
+            setTimeout(() => {
+              card.style.transition = 'opacity 0.5s ease, transform 0.5s cubic-bezier(.34,1.56,.64,1)';
+              card.style.opacity = '1';
+              card.style.transform = 'translateY(0)';
+            }, i * 80);
+          });
+          startObs.disconnect();
+        }
+      });
+    }, { threshold: 0.2 });
+    if (startCards.length) startObs.observe(startCards[0].parentElement);
+    /* ── Loom preset card reveal ── */
+    const loomGrid = document.getElementById('loom-grid');
+    const getPresetCards = () => Array.from(loomGrid.querySelectorAll('.preset-card'));
+    const presetObs = new IntersectionObserver(entries => {
+      entries.forEach((entry, i) => {
+        if (entry.isIntersecting) {
+          setTimeout(() => entry.target.classList.add('revealed'), i * 80);
+          presetObs.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1 });
+    function observePresetCard(card) {
+      if (card) presetObs.observe(card);
+    }
+    getPresetCards().forEach(observePresetCard);
+
+    let activeLoomFilter = 'all';
+    function applyLoomFilter(filter) {
+      activeLoomFilter = filter;
+      getPresetCards().forEach(card => {
+        const tags = card.dataset.tags || '';
+        const show = filter === 'all' || tags.includes(filter);
+        card.style.display = show ? '' : 'none';
+      });
+    }
+    document.querySelectorAll('.loom-filter').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.loom-filter').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        applyLoomFilter(btn.dataset.filter);
+      });
+    });
+
+    /* ── Download button simulation ── */
+    function handleDownload(btn, filename) {
+      btn.classList.add('downloading');
+      btn.innerHTML = `<svg class="rt-icon" width="13" height="13" viewBox="0 0 24 24" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Downloaded`;
+      // In production this would trigger a real file download
+      setTimeout(() => {
+        btn.classList.remove('downloading');
+        btn.innerHTML = `<svg class="rt-icon" width="13" height="13" viewBox="0 0 24 24" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="3" y2="15"/></svg> Download`;
+      }, 2800);
+    }
+
+    /* ── Loom modal open / close ── */
+    const loomOverlay = document.getElementById('loom-modal');
+    const loomFormWrap = document.getElementById('loom-form-wrap');
+    const loomSuccess = document.getElementById('loom-success');
+    const reviewOverlay = document.getElementById('review-modal');
+    const reviewTargetName = document.getElementById('review-target-name');
+    const reviewSubmitMsg = document.getElementById('review-submit-msg');
+    const reviewStars = Array.from(document.querySelectorAll('.review-star'));
+    let reviewTargetCard = null;
+    let selectedReview = 0;
+
+    const STAR_ICON = `<svg class="rt-icon" width="12" height="12" viewBox="0 0 24 24" stroke-width="2" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`;
+    const toTitleCase = value => value.charAt(0).toUpperCase() + value.slice(1);
+    function updateModalBodyLock() {
+      const anyModalOpen = loomOverlay.classList.contains('open') || reviewOverlay.classList.contains('open');
+      document.body.style.overflow = anyModalOpen ? 'hidden' : '';
+    }
+    function paintReviewStars(rating) {
+      reviewStars.forEach(star => {
+        star.classList.toggle('active', Number(star.dataset.value) <= rating);
+      });
+    }
+    function parseCardRating(card) {
+      const ratingText = card.querySelector('.preset-stars')?.textContent || '';
+      const matches = ratingText.match(/([0-9]+(?:\.[0-9]+)?)\s*·\s*([0-9]+)/);
+      if (!matches) return { total: 5, count: 1 };
+      const avg = Number(matches[1]);
+      const count = Number(matches[2]);
+      return { total: avg * count, count };
+    }
+    function refreshCardRating(card) {
+      const total = Number(card.dataset.ratingTotal || 5);
+      const count = Number(card.dataset.ratingCount || 1);
+      const average = count ? (total / count) : 0;
+      const ratingNode = card.querySelector('.preset-stars');
+      if (!ratingNode) return;
+      ratingNode.innerHTML = `${STAR_ICON} ${average.toFixed(1)} · ${count}`;
+    }
+    function ensureReviewButton(card) {
+      const footer = card.querySelector('.preset-footer');
+      const ratingNode = card.querySelector('.preset-stars');
+      if (!footer || !ratingNode) return;
+      if (!card.dataset.ratingCount || !card.dataset.ratingTotal) {
+        const parsed = parseCardRating(card);
+        card.dataset.ratingTotal = String(parsed.total);
+        card.dataset.ratingCount = String(parsed.count);
+      }
+      if (!footer.querySelector('.preset-review-btn')) {
+        const reviewBtn = document.createElement('button');
+        reviewBtn.type = 'button';
+        reviewBtn.className = 'rt-btn-outline preset-review-btn';
+        reviewBtn.textContent = 'Review';
+        reviewBtn.addEventListener('click', () => openReviewModal(card));
+        footer.insertBefore(reviewBtn, ratingNode);
+      }
+      refreshCardRating(card);
+    }
+    function openReviewModal(card) {
+      reviewTargetCard = card;
+      selectedReview = 0;
+      paintReviewStars(0);
+      reviewSubmitMsg.textContent = '';
+      reviewTargetName.textContent = `Rate “${card.querySelector('.preset-name')?.textContent || 'Workspace config'}” from 1 to 5 stars.`;
+      reviewOverlay.classList.add('open');
+      updateModalBodyLock();
+    }
+    function closeReviewModal() {
+      reviewOverlay.classList.remove('open');
+      reviewTargetCard = null;
+      selectedReview = 0;
+      paintReviewStars(0);
+      reviewSubmitMsg.textContent = '';
+      updateModalBodyLock();
+    }
+
+    function openLoomModal() {
+      loomFormWrap.style.display = '';
+      loomSuccess.classList.remove('shown');
+      loomOverlay.classList.add('open');
+      updateModalBodyLock();
+    }
+    function closeLoomModal() {
+      loomOverlay.classList.remove('open');
+      updateModalBodyLock();
+    }
+
+    document.getElementById('loom-open-modal').addEventListener('click', openLoomModal);
+    document.getElementById('loom-close-modal').addEventListener('click', closeLoomModal);
+    loomOverlay.addEventListener('click', e => { if (e.target === loomOverlay) closeLoomModal(); });
+    document.getElementById('review-close-modal').addEventListener('click', closeReviewModal);
+    document.getElementById('review-cancel-btn').addEventListener('click', closeReviewModal);
+    reviewOverlay.addEventListener('click', e => { if (e.target === reviewOverlay) closeReviewModal(); });
+    reviewStars.forEach(star => {
+      star.addEventListener('click', () => {
+        selectedReview = Number(star.dataset.value);
+        paintReviewStars(selectedReview);
+      });
+    });
+    document.getElementById('review-submit-btn').addEventListener('click', () => {
+      if (!reviewTargetCard || selectedReview < 1) {
+        reviewSubmitMsg.textContent = 'Select a star rating before submitting.';
+        return;
+      }
+      const currentTotal = Number(reviewTargetCard.dataset.ratingTotal || 0);
+      const currentCount = Number(reviewTargetCard.dataset.ratingCount || 0);
+      reviewTargetCard.dataset.ratingTotal = String(currentTotal + selectedReview);
+      reviewTargetCard.dataset.ratingCount = String(currentCount + 1);
+      refreshCardRating(reviewTargetCard);
+      reviewSubmitMsg.textContent = 'Rating submitted.';
+      setTimeout(closeReviewModal, 500);
+    });
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') {
+        closeLoomModal();
+        closeReviewModal();
+      }
+    });
+
+    function createPresetCardFromForm(values) {
+      const slug = values.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || `preset-${Date.now()}`;
+      const card = document.createElement('div');
+      card.className = 'rt-card preset-card revealed';
+      card.dataset.preset = 'custom';
+      card.dataset.tags = `${values.category} community`;
+      card.dataset.ratingTotal = '0';
+      card.dataset.ratingCount = '0';
+      card.innerHTML = `
+        <div class="preset-preview" style="background:var(--rt-terminal-bg);">
+          <div class="preset-preview-inner" style="background:var(--rt-surface-strong);border-color:var(--rt-border);">
+            <div class="pp-chrome">
+              <span class="pp-dot" style="background:#f87171"></span>
+              <span class="pp-dot" style="background:#fbbf24"></span>
+              <span class="pp-dot" style="background:#34d399"></span>
+            </div>
+            <div class="pp-body">
+              <div><span style="color:var(--rt-accent)">$</span> workspace load ${slug}</div>
+              <div style="color:var(--rt-text-faint)">community configuration</div>
+              <div style="color:var(--rt-accent)">ready</div>
+            </div>
+          </div>
+        </div>
+        <div class="preset-body">
+          <div class="preset-meta">
+            <span class="preset-name">${values.name}</span>
+            <span class="preset-tag">${toTitleCase(values.category)}</span>
+          </div>
+          <p class="preset-desc rt-text-muted">${values.description}</p>
+          <div class="preset-author rt-text-muted">
+            <span class="preset-avatar">${values.author.slice(0, 1).toUpperCase()}</span>
+            <span>by ${values.author}</span>
+            <span style="margin-left:auto" class="rt-text-faint">community</span>
+          </div>
+          <div class="preset-footer">
+            <button class="rt-btn-outline preset-dl-btn" onclick="handleDownload(this,'${slug}.json')">
+              <svg class="rt-icon" width="13" height="13" viewBox="0 0 24 24" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="3" y2="15"/></svg>
+              Download
+            </button>
+            <span class="preset-stars">${STAR_ICON} 0.0 · 0</span>
+          </div>
+        </div>
+      `;
+      return card;
+    }
+    document.getElementById('add-config-form').addEventListener('submit', event => {
+      event.preventDefault();
+      const nameEl = document.getElementById('add-name');
+      const authorEl = document.getElementById('add-author');
+      const categoryEl = document.getElementById('add-category');
+      const descriptionEl = document.getElementById('add-description');
+      const values = {
+        name: nameEl.value.trim(),
+        author: authorEl.value.trim(),
+        category: categoryEl.value,
+        description: descriptionEl.value.trim(),
+      };
+      [nameEl, authorEl, descriptionEl].forEach(el => {
+        el.style.borderColor = el.value.trim() ? '' : 'var(--rt-accent)';
+      });
+      if (!values.name || !values.author || !values.description) return;
+      const newCard = createPresetCardFromForm(values);
+      loomGrid.prepend(newCard);
+      observePresetCard(newCard);
+      ensureReviewButton(newCard);
+      applyLoomFilter(activeLoomFilter);
+      event.target.reset();
+    });
+    getPresetCards().forEach(card => ensureReviewButton(card));
+
+    /* ── Loom form submit (demo — no real backend) ── */
+    document.getElementById('loom-submit-form').addEventListener('click', () => {
+      const name = document.getElementById('pf-name').value.trim();
+      const config = document.getElementById('pf-config').value.trim();
+      if (!name || !config) {
+        document.getElementById('pf-name').style.borderColor = name ? '' : 'var(--rt-accent)';
+        document.getElementById('pf-config').style.borderColor = config ? '' : 'var(--rt-accent)';
+        return;
+      }
+      loomFormWrap.style.display = 'none';
+      loomSuccess.classList.add('shown');
+    });
+  </script>
+</body>
+</html>
