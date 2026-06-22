@@ -893,6 +893,7 @@
     .top-loom-head {
       display: flex;
       align-items: center;
+      justify-content: space-between;
       gap: 0.65rem;
     }
     .top-loom-title {
@@ -960,7 +961,7 @@
     .loom-heart-btn svg {
       width: 14px;
       height: 14px;
-      stroke-width: 3;
+      stroke-width: 2.35;
       stroke: currentColor;
       fill: none;
     }
@@ -978,7 +979,7 @@
     }
     .loom-heart-btn.active svg {
       fill: currentColor;
-      stroke-width: 2.7;
+      stroke-width: 2.1;
     }
     .loom-focus-highlight {
       border-color: var(--rt-accent) !important;
@@ -1789,7 +1790,15 @@
         <h2 class="section-title">Retermina Loom Marketplace</h2>
         <p class="rt-text-muted">One streamlined destination for curated top-rated layouts and all available workplace configurations. Browse, rate, and publish setups in the same flow.</p>
       </div>
-
+      <div class="loom-favorites rt-panel">
+        <div class="loom-favorites-head">
+          <h3 class="loom-favorites-title">My Favorites</h3>
+          <span class="rt-text-faint">Tap hearts to build your quick shelf</span>
+        </div>
+        <p class="loom-favorites-copy">Favorited loom configurations appear here instantly so you can compare your saved setups in one place.</p>
+        <p class="favorites-empty rt-text-muted" id="favorites-empty">No favorites yet — click a heart on any loom card to save it.</p>
+        <div class="favorites-grid" id="favorites-grid" aria-live="polite"></div>
+      </div>
 
       <div class="loom-subsection">
         <h3 class="loom-subtitle">Most Highly Rated Looms</h3>
@@ -1798,7 +1807,7 @@
           <article class="rt-card top-loom-card" data-featured-preset="carbon">
             <div class="top-loom-head">
               <span class="top-loom-title">Carbon Noir Pro</span>
-              <span class="top-loom-badge">Dark</span>
+              <span class="top-loom-badge">Top 1</span>
             </div>
             <p class="top-loom-desc">Ultra-clean dark command center with dense terminal multiplexing and pinned Iris shortcuts for fast Git automation.</p>
             <div class="top-loom-meta">
@@ -1812,7 +1821,7 @@
           <article class="rt-card top-loom-card" data-featured-preset="aurora">
             <div class="top-loom-head">
               <span class="top-loom-title">Aurora Ops Grid</span>
-              <span class="top-loom-badge">Glass</span>
+              <span class="top-loom-badge">Top 2</span>
             </div>
             <p class="top-loom-desc">Glassmorphism-heavy layout for monitoring logs, build output, and localhost status side-by-side in a vivid neon stack.</p>
             <div class="top-loom-meta">
@@ -1826,7 +1835,7 @@
           <article class="rt-card top-loom-card" data-featured-preset="midnight">
             <div class="top-loom-head">
               <span class="top-loom-title">Midnight Indigo</span>
-              <span class="top-loom-badge">Dark</span>
+              <span class="top-loom-badge">Top 3</span>
             </div>
             <p class="top-loom-desc">Balanced full-stack workflow tuned for long coding sessions: calm contrast, focused pane hierarchy, and expressive syntax glow.</p>
             <div class="top-loom-meta">
@@ -1841,60 +1850,53 @@
       </div>
 
       <div class="loom-subsection">
-        <h3 class="loom-subtitle">Create Workspace Config</h3>
-        <p class="loom-subcopy rt-text-muted">Create and add more workspace configurations directly into the marketplace list.</p>
-        <div class="loom-toolbar">
-          <div class="loom-spacer"></div>
-          <button class="loom-submit-btn" id="loom-open-modal">
-            <svg class="rt-icon" width="14" height="14" viewBox="0 0 24 24" stroke-width="2.5"><line x1="12" x2="12" y1="5" y2="19"/><line x1="5" x2="19" y1="12" y2="12"/></svg>
-            Submit preset
-          </button>
-        </div>
-        <div class="loom-add-panel rt-panel">
-          <h3>Create Workspace Config</h3>
-          <p>Add a new workspace configuration directly to the marketplace list.</p>
-          <form class="loom-add-form" id="add-config-form">
-            <div class="loom-field">
-              <label for="add-name">Configuration name</label>
-              <input id="add-name" type="text" maxlength="36" placeholder="e.g. Neon Build Station">
-            </div>
-            <div class="loom-field">
-              <label for="add-author">Author</label>
-              <input id="add-author" type="text" maxlength="28" placeholder="e.g. yourhandle">
-            </div>
-            <div class="loom-field">
-              <label for="add-category">Category</label>
-              <select id="add-category">
-                <option value="dark">Dark</option>
-                <option value="light">Light</option>
-                <option value="glass">Glass</option>
-                <option value="community">Community</option>
-              </select>
-            </div>
-            <div class="loom-field">
-              <label for="add-description">Description</label>
-              <input id="add-description" type="text" maxlength="120" placeholder="Describe the setup in one sentence">
-            </div>
-            <div class="loom-add-submit-wrap">
-              <button type="submit" class="loom-submit-btn">Create Workspace Config</button>
-            </div>
-          </form>
-        </div>
-      </div>
-
-      <div class="loom-subsection">
         <div class="loom-search-tools">
           <div class="loom-search-wrap">
             <input id="loom-search" class="loom-search-input" type="search" placeholder="Search available configurations by title, description, or tag..." aria-label="Search available loom configurations">
           </div>
           <div class="loom-filter-tags" id="loom-filter-tags" role="group" aria-label="Quick preset filters"></div>
         </div>
-      </div>
-
-      <div class="loom-subsection">
         <h3 class="loom-subtitle">All Available Workplace Configurations</h3>
         <p class="loom-subcopy rt-text-muted">Explore full preset inventory, filter by style, then create and add your own workspace. Every configuration supports live 5-star reviews.</p>
-        <div class="loom-grid" id="loom-grid">
+        <div class="loom-toolbar">
+        <div class="loom-spacer"></div>
+        <button class="loom-submit-btn" id="loom-open-modal">
+          <svg class="rt-icon" width="14" height="14" viewBox="0 0 24 24" stroke-width="2.5"><line x1="12" x2="12" y1="5" y2="19"/><line x1="5" x2="19" y1="12" y2="12"/></svg>
+          Submit preset
+        </button>
+      </div>
+      <div class="loom-add-panel rt-panel">
+        <h3>Create/Add More Workspace Config</h3>
+        <p>Add a new workspace configuration directly to the marketplace list.</p>
+        <form class="loom-add-form" id="add-config-form">
+          <div class="loom-field">
+            <label for="add-name">Configuration name</label>
+            <input id="add-name" type="text" maxlength="36" placeholder="e.g. Neon Build Station">
+          </div>
+          <div class="loom-field">
+            <label for="add-author">Author</label>
+            <input id="add-author" type="text" maxlength="28" placeholder="e.g. yourhandle">
+          </div>
+          <div class="loom-field">
+            <label for="add-category">Category</label>
+            <select id="add-category">
+              <option value="dark">Dark</option>
+              <option value="light">Light</option>
+              <option value="glass">Glass</option>
+              <option value="community">Community</option>
+            </select>
+          </div>
+          <div class="loom-field">
+            <label for="add-description">Description</label>
+            <input id="add-description" type="text" maxlength="120" placeholder="Describe the setup in one sentence">
+          </div>
+          <div class="loom-add-submit-wrap">
+            <button type="submit" class="loom-submit-btn">Create/Add More</button>
+          </div>
+        </form>
+      </div>
+
+      <div class="loom-grid" id="loom-grid">
 
         <!-- Carbon Noir -->
         <div class="rt-card preset-card revealed" data-preset="carbon" data-tags="dark">
@@ -2634,6 +2636,8 @@
     if (startCards.length) startObs.observe(startCards[0].parentElement);
     /* ── Loom preset card reveal ── */
     const loomGrid = document.getElementById('loom-grid');
+    const favoritesGrid = document.getElementById('favorites-grid');
+    const favoritesEmpty = document.getElementById('favorites-empty');
     const loomSearchInput = document.getElementById('loom-search');
     const loomFilterTags = document.getElementById('loom-filter-tags');
     const getPresetCards = () => Array.from(loomGrid.querySelectorAll('.preset-card'));
@@ -2655,6 +2659,7 @@
     const HEART_ICON_SVG = `<svg class="rt-icon" width="14" height="14" viewBox="0 0 24 24"><path d="m12 21-1.35-1.23C5.4 15.03 2 11.96 2 8.2 2 5.16 4.42 2.75 7.45 2.75c1.72 0 3.36.8 4.55 2.05 1.19-1.25 2.83-2.05 4.55-2.05C19.58 2.75 22 5.16 22 8.2c0 3.76-3.4 6.83-8.65 11.57L12 21z"/></svg>`;
     const DOWNLOAD_ICON_SVG = `<svg class="rt-icon" width="13" height="13" viewBox="0 0 24 24" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="3" y2="15"/></svg>`;
     const PRIORITY_LOOM_FILTERS = ['dark', 'light', 'glass'];
+    const slugifyValue = value => (value || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
     let activeLoomFilter = 'all';
     let activeSearchQuery = '';
 
@@ -2724,29 +2729,27 @@
       if (filter === 'all') return true;
       return getCardTagValues(card).includes(filter);
     }
-    function applyCombinedLoomFilters() {
-      activeSearchQuery = (loomSearchInput?.value || '').trim().toLowerCase();
+    function applyLoomFilter(filter = activeLoomFilter) {
+      activeLoomFilter = normalizeTagValue(filter) || 'all';
       getPresetCards().forEach(card => {
         const matchesTag = cardMatchesFilter(card, activeLoomFilter);
         const matchesSearch = cardMatchesSearch(card, activeSearchQuery);
-        card.style.display = matchesTag && matchesSearch ? '' : 'none';
+        card.hidden = !(matchesTag && matchesSearch);
       });
       setActiveLoomFilterButton(activeLoomFilter);
-    }
-    function updateActiveLoomFilter(filter = 'all') {
-      activeLoomFilter = normalizeTagValue(filter) || 'all';
-      applyCombinedLoomFilters();
     }
     if (loomFilterTags) {
       loomFilterTags.addEventListener('click', event => {
         const target = event.target.closest('.loom-filter');
         if (!target || !loomFilterTags.contains(target)) return;
-        updateActiveLoomFilter(target.dataset.filter || 'all');
+        applyLoomFilter(target.dataset.filter || 'all');
       });
     }
     if (loomSearchInput) {
-      loomSearchInput.addEventListener('input', applyCombinedLoomFilters);
-      loomSearchInput.addEventListener('keyup', applyCombinedLoomFilters);
+      loomSearchInput.addEventListener('input', () => {
+        activeSearchQuery = loomSearchInput.value.trim().toLowerCase();
+        applyLoomFilter(activeLoomFilter);
+      });
     }
 
     function setHeartState(button, isFavorited) {
@@ -2760,6 +2763,26 @@
       button.className = 'loom-heart-btn';
       button.innerHTML = HEART_ICON_SVG;
       return button;
+    }
+    function getCardTitle(card) {
+      return card.querySelector('.top-loom-title, .preset-name')?.textContent?.trim() || 'Loom configuration';
+    }
+    function getCardDescription(card) {
+      return card.querySelector('.top-loom-desc, .preset-desc')?.textContent?.trim() || 'Saved loom configuration.';
+    }
+    function getCardMeta(card) {
+      if (card.classList.contains('top-loom-card')) {
+        const byline = card.querySelector('.top-loom-meta span:first-child')?.textContent?.trim() || 'community';
+        const rating = card.querySelector('.top-loom-meta span:last-child')?.textContent?.trim() || '';
+        return { badge: 'Top Rated', byline, rating };
+      }
+      const badge = card.querySelector('.preset-tag')?.textContent?.trim() || 'Preset';
+      const byline = card.querySelector('.preset-author span:nth-child(2)')?.textContent?.trim() || 'community';
+      const rating = (card.querySelector('.preset-stars')?.textContent || '').replace(/\s+/g, ' ').trim();
+      return { badge, byline, rating };
+    }
+    function resolveTargetPreset(card) {
+      return card.dataset.featuredPreset || card.dataset.preset || slugifyValue(getCardTitle(card));
     }
     function syncFavoriteButton(card) {
       const button = card.querySelector('.loom-heart-btn');
@@ -2800,6 +2823,7 @@
           const next = card.dataset.favorited !== 'true';
           card.dataset.favorited = next ? 'true' : 'false';
           syncFavoriteButton(card);
+          renderFavoritesShelf();
         });
       }
       syncFavoriteButton(card);
@@ -2813,9 +2837,9 @@
       const targetCard = loomGrid.querySelector(`.preset-card[data-preset="${presetId}"]`);
       if (!targetCard) return;
       if (activeLoomFilter !== 'all' || activeSearchQuery) {
+        activeSearchQuery = '';
         if (loomSearchInput) loomSearchInput.value = '';
-        activeLoomFilter = 'all';
-        applyCombinedLoomFilters();
+        applyLoomFilter('all');
       }
       showView('marketplace');
       targetCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -2825,10 +2849,56 @@
       btn.addEventListener('click', () => scrollToPresetCard(btn.dataset.scrollToPreset));
     });
 
+    function buildFavoriteItem(card) {
+      const meta = getCardMeta(card);
+      const targetPreset = resolveTargetPreset(card);
+      const item = document.createElement('article');
+      item.className = 'rt-card favorite-item';
+
+      const head = document.createElement('div');
+      head.className = 'favorite-item-head';
+      const badge = document.createElement('span');
+      badge.className = 'favorite-item-badge';
+      badge.textContent = meta.badge;
+      const removeBtn = createHeartButton();
+      removeBtn.classList.add('favorite-remove-btn');
+      setHeartState(removeBtn, true);
+      removeBtn.addEventListener('click', () => {
+        card.dataset.favorited = 'false';
+        syncFavoriteButton(card);
+        renderFavoritesShelf();
+      });
+      head.append(badge, removeBtn);
+
+      const title = document.createElement('h4');
+      title.textContent = getCardTitle(card);
+      const description = document.createElement('p');
+      description.textContent = getCardDescription(card);
+      const metaLine = document.createElement('div');
+      metaLine.className = 'favorite-item-meta';
+      metaLine.textContent = `${meta.byline}${meta.rating ? ` · ${meta.rating}` : ''}`;
+      const jumpBtn = document.createElement('button');
+      jumpBtn.type = 'button';
+      jumpBtn.className = 'rt-btn-outline favorite-jump-btn';
+      jumpBtn.textContent = 'View Card';
+      jumpBtn.addEventListener('click', () => scrollToPresetCard(targetPreset));
+
+      item.append(head, title, description, metaLine, jumpBtn);
+      return item;
+    }
+    function renderFavoritesShelf() {
+      if (!favoritesGrid || !favoritesEmpty) return;
+      favoritesGrid.innerHTML = '';
+      const favoriteCards = getAllLoomCards().filter(card => card.dataset.favorited === 'true');
+      favoritesEmpty.hidden = favoriteCards.length > 0;
+      favoriteCards.forEach(card => favoritesGrid.appendChild(buildFavoriteItem(card)));
+    }
+
     getAllLoomCards().forEach(card => ensureFavoriteButton(card));
     document.querySelectorAll('.preset-dl-btn').forEach(btn => setDownloadButtonLabel(btn, 'Download Config'));
+    renderFavoritesShelf();
     renderLoomFilterButtons();
-    updateActiveLoomFilter('all');
+    applyLoomFilter('all');
 
     /* ── Download button simulation ── */
     function handleDownload(btn, filename) {
@@ -3027,7 +3097,8 @@
       setDownloadButtonLabel(newCard.querySelector('.preset-dl-btn'), 'Download Config');
       ensureReviewButton(newCard);
       renderLoomFilterButtons();
-      applyCombinedLoomFilters();
+      applyLoomFilter(activeLoomFilter);
+      renderFavoritesShelf();
       event.target.reset();
     });
     getPresetCards().forEach(card => ensureReviewButton(card));
