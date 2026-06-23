@@ -48,10 +48,11 @@
       --rt-terminal-bg: #0a0a0a;
       --rt-grid-placeholder: #10b981;
       --rt-accent-fg: #0a0a0a;
-      --rt-font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      --rt-font-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, sans-serif;
     }
     [data-theme="pastel"] {
       color-scheme: light;
+      --rt-font-sans: 'Nunito', ui-sans-serif, system-ui, sans-serif;
       /* Base tint + ambient glows are mixed from the live accent, so picking a
          new accent re-tints the whole backdrop (matches the app). */
       --rt-bg: color-mix(in srgb, var(--rt-accent) 7%, #f6f4fb);
@@ -77,6 +78,7 @@
        steel-blue accent — not the old dark-cyan look. */
     [data-theme="glass"] {
       color-scheme: light;
+      --rt-font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
       --rt-bg: #eceef3;
       --rt-bg-image: none;
       --rt-surface: #f5f6f8;
@@ -98,6 +100,7 @@
     }
     [data-theme="minimalist"] {
       color-scheme: light;
+      --rt-font-sans: ui-sans-serif, system-ui, -apple-system, sans-serif;
       --rt-bg: #ffffff;
       --rt-surface: #ffffff;
       --rt-surface-strong: #fafafa;
@@ -117,6 +120,7 @@
     }
     [data-theme="brutalism"] {
       color-scheme: light;
+      --rt-font-sans: 'Space Grotesk', ui-sans-serif, system-ui, sans-serif;
       --rt-bg: #fafaf5;
       --rt-surface: #ffffff;
       --rt-surface-strong: #ffffff;
