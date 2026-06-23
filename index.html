@@ -1,0 +1,3863 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="sleek">
+<head>
+  <meta charset="UTF-8">
+  <title>Retermina — Terminal Workspace</title>
+  <!-- Bundled Retermina typefaces, for the live Font picker in the customization demo -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=Nunito:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Retermina is a highly-customizable terminal workspace built with Tauri & React. Modular drag-and-drop panels, Iris command bar, and five structural theme engines.">
+  <style>
+    /* ── Theme engine tokens (from retermina/src/index.css) ── */
+    :root {
+      color-scheme: dark;
+      --rt-bg: #0a0a0a;
+      --rt-bg-image: none;
+      --rt-surface: rgba(23, 23, 23, 0.6);
+      --rt-surface-strong: rgba(23, 23, 23, 0.85);
+      --rt-surface-hover: #262626;
+      --rt-subsurface: rgba(10, 10, 10, 0.4);
+      --rt-border: #262626;
+      --rt-border-width: 1px;
+      --rt-text: #f5f5f5;
+      --rt-text-muted: #737373;
+      --rt-text-faint: #525252;
+      --rt-accent: #34d399;
+      --rt-accent-soft: rgba(16, 185, 129, 0.1);
+      --rt-radius-sm: 0.5rem;
+      --rt-radius: 0.75rem;
+      --rt-radius-lg: 1rem;
+      --rt-shadow-panel: 0 10px 15px -3px rgba(0, 0, 0, 0.25);
+      --rt-btn-shadow: none;
+      --rt-backdrop: none;
+      --rt-ring: rgba(16, 185, 129, 0.6);
+      --rt-terminal-bg: #0a0a0a;
+      --rt-grid-placeholder: #10b981;
+      --rt-accent-fg: #0a0a0a;
+      --rt-font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+    [data-theme="pastel"] {
+      color-scheme: light;
+      /* Base tint + ambient glows are mixed from the live accent, so picking a
+         new accent re-tints the whole backdrop (matches the app). */
+      --rt-bg: color-mix(in srgb, var(--rt-accent) 7%, #f6f4fb);
+      --rt-bg-image: radial-gradient(circle at 18% 0%, color-mix(in srgb, var(--rt-accent) 20%, transparent), transparent 45%), radial-gradient(circle at 100% 100%, color-mix(in srgb, var(--rt-accent) 13%, transparent), transparent 48%);
+      --rt-surface: rgba(255,255,255,0.75);
+      --rt-surface-strong: rgba(255,255,255,0.9);
+      --rt-surface-hover: rgba(139,92,246,0.1);
+      --rt-subsurface: rgba(255,255,255,0.5);
+      --rt-border: #e7e1f5;
+      --rt-text: #4c4361;
+      --rt-text-muted: #8b80a3;
+      --rt-text-faint: #aaa1c0;
+      --rt-accent: #8b5cf6;
+      --rt-accent-soft: rgba(139,92,246,0.12);
+      --rt-radius-sm: 0.75rem; --rt-radius: 1rem; --rt-radius-lg: 1.5rem;
+      --rt-shadow-panel: 0 12px 32px -8px rgba(139,92,246,0.25);
+      --rt-backdrop: blur(4px);
+      --rt-ring: rgba(139,92,246,0.5);
+      --rt-terminal-bg: #faf7ff;
+      --rt-grid-placeholder: #8b5cf6;
+    }
+    /* Matches the app: light, frosted, neutral white/grey with a muted
+       steel-blue accent — not the old dark-cyan look. */
+    [data-theme="glass"] {
+      color-scheme: light;
+      --rt-bg: #eceef3;
+      --rt-bg-image: none;
+      --rt-surface: #f5f6f8;
+      --rt-surface-strong: #ffffff;
+      --rt-surface-hover: rgba(0,0,0,0.05);
+      --rt-subsurface: #eceef2;
+      --rt-border: rgba(0,0,0,0.10);
+      --rt-text: #1c1e21;
+      --rt-text-muted: #6b6e75;
+      --rt-text-faint: #9a9ca3;
+      --rt-accent: #4a6fa5;
+      --rt-accent-soft: rgba(74,111,165,0.12);
+      --rt-accent-fg: #ffffff;
+      --rt-shadow-panel: 0 2px 12px rgba(0,0,0,0.08), 0 1px 3px rgba(0,0,0,0.06);
+      --rt-backdrop: blur(20px) saturate(180%);
+      --rt-ring: rgba(74,111,165,0.45);
+      --rt-terminal-bg: #f0f2f5;
+      --rt-grid-placeholder: #4a6fa5;
+    }
+    [data-theme="minimalist"] {
+      color-scheme: light;
+      --rt-bg: #ffffff;
+      --rt-surface: #ffffff;
+      --rt-surface-strong: #fafafa;
+      --rt-surface-hover: #f4f4f5;
+      --rt-subsurface: #fafafa;
+      --rt-border: #ececec;
+      --rt-text: #18181b;
+      --rt-text-muted: #71717a;
+      --rt-text-faint: #a1a1aa;
+      --rt-accent: #111111;
+      --rt-accent-soft: rgba(0,0,0,0.06);
+      --rt-radius-sm: 0.25rem; --rt-radius: 0.375rem; --rt-radius-lg: 0.5rem;
+      --rt-shadow-panel: none;
+      --rt-terminal-bg: #fafafa;
+      --rt-grid-placeholder: #d4d4d8;
+      --rt-accent-fg: #ffffff;
+    }
+    [data-theme="brutalism"] {
+      color-scheme: light;
+      --rt-bg: #fafaf5;
+      --rt-surface: #ffffff;
+      --rt-surface-strong: #ffffff;
+      --rt-surface-hover: #f4f4f0;
+      --rt-subsurface: #fafaf5;
+      --rt-border: #000000;
+      --rt-border-width: 2px;
+      --rt-text: #0a0a0a;
+      --rt-text-muted: #3f3f46;
+      --rt-text-faint: #52525b;
+      --rt-accent: #16a34a;
+      --rt-accent-soft: #bbf7d0;
+      --rt-radius-sm: 0; --rt-radius: 0; --rt-radius-lg: 0;
+      --rt-shadow-panel: 6px 6px 0 0 #000000;
+      --rt-btn-shadow: 3px 3px 0 0 #000000;
+      --rt-terminal-bg: #ffffff;
+      --rt-grid-placeholder: #16a34a;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+
+    ::selection {
+      background: color-mix(in srgb, var(--rt-accent) 35%, transparent);
+      color: var(--rt-text);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background-color: var(--rt-bg);
+      background-image: var(--rt-bg-image);
+      color: var(--rt-text);
+      font-family: var(--rt-font-sans);
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+      transition: background-color 0.6s ease, color 0.4s ease;
+    }
+
+    /* ── Animated ambient background ── */
+    .grid-bg {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      background-image:
+        linear-gradient(var(--rt-border) 1px, transparent 1px),
+        linear-gradient(90deg, var(--rt-border) 1px, transparent 1px);
+      background-size: 48px 48px;
+      opacity: 0.04;
+      mask-image: radial-gradient(ellipse 70% 60% at 50% 30%, black, transparent);
+    }
+
+    /* ── Semantic classes (from index.css) ── */
+    .rt-surface {
+      background-color: var(--rt-surface);
+      border: var(--rt-border-width) solid var(--rt-border);
+      border-radius: var(--rt-radius);
+      backdrop-filter: var(--rt-backdrop);
+      -webkit-backdrop-filter: var(--rt-backdrop);
+      transition: background-color 0.5s, border-color 0.5s, border-radius 0.5s, box-shadow 0.5s;
+    }
+    .rt-panel {
+      background-color: var(--rt-surface);
+      border: var(--rt-border-width) solid var(--rt-border);
+      border-radius: var(--rt-radius-lg);
+      box-shadow: var(--rt-shadow-panel);
+      backdrop-filter: var(--rt-backdrop);
+      -webkit-backdrop-filter: var(--rt-backdrop);
+      transition: background-color 0.5s, border-color 0.5s, border-radius 0.5s, box-shadow 0.5s;
+    }
+    .rt-text-muted { color: var(--rt-text-muted); transition: color 0.4s; }
+    .rt-text-faint { color: var(--rt-text-faint); }
+    .rt-accent-text { color: var(--rt-accent); transition: color 0.4s; }
+
+    .rt-btn-outline {
+      color: var(--rt-text-muted);
+      background: transparent;
+      border: var(--rt-border-width) solid var(--rt-border);
+      border-radius: var(--rt-radius-sm);
+      box-shadow: var(--rt-btn-shadow);
+      cursor: pointer;
+      font-family: inherit;
+      transition: color 0.15s, background-color 0.15s, border-color 0.15s, transform 0.2s;
+    }
+    .rt-btn-outline:hover {
+      color: var(--rt-text);
+      background-color: var(--rt-surface-hover);
+      transform: translateY(-1px);
+    }
+
+    .rt-card {
+      color: var(--rt-text);
+      background-color: var(--rt-surface);
+      border: var(--rt-border-width) solid var(--rt-border);
+      border-radius: var(--rt-radius-lg);
+      box-shadow: var(--rt-btn-shadow);
+      transition: border-color 0.25s, background-color 0.25s, transform 0.3s cubic-bezier(.34,1.56,.64,1), box-shadow 0.25s;
+    }
+    .rt-card:hover {
+      border-color: var(--rt-accent);
+      background-color: var(--rt-surface-strong);
+      transform: translateY(-4px);
+      box-shadow: 0 12px 40px -8px color-mix(in srgb, var(--rt-accent) 25%, transparent);
+    }
+    .rt-card-icon {
+      color: var(--rt-text-muted);
+      background-color: var(--rt-surface-hover);
+      border-radius: var(--rt-radius-sm);
+      transition: color 0.25s, background-color 0.25s;
+    }
+    .rt-card:hover .rt-card-icon {
+      color: var(--rt-accent);
+      background-color: var(--rt-accent-soft);
+    }
+
+    .rt-icon { stroke: currentColor; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+
+    /* ── Layout ── */
+    .page { position: relative; z-index: 1; }
+    .spa-view { position: relative; }
+    .spa-view[hidden] { display: none !important; }
+    .spa-view.active { animation: fade-up 0.35s ease both; }
+
+    .top-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      padding: 1rem;
+      pointer-events: none;
+    }
+    .top-bar > * { pointer-events: auto; }
+
+    .top-bar-right {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 0.5rem;
+    }
+    .top-bar-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .theme-switcher {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.35rem 0.5rem;
+      font-size: 0.75rem;
+      font-weight: 500;
+      animation: fade-down 0.8s ease 0.2s both;
+    }
+
+    .loom-btn {
+      position: relative;
+      overflow: hidden;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      padding: 0.4rem 0.9rem;
+      font-size: 0.78rem;
+      font-weight: 700;
+      font-family: inherit;
+      color: var(--rt-accent-fg);
+      background: var(--rt-accent);
+      border: none;
+      border-radius: var(--rt-radius-sm);
+      box-shadow: 0 0 18px -4px color-mix(in srgb, var(--rt-accent) 50%, transparent);
+      cursor: pointer;
+      text-decoration: none;
+      transition: transform 0.2s, box-shadow 0.2s, background-color 0.4s;
+      animation: fade-down 0.8s ease 0.32s both;
+      white-space: nowrap;
+    }
+    .loom-btn:hover {
+      transform: translateY(-2px) scale(1.02);
+      box-shadow: 0 0 28px -4px color-mix(in srgb, var(--rt-accent) 60%, transparent);
+    }
+    .marketplace-nav-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.4rem 0.8rem;
+      font-size: 0.78rem;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    .accent-switcher { animation-delay: 0.26s; }
+    .accent-switcher-label { font-size: 0.72rem; font-weight: 500; }
+    .accent-dots { display: flex; gap: 5px; align-items: center; }
+    .accent-dots .cz-swatch { width: 15px; height: 15px; border-width: 1.5px; }
+    .accent-dots .cz-swatch-custom input { inset: -4px; }
+
+    .cz-accent-reset {
+      font-size: 0.68rem; padding: 0.22rem 0.55rem; border-radius: 999px;
+      border: var(--rt-border-width) solid var(--rt-border); background: var(--rt-surface);
+      color: var(--rt-text-muted); cursor: pointer; font-family: inherit; white-space: nowrap;
+      transition: color 0.15s ease, border-color 0.15s ease;
+    }
+    .cz-accent-reset:hover { color: var(--rt-text); border-color: var(--rt-accent); }
+    .accent-dots .cz-accent-reset { font-size: 0.64rem; padding: 0.14rem 0.45rem; }
+
+    .theme-arrow {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 20px; height: 20px; padding: 0;
+      border: none; background: transparent; color: var(--rt-text-muted);
+      cursor: pointer; border-radius: 5px;
+      transition: color 0.15s ease, background 0.15s ease;
+    }
+    .theme-arrow:hover { color: var(--rt-text); background: var(--rt-surface-hover); }
+    .theme-name { min-width: 108px; text-align: center; font-weight: 500; }
+
+    .theme-dots { display: flex; gap: 5px; }
+    .theme-dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      border: 1px solid var(--rt-border);
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .theme-dot:hover { transform: scale(1.25); }
+    .theme-dot.active {
+      box-shadow: 0 0 0 2px var(--rt-bg), 0 0 0 4px var(--rt-accent);
+      transform: scale(1.15);
+    }
+    .theme-dot[data-theme="sleek"] { background: #34d399; }
+    .theme-dot[data-theme="pastel"] { background: #8b5cf6; }
+    .theme-dot[data-theme="glass"] { background: #4a6fa5; }
+    .theme-dot[data-theme="minimalist"] { background: #18181b; }
+    .theme-dot[data-theme="brutalism"] { background: #16a34a; border-color: #000; }
+
+    /* ── Hero ── */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 5rem 1.5rem 3rem;
+      text-align: center;
+    }
+
+    .logo-box {
+      width: 3.5rem; height: 3.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1rem;
+      animation: float 4s ease-in-out infinite, fade-up 0.7s ease both;
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+
+    .hero h1 {
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      margin: 0;
+      animation: fade-up 0.7s ease 0.1s both;
+    }
+    .hero-tagline {
+      margin: 0.75rem 0 0;
+      font-size: 0.95rem;
+      animation: fade-up 0.7s ease 0.2s both;
+    }
+    .hero-typed {
+      display: inline-block;
+      min-height: 1.4em;
+      color: var(--rt-accent);
+      font-weight: 500;
+      border-right: 2px solid var(--rt-accent);
+      padding-right: 2px;
+      animation: blink-cursor 0.8s step-end infinite;
+    }
+    @keyframes blink-cursor {
+      50% { border-color: transparent; }
+    }
+
+    .hero-cta {
+      margin-top: 2rem;
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      justify-content: center;
+      animation: fade-up 0.7s ease 0.35s both;
+    }
+    .cta-primary {
+      position: relative;
+      overflow: hidden;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1.75rem;
+      font-size: 0.95rem;
+      font-weight: 600;
+      font-family: inherit;
+      color: var(--rt-accent-fg);
+      background: var(--rt-accent);
+      border: none;
+      border-radius: var(--rt-radius-sm);
+      cursor: pointer;
+      text-decoration: none;
+      transition: transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 0 24px -4px color-mix(in srgb, var(--rt-accent) 50%, transparent);
+    }
+    .cta-primary::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.35) 50%, transparent 60%);
+      transform: translateX(-120%);
+      animation: shimmer 3s ease infinite;
+    }
+    @keyframes shimmer {
+      0%, 70%, 100% { transform: translateX(-120%); }
+      85% { transform: translateX(120%); }
+    }
+    .cta-primary:hover { transform: translateY(-2px) scale(1.02); }
+
+    .hero-version {
+      margin-top: 1rem;
+      font-size: 0.72rem;
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      animation: fade-up 0.7s ease 0.45s both;
+    }
+    .hero-version-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--rt-accent);
+      opacity: 0.5;
+      flex-shrink: 0;
+    }
+    .hero-version-beta {
+      display: inline-block;
+      font-size: 0.62rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      padding: 0.1rem 0.4rem;
+      border-radius: 999px;
+      border: 1px solid var(--rt-border);
+      color: var(--rt-text-faint);
+      vertical-align: middle;
+      margin: 0 0.1rem;
+    }
+    .hero-dmg-wrap {
+      margin-top: 0.9rem;
+      display: flex;
+      justify-content: center;
+      width: 100%;
+      animation: fade-up 0.7s ease 0.52s both;
+    }
+    .hero-dmg-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.64rem 1.3rem;
+      border-radius: 999px;
+      border: var(--rt-border-width) solid color-mix(in srgb, var(--rt-accent) 28%, var(--rt-border));
+      background: linear-gradient(135deg, color-mix(in srgb, var(--rt-surface-strong) 84%, #000 16%), color-mix(in srgb, var(--rt-surface) 75%, #000 25%));
+      color: var(--rt-text);
+      text-decoration: none;
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.01em;
+      box-shadow: 0 10px 26px -16px rgba(0, 0, 0, 0.95), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(12px) saturate(130%);
+      -webkit-backdrop-filter: blur(12px) saturate(130%);
+      transition: transform 0.2s, border-color 0.2s, box-shadow 0.25s, color 0.2s;
+    }
+    .hero-dmg-btn:hover {
+      transform: translateY(-2px);
+      border-color: var(--rt-accent);
+      color: var(--rt-accent);
+      box-shadow: 0 14px 28px -16px color-mix(in srgb, var(--rt-accent) 38%, transparent);
+    }
+
+    /* ── Terminal demo ── */
+    .terminal-demo-wrap {
+      width: min(720px, 92vw);
+      margin-top: 3rem;
+      animation: fade-up 0.9s ease 0.5s both;
+    }
+    .terminal-chrome {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.65rem 1rem;
+      border-bottom: var(--rt-border-width) solid var(--rt-border);
+      background: var(--rt-surface-strong);
+      border-radius: var(--rt-radius-lg) var(--rt-radius-lg) 0 0;
+    }
+    .chrome-dot { width: 10px; height: 10px; border-radius: 50%; }
+    .chrome-dot.red { background: #f87171; }
+    .chrome-dot.yellow { background: #fbbf24; }
+    .chrome-dot.green { background: #34d399; }
+    .chrome-title {
+      flex: 1;
+      text-align: center;
+      font-size: 0.72rem;
+      color: var(--rt-text-muted);
+      font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    }
+
+    .terminal-body {
+      padding: 1.25rem 1.25rem 1.5rem;
+      background: var(--rt-terminal-bg);
+      border-radius: 0 0 var(--rt-radius-lg) var(--rt-radius-lg);
+      font-family: ui-monospace, "SF Mono", Menlo, "JetBrains Mono", monospace;
+      font-size: 0.82rem;
+      line-height: 1.65;
+      min-height: 220px;
+      text-align: left;
+      transition: background 0.5s;
+    }
+    .term-line { opacity: 0; transform: translateY(6px); }
+    .term-line.visible { animation: term-in 0.35s ease forwards; }
+    @keyframes term-in {
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .term-prompt { color: var(--rt-accent); }
+    .term-dim { color: var(--rt-text-muted); }
+    .term-green { color: #34d399; }
+    .term-blue { color: #60a5fa; }
+    .term-yellow { color: #fbbf24; }
+    .term-magenta { color: #c084fc; }
+    .term-cursor-line .term-prompt::after {
+      content: '▋';
+      animation: blink-cursor 0.8s step-end infinite;
+      margin-left: 1px;
+    }
+
+    /* ── Workspace grid mock ── */
+    .workspace-mock {
+      width: min(720px, 92vw);
+      margin-top: 1.5rem;
+      padding: 1rem;
+      position: relative;
+      animation: fade-up 0.9s ease 0.65s both;
+    }
+    .mock-hint {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      margin: 0 auto 0.75rem;
+      padding: 0.3rem 0.7rem;
+      font-size: 0.7rem;
+      color: var(--rt-text-muted);
+      background: var(--rt-surface);
+      border: var(--rt-border-width) solid var(--rt-border);
+      border-radius: 999px;
+      width: max-content;
+      transition: opacity 0.4s ease, transform 0.4s ease;
+    }
+    .mock-hint .rt-icon { color: var(--rt-accent); }
+    .mock-hint.hidden { opacity: 0; transform: translateY(-4px); pointer-events: none; }
+
+    .mock-grid {
+      position: relative;
+      width: 100%;
+      touch-action: none;       /* let the drag own the gesture on touch */
+    }
+    .mock-panel {
+      position: absolute;
+      top: 0; left: 0;
+      box-sizing: border-box;
+      border: var(--rt-border-width) solid var(--rt-border);
+      border-radius: var(--rt-radius-lg);
+      background: var(--rt-terminal-bg);
+      overflow: hidden;
+      cursor: grab;
+      user-select: none;
+      /* transform driven by JS; animate the snap + reflow of non-dragged panels */
+      transition: transform 0.32s cubic-bezier(.34,1.32,.5,1),
+                  width 0.32s cubic-bezier(.34,1.32,.5,1),
+                  height 0.32s cubic-bezier(.34,1.32,.5,1),
+                  border-color 0.2s ease, box-shadow 0.2s ease;
+      animation: mock-fade 0.5s ease both;
+    }
+    @keyframes mock-fade { from { opacity: 0; } to { opacity: 1; } }
+    .mock-panel:hover { border-color: color-mix(in srgb, var(--rt-accent) 45%, var(--rt-border)); }
+    .mock-panel.dragging {
+      cursor: grabbing;
+      z-index: 30;
+      transition: width 0.2s ease, height 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+      border-color: var(--rt-grid-placeholder);
+      box-shadow: 0 12px 30px -8px rgba(0,0,0,0.45);
+    }
+    .mock-panel-header {
+      padding: 0.35rem 0.6rem;
+      font-size: 0.65rem;
+      color: var(--rt-text-muted);
+      background: var(--rt-surface-strong);
+      border-bottom: var(--rt-border-width) solid var(--rt-border);
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+    .mock-tag { margin-left: auto; font-size: 0.6rem; }
+    .mock-panel-body {
+      padding: 0.5rem 0.6rem;
+      font-family: ui-monospace, monospace;
+      font-size: 0.68rem;
+      color: var(--rt-text-muted);
+      line-height: 1.5;
+    }
+    .mock-tree, .mock-code { display: flex; flex-direction: column; gap: 1px; }
+    .mock-code { font-size: 0.63rem; white-space: nowrap; }
+    .mock-sep { margin: 0 0.5rem; color: var(--rt-border); }
+    .term-accent { color: var(--rt-accent); }
+
+    .mock-placeholder {
+      position: absolute;
+      top: 0; left: 0;
+      box-sizing: border-box;
+      border: 2px dashed var(--rt-grid-placeholder);
+      border-radius: var(--rt-radius-lg);
+      background: color-mix(in srgb, var(--rt-grid-placeholder) 10%, transparent);
+      opacity: 0;
+      pointer-events: none;
+      z-index: 5;
+      transition: transform 0.22s ease, width 0.22s ease, height 0.22s ease, opacity 0.25s ease;
+    }
+    .mock-placeholder.shown { opacity: 1; }
+
+    .mock-cursor {
+      position: absolute;
+      top: 0; left: 0;
+      color: var(--rt-text);
+      filter: drop-shadow(0 1px 2px rgba(0,0,0,0.5));
+      pointer-events: none;
+      opacity: 0;
+      z-index: 40;
+      transition: opacity 0.3s ease, transform 0.12s ease;
+    }
+    .mock-cursor.grabbing { transform: scale(0.82); }
+
+    /* ── Iris bar mock ── */
+    .iris-mock {
+      margin-top: 1rem;
+      padding: 0.65rem 0.85rem;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      animation: fade-up 0.9s ease 0.8s both;
+    }
+    .iris-input {
+      flex: 1;
+      background: var(--rt-subsurface);
+      border: var(--rt-border-width) solid var(--rt-border);
+      border-radius: var(--rt-radius-sm);
+      padding: 0.45rem 0.65rem;
+      font-size: 0.78rem;
+      font-family: inherit;
+      color: var(--rt-text);
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+    .iris-typed { color: var(--rt-text); }
+    .iris-suggest {
+      margin-top: 0.5rem;
+      padding: 0.35rem;
+      opacity: 0;
+      transform: translateY(-4px);
+      transition: opacity 0.25s ease, transform 0.25s ease;
+      pointer-events: none;
+    }
+    .iris-suggest.shown {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+    .iris-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.4rem 0.5rem;
+      border-radius: var(--rt-radius-sm);
+      font-size: 0.75rem;
+      transition: background 0.15s;
+    }
+    .iris-item.active {
+      background: var(--rt-surface-hover);
+      color: var(--rt-accent);
+    }
+
+    /* ── Sections ── */
+    section.block {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 4rem 1.5rem;
+    }
+    .section-label {
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 1rem;
+    }
+    .section-title {
+      font-size: clamp(1.4rem, 3vw, 1.85rem);
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      margin: 0 0 0.5rem;
+    }
+
+    .start-grid {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.75rem;
+    }
+    .start-card {
+      flex: 1 1 210px;
+      max-width: 280px;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      padding: 1.25rem;
+      text-align: left;
+      cursor: default;
+    }
+    .start-card-icon {
+      width: 2.75rem; height: 2.75rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .start-card-title { font-size: 0.875rem; font-weight: 600; }
+    .start-card-desc { font-size: 0.75rem; }
+
+    .features-grid {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+    .feature-card {
+      flex: 1 1 270px;
+      max-width: 360px;
+      padding: 1.5rem;
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.6s ease, transform 0.6s cubic-bezier(.34,1.56,.64,1);
+    }
+    .feature-card.revealed {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .feature-card h3 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin: 0.75rem 0 0.4rem;
+      color: var(--rt-accent);
+      transition: color 0.4s;
+    }
+    .feature-card p { margin: 0; font-size: 0.875rem; line-height: 1.55; }
+
+    .theme-showcase {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-top: 1.5rem;
+    }
+    .theme-chip {
+      padding: 0.5rem 1rem;
+      font-size: 0.78rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.25s;
+    }
+    .theme-chip.active {
+      border-color: var(--rt-accent);
+      box-shadow: inset 0 0 0 1px var(--rt-accent);
+    }
+
+    /* ── Footer ── */
+    footer {
+      margin-top: 2rem;
+      border-top: var(--rt-border-width) solid var(--rt-border);
+      background: var(--rt-surface);
+      transition: background 0.5s, border-color 0.5s;
+    }
+    .footer-content {
+      max-width: 1040px;
+      margin: 0 auto;
+      padding: 2.5rem 1.5rem 1.2rem;
+    }
+    .team-section {
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+    }
+    .team-heading {
+      margin: 0;
+      font-size: clamp(1.3rem, 3vw, 1.9rem);
+      font-weight: 600;
+      letter-spacing: -0.02em;
+    }
+    .team-subtitle {
+      margin: 0;
+      max-width: 680px;
+      font-size: 0.84rem;
+      line-height: 1.6;
+    }
+    .team-grid {
+      margin-top: 0.35rem;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1rem;
+    }
+    .team-card {
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+      background: color-mix(in srgb, var(--rt-surface-strong) 88%, transparent);
+    }
+    .team-avatar {
+      width: 100%;
+      aspect-ratio: 16 / 10;
+      object-fit: cover;
+      border-radius: var(--rt-radius);
+      border: var(--rt-border-width) solid var(--rt-border);
+      background: var(--rt-subsurface);
+      box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--rt-border) 55%, transparent);
+    }
+    .team-name {
+      margin: 0;
+      font-size: 1.02rem;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+    }
+    .team-university {
+      margin: 0.2rem 0 0;
+      font-size: 0.78rem;
+    }
+    .team-links {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.45rem;
+      margin-top: 0.2rem;
+    }
+    .team-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      width: 100%;
+      padding: 0.4rem 0.52rem;
+      font-size: 0.73rem;
+      font-weight: 500;
+      color: var(--rt-text-muted);
+      text-decoration: none;
+    }
+    .team-link:hover {
+      color: var(--rt-accent);
+      border-color: var(--rt-accent);
+    }
+    .team-link svg {
+      width: 14px;
+      height: 14px;
+      flex-shrink: 0;
+      stroke: currentColor;
+    }
+    .footer-bottom {
+      margin-top: 1.2rem;
+      padding-top: 0.95rem;
+      border-top: var(--rt-border-width) solid var(--rt-border);
+      text-align: center;
+      font-size: 0.73rem;
+      letter-spacing: 0.01em;
+    }
+    .footer-bottom a { color: var(--rt-accent); text-decoration: none; }
+    .footer-bottom a:hover { text-decoration: underline; }
+
+    /* ── Reveal animations ── */
+    @keyframes fade-up {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fade-down {
+      from { opacity: 0; transform: translateY(-12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 600px) {
+      /* Draggable grid scales itself (JS computes cell size from width);
+         shrink the row height a touch on small screens for proportion. */
+      .mock-grid { --mock-row-h: 46px; }
+      .top-bar { padding: 0.5rem; }
+      .theme-switcher { font-size: 0.68rem; padding: 0.3rem 0.4rem; }
+      .loom-btn { font-size: 0.72rem; padding: 0.35rem 0.7rem; }
+      .team-grid,
+      .team-links { grid-template-columns: 1fr; }
+      .hero-dmg-btn {
+        width: min(92vw, 360px);
+        justify-content: center;
+      }
+    }
+
+    /* ── Loom Marketplace section ── */
+    #loom {
+      border-top: var(--rt-border-width) solid var(--rt-border);
+      transition: border-color 0.5s;
+    }
+
+    .loom-hero {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.4rem;
+      margin-bottom: 2.5rem;
+    }
+    .loom-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.3rem 0.7rem;
+      border-radius: 999px;
+      border: var(--rt-border-width) solid var(--rt-accent);
+      background: var(--rt-accent-soft);
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: var(--rt-accent);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      margin-bottom: 0.25rem;
+    }
+    .loom-badge .loom-dot { width: 6px; height: 6px; flex-shrink: 0; }
+    .loom-hero h2 { margin: 0; }
+    .loom-hero p { margin: 0.4rem 0 0; max-width: 560px; }
+    .loom-view-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      flex-wrap: wrap;
+      margin-top: 1.5rem;
+    }
+    .loom-subsection + .loom-subsection { margin-top: 2.25rem; }
+    .loom-subtitle {
+      margin: 0;
+      font-size: 1.08rem;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+    }
+    .loom-subcopy {
+      margin: 0.45rem 0 1.1rem;
+      font-size: 0.82rem;
+      line-height: 1.55;
+      max-width: 640px;
+    }
+
+    .top-looms-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1rem;
+      margin-top: 1.6rem;
+    }
+    .top-loom-card {
+      padding: 1rem 1.1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.7rem;
+      min-height: 170px;
+    }
+    .top-loom-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.65rem;
+    }
+    .top-loom-title {
+      font-size: 0.95rem;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      margin-right: auto;
+    }
+    .top-loom-badge {
+      font-size: 0.64rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      border: var(--rt-border-width) solid var(--rt-border);
+      border-radius: 999px;
+      padding: 0.16rem 0.42rem;
+      color: var(--rt-text-faint);
+      background: var(--rt-subsurface);
+      flex-shrink: 0;
+    }
+    .top-loom-desc {
+      margin: 0;
+      font-size: 0.8rem;
+      line-height: 1.52;
+      color: var(--rt-text-muted);
+    }
+    .top-loom-meta {
+      margin-top: auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+      font-size: 0.74rem;
+      color: var(--rt-text-faint);
+      padding-top: 0.55rem;
+      border-top: var(--rt-border-width) solid var(--rt-border);
+    }
+    .top-loom-actions {
+      display: flex;
+      justify-content: flex-end;
+    }
+    .top-view-btn {
+      padding: 0.33rem 0.72rem;
+      font-size: 0.72rem;
+      font-weight: 600;
+      line-height: 1;
+      white-space: nowrap;
+    }
+    .loom-heart-btn {
+      width: 1.9rem;
+      height: 1.9rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      border: var(--rt-border-width) solid var(--rt-border);
+      border-radius: var(--rt-radius-sm);
+      background: var(--rt-subsurface);
+      color: var(--rt-text-faint);
+      cursor: pointer;
+      line-height: 1;
+      flex-shrink: 0;
+      transition: color 0.2s, border-color 0.2s, background 0.2s, transform 0.2s, box-shadow 0.2s;
+    }
+    .loom-heart-btn svg {
+      width: 14px;
+      height: 14px;
+      stroke-width: 2.35;
+      stroke: currentColor;
+      fill: none;
+    }
+    .loom-heart-btn:hover {
+      color: #fb7185;
+      border-color: #fb7185;
+      background: color-mix(in srgb, #fb7185 10%, transparent);
+      transform: translateY(-1px);
+    }
+    .loom-heart-btn.active {
+      color: #fb7185;
+      border-color: #fb7185;
+      background: color-mix(in srgb, #fb7185 14%, transparent);
+      box-shadow: 0 0 0 1px color-mix(in srgb, #fb7185 30%, transparent);
+    }
+    .loom-heart-btn.active svg {
+      fill: currentColor;
+      stroke-width: 2.1;
+    }
+    .loom-focus-highlight {
+      border-color: var(--rt-accent) !important;
+      box-shadow: 0 0 0 1px var(--rt-accent), 0 0 0 4px color-mix(in srgb, var(--rt-accent) 24%, transparent);
+    }
+    .loom-favorites {
+      padding: 1rem;
+      margin-bottom: 2.15rem;
+    }
+    .loom-favorites-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.55rem;
+      flex-wrap: wrap;
+      margin-bottom: 0.35rem;
+    }
+    .loom-favorites-title {
+      margin: 0;
+      font-size: 1.02rem;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+    }
+    .loom-favorites-copy {
+      margin: 0 0 0.95rem;
+      font-size: 0.78rem;
+      line-height: 1.5;
+      color: var(--rt-text-muted);
+      max-width: 620px;
+    }
+    .favorites-empty {
+      margin: 0;
+      padding: 0.9rem;
+      border: var(--rt-border-width) dashed var(--rt-border);
+      border-radius: var(--rt-radius);
+      font-size: 0.77rem;
+      line-height: 1.45;
+      background: var(--rt-subsurface);
+    }
+    .favorites-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 0.75rem;
+    }
+    .favorite-item {
+      padding: 0.85rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.55rem;
+      min-height: 180px;
+    }
+    .favorite-item-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+    }
+    .favorite-item-badge {
+      font-size: 0.64rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--rt-text-faint);
+      border: var(--rt-border-width) solid var(--rt-border);
+      border-radius: 999px;
+      padding: 0.18rem 0.45rem;
+      background: var(--rt-subsurface);
+    }
+    .favorite-item h4 {
+      margin: 0;
+      font-size: 0.9rem;
+      font-weight: 600;
+      line-height: 1.3;
+    }
+    .favorite-item p {
+      margin: 0;
+      font-size: 0.76rem;
+      line-height: 1.5;
+      color: var(--rt-text-muted);
+    }
+    .favorite-item-meta {
+      margin-top: auto;
+      font-size: 0.71rem;
+      color: var(--rt-text-faint);
+      line-height: 1.45;
+      min-height: 1.4em;
+    }
+    .favorite-remove-btn {
+      width: 1.75rem;
+      height: 1.75rem;
+    }
+    .favorite-jump-btn {
+      align-self: flex-start;
+      padding: 0.36rem 0.7rem;
+      font-size: 0.72rem;
+      line-height: 1;
+    }
+    .loom-search-tools {
+      width: min(760px, 100%);
+      margin: 0 auto 1.2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.65rem;
+    }
+    .loom-search-wrap {
+      display: flex;
+      justify-content: center;
+      width: 100%;
+      margin: 0;
+    }
+    .loom-search-input {
+      width: min(560px, 100%);
+      padding: 0.62rem 0.85rem;
+      font-size: 0.82rem;
+      font-family: inherit;
+      color: var(--rt-text);
+      border: var(--rt-border-width) solid var(--rt-border);
+      border-radius: var(--rt-radius-sm);
+      background: var(--rt-subsurface);
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      text-align: center;
+    }
+    .loom-search-input:focus {
+      border-color: var(--rt-accent);
+      box-shadow: 0 0 0 3px color-mix(in srgb, var(--rt-accent) 18%, transparent);
+    }
+    .loom-filter-tags {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+    }
+
+    .loom-toolbar {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      justify-content: flex-end;
+      margin-bottom: 1rem;
+    }
+    .loom-add-panel {
+      margin-bottom: 1.25rem;
+      padding: 1rem;
+    }
+    .loom-add-panel h3 {
+      margin: 0;
+      font-size: 1rem;
+      letter-spacing: -0.01em;
+    }
+    .loom-add-panel > p {
+      margin: 0.35rem 0 0.95rem;
+      font-size: 0.8rem;
+      color: var(--rt-text-muted);
+    }
+    .loom-add-form {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.75rem;
+    }
+    .loom-add-form .loom-field:last-child { grid-column: 1 / -1; }
+    .loom-add-submit-wrap {
+      grid-column: 1 / -1;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+    }
+    .loom-filter {
+      padding: 0.35rem 0.82rem;
+      font-size: 0.75rem;
+      font-weight: 500;
+      font-family: inherit;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: color 0.15s, background 0.15s, border-color 0.15s;
+    }
+    .loom-filter.active {
+      color: var(--rt-accent);
+      border-color: var(--rt-accent);
+      background: var(--rt-accent-soft);
+    }
+    .loom-spacer { flex: 1; }
+    .loom-submit-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.4rem 1rem;
+      font-size: 0.78rem;
+      font-weight: 600;
+      font-family: inherit;
+      color: var(--rt-accent-fg);
+      background: var(--rt-accent);
+      border: none;
+      border-radius: var(--rt-radius-sm);
+      cursor: pointer;
+      transition: opacity 0.15s, transform 0.2s;
+      box-shadow: 0 0 16px -4px color-mix(in srgb, var(--rt-accent) 45%, transparent);
+    }
+    .loom-submit-btn:hover { opacity: 0.88; transform: translateY(-1px); }
+
+    /* Preset grid */
+    .loom-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 1rem;
+    }
+    .preset-card {
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      cursor: default;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.5s ease, transform 0.5s cubic-bezier(.34,1.56,.64,1), border-color 0.25s, box-shadow 0.25s;
+    }
+    .preset-card.revealed { opacity: 1; transform: translateY(0); }
+    .preset-card:hover { border-color: var(--rt-accent); box-shadow: 0 12px 40px -8px color-mix(in srgb, var(--rt-accent) 20%, transparent); }
+
+    .preset-preview {
+      height: 120px;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-bottom: var(--rt-border-width) solid var(--rt-border);
+    }
+    .preset-preview-inner {
+      width: 90%;
+      height: 80%;
+      border-radius: calc(var(--rt-radius-sm) * 0.7);
+      border: 1px solid rgba(255,255,255,0.08);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      font-family: ui-monospace, monospace;
+      font-size: 0.52rem;
+    }
+    .pp-chrome {
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      padding: 3px 6px;
+      flex-shrink: 0;
+    }
+    .pp-dot { width: 5px; height: 5px; border-radius: 50%; }
+    .pp-body { flex: 1; padding: 5px 6px; line-height: 1.5; overflow: hidden; }
+
+    /* Per-preset colour schemes for the preview swatches */
+    .preset-card[data-preset="carbon"] .preset-preview { background: #0a0a0a; }
+    .preset-card[data-preset="carbon"] .preset-preview-inner { background: #111; border-color: #2a2a2a; }
+    .preset-card[data-preset="carbon"] .pp-chrome { background: #1a1a1a; }
+    .preset-card[data-preset="carbon"] .pp-body { color: #34d399; }
+
+    .preset-card[data-preset="aurora"] .preset-preview { background: #0b1220; background-image: radial-gradient(circle at 20% 20%, rgba(56,189,248,0.25), transparent 50%), radial-gradient(circle at 80% 80%, rgba(168,85,247,0.2), transparent 50%); }
+    .preset-card[data-preset="aurora"] .preset-preview-inner { background: rgba(15,25,45,0.7); border-color: rgba(148,163,184,0.2); backdrop-filter: blur(6px); }
+    .preset-card[data-preset="aurora"] .pp-chrome { background: rgba(30,41,59,0.6); }
+    .preset-card[data-preset="aurora"] .pp-body { color: #38bdf8; }
+
+    .preset-card[data-preset="sakura"] .preset-preview { background: #f6f4fb; background-image: radial-gradient(circle at 20% 0%, rgba(167,139,250,0.2), transparent 40%), radial-gradient(circle at 80% 100%, rgba(236,72,153,0.15), transparent 40%); }
+    .preset-card[data-preset="sakura"] .preset-preview-inner { background: rgba(255,255,255,0.85); border-color: #e7e1f5; }
+    .preset-card[data-preset="sakura"] .pp-chrome { background: rgba(255,255,255,0.9); border-bottom: 1px solid #e7e1f5; }
+    .preset-card[data-preset="sakura"] .pp-body { color: #8b5cf6; }
+
+    .preset-card[data-preset="mono"] .preset-preview { background: #fff; }
+    .preset-card[data-preset="mono"] .preset-preview-inner { background: #fafafa; border-color: #ececec; }
+    .preset-card[data-preset="mono"] .pp-chrome { background: #fff; border-bottom: 1px solid #ececec; }
+    .preset-card[data-preset="mono"] .pp-body { color: #18181b; }
+
+    .preset-card[data-preset="brutus"] .preset-preview { background: #fafaf5; }
+    .preset-card[data-preset="brutus"] .preset-preview-inner { background: #fff; border: 2px solid #000; border-radius: 0; box-shadow: 3px 3px 0 #000; }
+    .preset-card[data-preset="brutus"] .pp-chrome { background: #fff; border-bottom: 2px solid #000; }
+    .preset-card[data-preset="brutus"] .pp-body { color: #16a34a; }
+
+    .preset-card[data-preset="midnight"] .preset-preview { background: #0d0d1a; background-image: radial-gradient(circle at 50% 0%, rgba(99,102,241,0.3), transparent 60%); }
+    .preset-card[data-preset="midnight"] .preset-preview-inner { background: #13131f; border-color: #1e1e3a; }
+    .preset-card[data-preset="midnight"] .pp-chrome { background: #1a1a2e; }
+    .preset-card[data-preset="midnight"] .pp-body { color: #818cf8; }
+
+    .preset-card[data-preset="neonforge"] .preset-preview { background: #090716; background-image: radial-gradient(circle at 20% 20%, rgba(56,189,248,0.25), transparent 55%), radial-gradient(circle at 85% 75%, rgba(236,72,153,0.25), transparent 58%); }
+    .preset-card[data-preset="neonforge"] .preset-preview-inner { background: rgba(17, 24, 39, 0.82); border-color: rgba(94, 234, 212, 0.3); }
+    .preset-card[data-preset="neonforge"] .pp-chrome { background: rgba(30, 41, 59, 0.75); }
+    .preset-card[data-preset="neonforge"] .pp-body { color: #22d3ee; }
+
+    .preset-card[data-preset="solarized"] .preset-preview { background: #fdf6e3; background-image: radial-gradient(circle at 16% 8%, rgba(234, 179, 8, 0.25), transparent 45%), radial-gradient(circle at 78% 88%, rgba(59, 130, 246, 0.2), transparent 48%); }
+    .preset-card[data-preset="solarized"] .preset-preview-inner { background: rgba(255, 251, 235, 0.88); border-color: #e4dcc8; }
+    .preset-card[data-preset="solarized"] .pp-chrome { background: rgba(255, 250, 241, 0.9); border-bottom: 1px solid #e4dcc8; }
+    .preset-card[data-preset="solarized"] .pp-body { color: #b45309; }
+
+    .preset-card[data-preset="matrix"] .preset-preview { background: #020a04; background-image: radial-gradient(circle at 30% 30%, rgba(16, 185, 129, 0.25), transparent 58%); }
+    .preset-card[data-preset="matrix"] .preset-preview-inner { background: #07150a; border-color: #14532d; }
+    .preset-card[data-preset="matrix"] .pp-chrome { background: #0b1f10; }
+    .preset-card[data-preset="matrix"] .pp-body { color: #4ade80; }
+
+    .preset-card[data-preset="rustlab"] .preset-preview { background: #120d0a; background-image: radial-gradient(circle at 70% 20%, rgba(251, 146, 60, 0.28), transparent 52%); }
+    .preset-card[data-preset="rustlab"] .preset-preview-inner { background: #1b120d; border-color: #7c2d12; }
+    .preset-card[data-preset="rustlab"] .pp-chrome { background: #25160f; }
+    .preset-card[data-preset="rustlab"] .pp-body { color: #fb923c; }
+
+    .preset-body {
+      padding: 1rem 1.1rem 1.1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      flex: 1;
+    }
+    .preset-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+    }
+    .preset-meta-right {
+      margin-left: auto;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+    .preset-name { font-size: 0.875rem; font-weight: 600; }
+    .preset-tag {
+      font-size: 0.65rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      padding: 0.15rem 0.45rem;
+      border-radius: 999px;
+      border: var(--rt-border-width) solid var(--rt-border);
+      color: var(--rt-text-faint);
+      background: var(--rt-subsurface);
+    }
+    .preset-desc { font-size: 0.78rem; line-height: 1.5; margin: 0; }
+    .preset-author {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.72rem;
+      margin-top: 0.15rem;
+    }
+    .preset-avatar {
+      width: 18px; height: 18px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.55rem;
+      font-weight: 700;
+      color: var(--rt-accent-fg);
+      background: var(--rt-accent);
+      flex-shrink: 0;
+    }
+    .preset-footer {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-top: auto;
+      padding-top: 0.6rem;
+      border-top: var(--rt-border-width) solid var(--rt-border);
+    }
+    .preset-dl-btn {
+      flex: 1;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.35rem;
+      padding: 0.45rem 0.75rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      transition: color 0.15s, background 0.15s, border-color 0.15s, transform 0.15s;
+    }
+    .preset-dl-btn:hover { color: var(--rt-accent); border-color: var(--rt-accent); transform: translateY(-1px); }
+    .preset-dl-btn.downloading {
+      color: var(--rt-accent);
+      border-color: var(--rt-accent);
+      pointer-events: none;
+    }
+    .preset-review-btn {
+      padding: 0.45rem 0.65rem;
+      font-size: 0.72rem;
+      font-weight: 600;
+      line-height: 1;
+    }
+    .preset-stars {
+      display: flex;
+      align-items: center;
+      gap: 0.2rem;
+      font-size: 0.72rem;
+      color: var(--rt-text-faint);
+    }
+    .preset-stars svg { color: #fbbf24; }
+
+    /* Submit modal */
+    .loom-modal-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 200;
+      background: rgba(0,0,0,0.55);
+      backdrop-filter: blur(4px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+    }
+    .loom-modal-overlay.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .loom-modal {
+      width: min(520px, 100%);
+      padding: 2rem;
+      position: relative;
+      transform: translateY(16px) scale(0.97);
+      transition: transform 0.3s cubic-bezier(.34,1.56,.64,1);
+    }
+    .loom-modal-overlay.open .loom-modal { transform: translateY(0) scale(1); }
+    .loom-modal h3 { margin: 0 0 0.25rem; font-size: 1.1rem; font-weight: 600; }
+    .loom-modal > p { margin: 0 0 1.5rem; font-size: 0.83rem; }
+    .loom-modal-close {
+      position: absolute;
+      top: 1.1rem; right: 1.1rem;
+      width: 2rem; height: 2rem;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1rem;
+      cursor: pointer;
+      border-radius: var(--rt-radius-sm);
+      background: transparent;
+      border: none;
+      color: var(--rt-text-muted);
+      transition: background 0.15s, color 0.15s;
+    }
+    .loom-modal-close:hover { background: var(--rt-surface-hover); color: var(--rt-text); }
+
+    .loom-form { display: flex; flex-direction: column; gap: 1rem; }
+    .loom-field { display: flex; flex-direction: column; gap: 0.35rem; }
+    .loom-field label { font-size: 0.75rem; font-weight: 600; color: var(--rt-text-muted); }
+    .loom-field input,
+    .loom-field textarea,
+    .loom-field select {
+      background: var(--rt-subsurface);
+      border: var(--rt-border-width) solid var(--rt-border);
+      border-radius: var(--rt-radius-sm);
+      padding: 0.55rem 0.75rem;
+      font-size: 0.82rem;
+      font-family: inherit;
+      color: var(--rt-text);
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      resize: vertical;
+    }
+    .loom-field input:focus,
+    .loom-field textarea:focus,
+    .loom-field select:focus {
+      border-color: var(--rt-accent);
+      box-shadow: 0 0 0 3px color-mix(in srgb, var(--rt-accent) 18%, transparent);
+    }
+    .loom-field select option { background: var(--rt-bg); color: var(--rt-text); }
+    .loom-form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+    .loom-form-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+      padding-top: 0.25rem;
+    }
+    .loom-form-note { font-size: 0.72rem; }
+    .loom-form-submit {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.6rem 1.4rem;
+      font-size: 0.82rem;
+      font-weight: 600;
+      font-family: inherit;
+      color: var(--rt-accent-fg);
+      background: var(--rt-accent);
+      border: none;
+      border-radius: var(--rt-radius-sm);
+      cursor: pointer;
+      transition: opacity 0.15s, transform 0.2s;
+      flex-shrink: 0;
+    }
+    .loom-form-submit:hover { opacity: 0.88; transform: translateY(-1px); }
+
+    .loom-success {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 0.75rem;
+      padding: 1rem 0 0.5rem;
+    }
+    .loom-success.shown { display: flex; }
+    .loom-success-icon {
+      width: 3rem; height: 3rem;
+      border-radius: 50%;
+      background: var(--rt-accent-soft);
+      border: var(--rt-border-width) solid var(--rt-accent);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--rt-accent);
+    }
+    .loom-success h4 { margin: 0; font-size: 1rem; }
+    .loom-success p { margin: 0; font-size: 0.82rem; }
+    .review-modal { width: min(420px, 100%); }
+    .review-target {
+      margin: 0;
+      font-size: 0.82rem;
+      color: var(--rt-text-muted);
+    }
+    .review-stars {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.35rem;
+      margin: 1.25rem 0 1rem;
+    }
+    .review-star {
+      width: 2rem;
+      height: 2rem;
+      border: var(--rt-border-width) solid var(--rt-border);
+      border-radius: var(--rt-radius-sm);
+      background: var(--rt-subsurface);
+      color: var(--rt-text-faint);
+      font-size: 1.15rem;
+      line-height: 1;
+      cursor: pointer;
+      transition: color 0.15s, border-color 0.15s, transform 0.15s, background 0.15s;
+    }
+    .review-star.active,
+    .review-star:hover {
+      color: #fbbf24;
+      border-color: #fbbf24;
+      background: color-mix(in srgb, #fbbf24 12%, transparent);
+      transform: translateY(-1px);
+    }
+    .review-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.5rem;
+    }
+    .review-submit-msg {
+      margin: 0.75rem 0 0;
+      font-size: 0.75rem;
+      color: var(--rt-text-faint);
+      min-height: 1em;
+    }
+
+    @media (max-width: 600px) {
+      .loom-form-row { grid-template-columns: 1fr; }
+      .loom-form-footer { flex-direction: column; align-items: stretch; }
+      .loom-add-form { grid-template-columns: 1fr; }
+      .top-bar-actions { flex-wrap: wrap; justify-content: flex-end; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+
+    /* ── Customization showcase ── */
+    .customize-wrap {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+      gap: 1.25rem;
+      margin-top: 1.75rem;
+      align-items: stretch;
+    }
+    @media (max-width: 760px) { .customize-wrap { grid-template-columns: 1fr; } }
+
+    .customize-panel { padding: 1.1rem 1.2rem; display: flex; flex-direction: column; gap: 1.15rem; }
+    .cz-tabs { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 0.2rem; }
+    .cz-tab {
+      font-size: 0.7rem; padding: 0.35rem 0.7rem; border-radius: var(--rt-radius-sm);
+      color: var(--rt-text-muted); background: var(--rt-surface);
+      border: var(--rt-border-width) solid var(--rt-border);
+      cursor: pointer; font-family: inherit; transition: color 0.15s ease, background 0.15s ease, border-color 0.15s ease;
+    }
+    .cz-tab:hover { color: var(--rt-text); border-color: var(--rt-accent); }
+    .cz-tab.active { color: var(--rt-accent-fg); background: var(--rt-accent); border-color: var(--rt-accent); }
+    .cz-group { display: flex; flex-direction: column; gap: 0.5rem; }
+    .cz-label { font-size: 0.72rem; color: var(--rt-text-muted); display: flex; justify-content: space-between; align-items: center; }
+    .cz-label b { color: var(--rt-text); font-weight: 600; }
+    .cz-swatches { display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap; }
+    .cz-swatch {
+      width: 26px; height: 26px; border-radius: 50%;
+      border: 2px solid transparent; cursor: pointer; padding: 0;
+      box-shadow: 0 0 0 1px var(--rt-border) inset; transition: transform 0.15s ease, border-color 0.15s ease;
+    }
+    .cz-swatch:hover { transform: scale(1.12); }
+    .cz-swatch.active { border-color: var(--rt-text); }
+    .cz-swatch-custom { position: relative; overflow: hidden; background: conic-gradient(from 0deg, #f87171, #fbbf24, #34d399, #38bdf8, #8b5cf6, #f87171); }
+    .cz-swatch-custom input { position: absolute; inset: -6px; opacity: 0; cursor: pointer; }
+    .cz-chips { display: flex; gap: 0.45rem; flex-wrap: wrap; }
+    .cz-chip {
+      font-size: 0.72rem; padding: 0.35rem 0.7rem; border-radius: var(--rt-radius-sm);
+      border: var(--rt-border-width) solid var(--rt-border); color: var(--rt-text-muted);
+      background: var(--rt-surface); cursor: pointer; transition: all 0.15s ease;
+    }
+    .cz-chip:hover { border-color: var(--rt-accent); color: var(--rt-text); }
+    .cz-chip.active { background: var(--rt-accent); color: var(--rt-accent-fg); border-color: var(--rt-accent); }
+    .cz-chip-tag { margin-left: 0.35rem; font-size: 0.86em; opacity: 0.55; }
+    .cz-chip.active .cz-chip-tag { opacity: 0.85; }
+    .cz-range { -webkit-appearance: none; appearance: none; width: 100%; height: 4px; border-radius: 999px; background: var(--rt-border); outline: none; }
+    .cz-range::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 16px; height: 16px; border-radius: 50%; background: var(--rt-accent); cursor: pointer; border: 2px solid var(--rt-surface); }
+    .cz-range::-moz-range-thumb { width: 16px; height: 16px; border-radius: 50%; background: var(--rt-accent); cursor: pointer; border: 2px solid var(--rt-surface); }
+
+    /* Live preview pane */
+    .customize-preview { padding: 0; overflow: hidden; display: flex; flex-direction: column; }
+    .cz-preview-chrome { display: flex; align-items: center; gap: 0.5rem; padding: 0.55rem 0.85rem; border-bottom: var(--rt-border-width) solid var(--rt-border); background: var(--rt-surface-strong); }
+    .cz-preview-chrome .chrome-dot { width: 9px; height: 9px; border-radius: 50%; }
+    .cz-preview-title { font-size: 0.7rem; color: var(--rt-text-muted); }
+    .cz-preview-scale { transform-origin: top left; transition: transform 0.25s ease; }
+    .cz-preview-body { padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: 0.7rem; }
+    .cz-preview-h { font-size: 1.05rem; font-weight: 600; }
+    .cz-preview-sub { font-size: 0.78rem; color: var(--rt-text-muted); }
+    .cz-preview-row { display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; }
+    .cz-pill { font-size: 0.7rem; padding: 0.2rem 0.6rem; border-radius: 999px; background: var(--rt-accent-soft); color: var(--rt-accent); }
+    .cz-preview-mono { font-family: ui-monospace, "JetBrains Mono", monospace; font-size: 0.72rem; color: var(--rt-text-muted); background: var(--rt-terminal-bg); border: var(--rt-border-width) solid var(--rt-border); border-radius: var(--rt-radius-sm); padding: 0.55rem 0.7rem; }
+    .cz-preview-mono .rt-accent-text { color: var(--rt-accent); }
+
+    /* Tab panels */
+    .cz-tabpanel { display: flex; flex-direction: column; gap: 1.15rem; animation: cz-fade 0.25s ease; }
+    .cz-tabpanel[hidden] { display: none; }
+    @keyframes cz-fade { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+    .cz-hint-text { font-size: 0.68rem; line-height: 1.45; }
+
+    /* Theme-engine chooser */
+    .cz-engines { display: flex; flex-wrap: wrap; gap: 0.45rem; }
+    .cz-engine { display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.72rem; padding: 0.35rem 0.65rem; }
+    .cz-engine-dot { width: 10px; height: 10px; border-radius: 50%; box-shadow: 0 0 0 1px var(--rt-border) inset; }
+
+    /* Segmented control (Appearance) */
+    .cz-seg { display: inline-flex; border: var(--rt-border-width) solid var(--rt-border); border-radius: var(--rt-radius-sm); overflow: hidden; width: max-content; }
+    .cz-seg button { font-size: 0.72rem; padding: 0.4rem 0.8rem; color: var(--rt-text-muted); background: transparent; border: none; cursor: pointer; transition: all 0.15s ease; }
+    .cz-seg button + button { border-left: var(--rt-border-width) solid var(--rt-border); }
+    .cz-seg button.active { background: var(--rt-accent); color: var(--rt-accent-fg); }
+
+    /* Font upload */
+    .cz-upload { display: inline-flex; align-items: center; gap: 0.45rem; align-self: flex-start; font-size: 0.74rem; padding: 0.45rem 0.8rem; border: 1px dashed var(--rt-border); border-radius: var(--rt-radius-sm); background: var(--rt-surface); color: var(--rt-text-muted); cursor: pointer; transition: all 0.15s ease; }
+    .cz-upload:hover { border-color: var(--rt-accent); color: var(--rt-text); }
+
+    /* Version */
+    .cz-version-row { display: flex; align-items: center; gap: 0.8rem; }
+    .cz-version-logo { display: flex; align-items: center; justify-content: center; width: 42px; height: 42px; border-radius: var(--rt-radius-sm); background: var(--rt-surface-strong); border: var(--rt-border-width) solid var(--rt-border); }
+
+    /* Mock toolbar in the live preview (driven by the Appearance → Top bar toggle) */
+    .cz-mocktoolbar { display: flex; gap: 0.35rem; flex-wrap: wrap; margin-bottom: 0.9rem; }
+    .cz-mtb-chip { display: inline-flex; align-items: center; gap: 0.3rem; font-size: 0.66rem; padding: 0.25rem 0.5rem; border-radius: var(--rt-radius-sm); border: var(--rt-border-width) solid var(--rt-border); background: var(--rt-surface); color: var(--rt-text-muted); }
+    .cz-mtb-chip .rt-icon { color: var(--rt-accent); }
+    .cz-mocktoolbar.icons-only .cz-mtb-label { display: none; }
+  </style>
+</head>
+<body>
+  <div class="grid-bg" aria-hidden="true"></div>
+
+  <div class="page">
+    <div class="top-bar">
+
+      <div class="top-bar-right">
+        <div class="theme-switcher rt-btn-outline">
+          <svg class="rt-icon" width="14" height="14" viewBox="0 0 24 24" stroke-width="2"><circle cx="13.5" cy="6.5" r=".5" fill="currentColor"/><circle cx="17.5" cy="10.5" r=".5" fill="currentColor"/><circle cx="8.5" cy="7.5" r=".5" fill="currentColor"/><circle cx="6.5" cy="12.5" r=".5" fill="currentColor"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"/></svg>
+          <button class="theme-arrow" type="button" id="theme-prev" aria-label="Previous theme">
+            <svg class="rt-icon" width="14" height="14" viewBox="0 0 24 24" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+          </button>
+          <span id="theme-label" class="theme-name">Sleek</span>
+          <button class="theme-arrow" type="button" id="theme-next" aria-label="Next theme">
+            <svg class="rt-icon" width="14" height="14" viewBox="0 0 24 24" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+          </button>
+        </div>
+        <div class="theme-switcher rt-btn-outline accent-switcher" aria-label="Accent color">
+          <span class="accent-switcher-label rt-text-muted">Accent</span>
+          <div class="cz-swatches accent-dots" role="group" aria-label="Accent presets">
+            <button class="cz-accent-reset" type="button" title="Reset to the theme's brand accent">Default</button>
+            <button class="cz-swatch" type="button" data-accent="#34d399" title="Emerald" style="background:#34d399;"></button>
+            <button class="cz-swatch" type="button" data-accent="#8b5cf6" title="Violet" style="background:#8b5cf6;"></button>
+            <button class="cz-swatch" type="button" data-accent="#38bdf8" title="Sky" style="background:#38bdf8;"></button>
+            <button class="cz-swatch" type="button" data-accent="#f43f5e" title="Rose" style="background:#f43f5e;"></button>
+            <label class="cz-swatch cz-swatch-custom" title="Custom hex"><input type="color" class="cz-accent-custom" value="#34d399" aria-label="Custom accent color"></label>
+          </div>
+        </div>
+        <div class="top-bar-actions">
+          <button type="button" class="rt-btn-outline marketplace-nav-btn" data-nav-view="home">Home</button>
+          <button type="button" class="loom-btn" id="nav-loom" data-nav-view="marketplace" aria-label="Browse Retermina Loom marketplace">
+            Retermina Loom
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <header class="hero spa-view active" data-view="home">
+      <div class="logo-box rt-surface">
+        <svg class="rt-icon rt-accent-text" width="28" height="28" viewBox="0 0 24 24" stroke-width="2">
+          <polyline points="4 17 10 11 4 5"/><line x1="12" x2="20" y1="19" y2="19"/>
+        </svg>
+      </div>
+      <h1>Retermina</h1>
+      <p class="hero-tagline rt-text-muted">
+        A customizable terminal workspace — <span class="hero-typed" id="hero-typed"></span>
+      </p>
+      <div class="hero-cta">
+        <a class="cta-primary" href="https://github.com/matthewhamilton3141/Retermina" target="_blank" rel="noopener">
+          <svg class="rt-icon" width="18" height="18" viewBox="0 0 24 24" stroke-width="2"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.01.28-2.09 0-3.09 0 0-.79-.25-2.65 1.01A9.64 9.64 0 0 0 12 3c-2.35 0-4.27 1.02-5.4 2.01-1.86-1.26-2.65-1.01-2.65-1.01-.28 1-.28 2.09 0 3.09A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65S8.93 17.38 9 18v4"/><path d="M9 18c-4.51 2-5-2-7-2"/></svg>
+          View on GitHub
+        </a>
+        <a class="hero-dmg-btn" href="https://github.com/matthewhamilton3141/Retermina/releases/latest/download/Retermina-macos.dmg" target="_blank" rel="noopener">
+          <svg class="rt-icon" width="14" height="14" viewBox="0 0 24 24" stroke-width="2">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+            <polyline points="7 10 12 15 17 10"/>
+            <line x1="12" x2="12" y1="3" y2="15"/>
+          </svg>
+          Download for Mac
+        </a>
+      </div>
+      <p class="hero-version rt-text-faint">
+        <span class="hero-version-dot"></span>
+        Retermina <span class="hero-version-beta">beta</span> · v0.1.0 — early acess
+      </p>
+
+      <!-- Live terminal demo -->
+      <div class="terminal-demo-wrap rt-panel" id="terminal-demo">
+        <div class="terminal-chrome">
+          <span class="chrome-dot red"></span>
+          <span class="chrome-dot yellow"></span>
+          <span class="chrome-dot green"></span>
+          <span class="chrome-title">retermina — zsh — 80×24</span>
+        </div>
+        <div class="terminal-body" id="terminal-body"></div>
+      </div>
+
+      <!-- Workspace grid mock — genuinely draggable (swap-tiling), with an
+           auto-playing ghost-cursor demo that stops on first real interaction -->
+      <div class="workspace-mock rt-panel">
+        <div class="mock-hint" id="mock-hint" aria-hidden="true">
+          <svg class="rt-icon" width="13" height="13" viewBox="0 0 24 24" stroke-width="2"><path d="M18 11V6a2 2 0 0 0-2-2 2 2 0 0 0-2 2 2 2 0 0 0-2-2 2 2 0 0 0-2 2v0a2 2 0 0 0-2-2 2 2 0 0 0-2 2v6"/><path d="M14 10V4a2 2 0 0 0-2-2 2 2 0 0 0-2 2v2"/><path d="m7 15-1.7-1.7a2 2 0 0 0-2.8 2.8L6 19.5A6 6 0 0 0 11 22h2a6 6 0 0 0 6-6v-5a2 2 0 0 0-2-2"/></svg>
+          Drag the panels — rearrange the workspace
+        </div>
+        <div class="mock-grid" id="mock-grid">
+          <div class="mock-panel" data-x="0" data-y="0" data-w="1" data-h="2">
+            <div class="mock-panel-header">
+              <svg class="rt-icon" width="12" height="12" viewBox="0 0 24 24" stroke-width="2"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"/></svg>
+              Explorer
+            </div>
+            <div class="mock-panel-body mock-tree">
+              <span class="term-accent">▸ app/</span>
+              <span class="term-accent">▸ components/</span>
+              <span class="term-dim">▸ lib/</span>
+              <span class="term-dim">  index.tsx</span>
+            </div>
+          </div>
+          <div class="mock-panel" data-x="1" data-y="0" data-w="2" data-h="2">
+            <div class="mock-panel-header">
+              <svg class="rt-icon rt-accent-text" width="12" height="12" viewBox="0 0 24 24" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+              Code <span class="mock-tag term-dim">App.tsx</span>
+            </div>
+            <div class="mock-panel-body mock-code">
+              <div><span class="term-magenta">export function</span> <span class="term-blue">App</span>() {</div>
+              <div>  <span class="term-magenta">const</span> view = <span class="term-blue">useStore</span>(s =&gt; s.view);</div>
+              <div>  <span class="term-magenta">return</span> &lt;<span class="term-green">Workspace</span> /&gt;;</div>
+              <div>}</div>
+            </div>
+          </div>
+          <div class="mock-panel" data-x="3" data-y="0" data-w="1" data-h="1">
+            <div class="mock-panel-header">
+              <svg class="rt-icon rt-accent-text" width="12" height="12" viewBox="0 0 24 24" stroke-width="2"><polyline points="4 17 10 11 4 5"/><line x1="12" x2="20" y1="19" y2="19"/></svg>
+              Terminal
+            </div>
+            <div class="mock-panel-body"><span class="rt-accent-text">$</span> npm run dev</div>
+          </div>
+          <div class="mock-panel" data-x="3" data-y="1" data-w="1" data-h="1">
+            <div class="mock-panel-header">
+              <svg class="rt-icon rt-accent-text" width="12" height="12" viewBox="0 0 24 24" stroke-width="2"><path d="M12 3l1.6 4.9a2 2 0 0 0 1.3 1.3L20 11l-5 1.6a2 2 0 0 0-1.3 1.3L12 19l-1.6-4.9a2 2 0 0 0-1.3-1.3L4 11l5-1.6a2 2 0 0 0 1.3-1.3z"/></svg>
+              Claude Code
+            </div>
+            <div class="mock-panel-body"><span class="term-magenta">✦</span> <span class="term-dim">68K tok · 3 sessions</span></div>
+          </div>
+          <div class="mock-panel" data-x="0" data-y="2" data-w="4" data-h="1">
+            <div class="mock-panel-header">
+              <svg class="rt-icon" width="12" height="12" viewBox="0 0 24 24" stroke-width="2"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
+              Localhost
+            </div>
+            <div class="mock-panel-body"><span class="term-green">●</span> :1420 <span class="term-dim">vite</span><span class="mock-sep">·</span><span class="term-green">●</span> :3000 <span class="term-dim">next</span></div>
+          </div>
+
+          <!-- Drop-target preview + ghost cursor for the auto-demo -->
+          <div class="mock-placeholder" id="mock-placeholder" aria-hidden="true"></div>
+          <div class="mock-cursor" id="mock-cursor" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M5.5 3.2 19 12l-5.6 1.3 3 6-2.5 1.2-3-6L7 18.5z"/></svg>
+          </div>
+        </div>
+
+        <!-- Iris bar mock -->
+        <div class="iris-mock rt-surface" style="border-radius: var(--rt-radius-sm);">
+          <svg class="rt-icon rt-accent-text" width="16" height="16" viewBox="0 0 24 24" stroke-width="2"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/><path d="M20 3v4"/><path d="M22 5h-4"/><path d="M4 17v2"/><path d="M5 18H3"/></svg>
+          <div class="iris-input" id="iris-input">
+            <span class="iris-typed" id="iris-typed"></span><span class="rt-text-faint" id="iris-cursor">▋</span>
+          </div>
+        </div>
+        <div class="iris-suggest rt-panel" id="iris-suggest">
+          <div class="iris-item active">
+            <svg class="rt-icon" width="14" height="14" viewBox="0 0 24 24" stroke-width="2"><line x1="6" x2="6" y1="3" y2="15"/><circle cx="18" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M18 9a9 9 0 0 1-9 9"/></svg>
+            git push origin main
+          </div>
+          <div class="iris-item rt-text-muted">
+            <svg class="rt-icon" width="14" height="14" viewBox="0 0 24 24" stroke-width="2"><path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/><path d="M16 16h5v5"/></svg>
+            git pull --rebase
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <section class="block spa-view active" id="features" data-view="home">
+      <p class="section-label rt-text-muted">Start</p>
+      <h2 class="section-title">Everything from the Launch Hub</h2>
+      <p class="rt-text-muted" style="max-width: 520px;">The same primary actions that greet you when Retermina opens — recreated here with the real card interactions from <code style="font-size:0.85em;">LaunchActionCard</code>.</p>
+
+      <div class="start-grid" style="margin-top: 1.5rem;">
+        <div class="rt-card start-card">
+          <span class="rt-card-icon start-card-icon">
+            <svg class="rt-icon" width="22" height="22" viewBox="0 0 24 24" stroke-width="2"><polygon points="6 3 20 12 6 21 6 3"/></svg>
+          </span>
+          <span>
+            <span class="start-card-title">Launch Blank Terminal</span>
+            <span class="start-card-desc rt-text-muted" style="display:block;margin-top:0.2rem;">Start a fresh shell session</span>
+          </span>
+        </div>
+        <div class="rt-card start-card">
+          <span class="rt-card-icon start-card-icon">
+            <svg class="rt-icon" width="22" height="22" viewBox="0 0 24 24" stroke-width="2"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M12 18v-6"/><path d="M9 15h6"/></svg>
+          </span>
+          <span>
+            <span class="start-card-title">New File</span>
+            <span class="start-card-desc rt-text-muted" style="display:block;margin-top:0.2rem;">Create and edit a new file</span>
+          </span>
+        </div>
+        <div class="rt-card start-card">
+          <span class="rt-card-icon start-card-icon">
+            <svg class="rt-icon" width="22" height="22" viewBox="0 0 24 24" stroke-width="2"><path d="m6 14 1.5-2.9A2 2 0 0 1 9.24 10H20a2 2 0 0 1 1.94 2.5l-1.54 6a2 2 0 0 1-1.95 1.5H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.67.9H18a2 2 0 0 1 2 2v2"/></svg>
+          </span>
+          <span>
+            <span class="start-card-title">Open Folder</span>
+            <span class="start-card-desc rt-text-muted" style="display:block;margin-top:0.2rem;">Open an existing project</span>
+          </span>
+        </div>
+        <div class="rt-card start-card">
+          <span class="rt-card-icon start-card-icon">
+            <svg class="rt-icon" width="22" height="22" viewBox="0 0 24 24" stroke-width="2"><line x1="6" x2="6" y1="3" y2="15"/><circle cx="18" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M18 9a9 9 0 0 1-9 9"/></svg>
+          </span>
+          <span>
+            <span class="start-card-title">Clone Git Repository</span>
+            <span class="start-card-desc rt-text-muted" style="display:block;margin-top:0.2rem;">Clone from a remote URL</span>
+          </span>
+        </div>
+        <div class="rt-card start-card">
+          <span class="rt-card-icon start-card-icon">
+            <svg class="rt-icon" width="22" height="22" viewBox="0 0 24 24" stroke-width="2"><polyline points="4 17 10 11 4 5"/><line x1="12" x2="20" y1="19" y2="19"/></svg>
+          </span>
+          <span>
+            <span class="start-card-title">Import from Terminal</span>
+            <span class="start-card-desc rt-text-muted" style="display:block;margin-top:0.2rem;">Pick up an existing shell's working directory</span>
+          </span>
+        </div>
+      </div>
+    </section>
+
+    <section class="block spa-view active" data-view="home">
+      <p class="section-label rt-text-muted">Engines</p>
+      <h2 class="section-title">Five structural theme engines</h2>
+      <p class="rt-text-muted" style="max-width: 560px;">Each engine swaps far more than accent colors — corner radius, border weight, shadows, backdrop blur, fonts, and icon stroke weight all change. Click a chip or use the switcher above.</p>
+
+      <div class="theme-showcase">
+        <button class="rt-btn-outline theme-chip active" data-theme="sleek">Sleek</button>
+        <button class="rt-btn-outline theme-chip" data-theme="pastel">Soft Pastel</button>
+        <button class="rt-btn-outline theme-chip" data-theme="glass">Transparent Glass</button>
+        <button class="rt-btn-outline theme-chip" data-theme="minimalist">Minimalist</button>
+        <button class="rt-btn-outline theme-chip" data-theme="brutalism">Neo-Brutalism</button>
+      </div>
+
+      <div class="features-grid">
+        <div class="feature-card rt-panel">
+          <svg class="rt-icon rt-accent-text" width="24" height="24" viewBox="0 0 24 24" stroke-width="2"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
+          <h3>Modular Workspace</h3>
+          <p class="rt-text-muted">Seven draggable, resizable panels on a react-grid-layout grid — Explorer, Terminal, Code, Localhost, Claude Code, Preview, and Changes — arranged however you work. (Try dragging the demo above.)</p>
+        </div>
+        <div class="feature-card rt-panel">
+          <svg class="rt-icon rt-accent-text" width="24" height="24" viewBox="0 0 24 24" stroke-width="2"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/></svg>
+          <h3>Iris Command Bar</h3>
+          <p class="rt-text-muted">A local, tokenless command bar — no API keys, no network. Macros for git, npm, and shell are ranked by fuzzy match and gated on live repo state (Push only shows when you're ahead of upstream).</p>
+        </div>
+        <div class="feature-card rt-panel">
+          <svg class="rt-icon rt-accent-text" width="24" height="24" viewBox="0 0 24 24" stroke-width="2"><path d="M12 3l1.6 4.9a2 2 0 0 0 1.3 1.3L20 11l-5 1.6a2 2 0 0 0-1.3 1.3L12 19l-1.6-4.9a2 2 0 0 0-1.3-1.3L4 11l5-1.6a2 2 0 0 0 1.3-1.3z"/></svg>
+          <h3>Claude Code, built in</h3>
+          <p class="rt-text-muted">A dedicated panel that auto-launches the <code style="font-size:0.85em;">claude</code> CLI in its own PTY, with a per-project token-usage strip. Spawned with theme-aware colors so output stays legible on light engines.</p>
+        </div>
+        <div class="feature-card rt-panel">
+          <svg class="rt-icon rt-accent-text" width="24" height="24" viewBox="0 0 24 24" stroke-width="2"><circle cx="18" cy="18" r="3"/><circle cx="6" cy="6" r="3"/><path d="M13 6h3a2 2 0 0 1 2 2v7"/><line x1="6" x2="6" y1="9" y2="21"/></svg>
+          <h3>Live Changes panel</h3>
+          <p class="rt-text-muted">A project-wide <code style="font-size:0.85em;">git diff</code> of your working tree that updates live — so edits the Claude CLI makes in the Terminal show up as you watch, file by file.</p>
+        </div>
+        <div class="feature-card rt-panel">
+          <svg class="rt-icon rt-accent-text" width="24" height="24" viewBox="0 0 24 24" stroke-width="2"><polyline points="4 17 10 11 4 5"/><line x1="12" x2="20" y1="19" y2="19"/></svg>
+          <h3>Real xterm.js terminals</h3>
+          <p class="rt-text-muted">Native shells (Zsh, Bash, PowerShell) over a Rust <code style="font-size:0.85em;">portable-pty</code>, streamed to xterm.js. Split panes horizontally or vertically, each with its own PTY and per-engine palette.</p>
+        </div>
+        <div class="feature-card rt-panel">
+          <svg class="rt-icon rt-accent-text" width="24" height="24" viewBox="0 0 24 24" stroke-width="2"><rect width="20" height="8" x="2" y="2" rx="2" ry="2"/><rect width="20" height="8" x="2" y="14" rx="2" ry="2"/><line x1="6" x2="6.01" y1="6" y2="6"/><line x1="6" x2="6.01" y1="18" y2="18"/></svg>
+          <h3>Native Tauri, no cloud</h3>
+          <p class="rt-text-muted">A Rust + React desktop app — your shell runs locally with no token limits, no subscription, and nothing uploaded. Quick-open (⌘P), a command palette (⌘K), and self-updates are built in.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════ CUSTOMIZATION ══════════════════════════════════════════ -->
+    <section class="block spa-view active" id="customize" data-view="home">
+      <p class="section-label rt-text-muted">Make it yours</p>
+      <h2 class="section-title">Customize down to the pixel</h2>
+      <p class="rt-text-muted" style="max-width: 580px;">One frosted Settings overlay — <b>Theme</b>, <b>Appearance</b>, <b>Font</b>, and <b>Version</b> — writes straight to a persisted store, so every choice survives a restart. Change the accent, font, and workspace scale below and watch this page update live, exactly like the app does.</p>
+
+      <div class="customize-wrap">
+        <!-- Controls (mirrors the Settings overlay) -->
+        <div class="customize-panel rt-panel">
+          <div class="cz-tabs" role="tablist" aria-label="Settings tabs">
+            <button class="cz-tab active" type="button" data-tab="theme" role="tab">Theme</button>
+            <button class="cz-tab" type="button" data-tab="appearance" role="tab">Appearance</button>
+            <button class="cz-tab" type="button" data-tab="font" role="tab">Font</button>
+            <button class="cz-tab" type="button" data-tab="version" role="tab">Version</button>
+          </div>
+
+          <!-- ── Theme tab ── -->
+          <div class="cz-tabpanel active" data-panel="theme">
+            <div class="cz-group">
+              <span class="cz-label">Theme engine <b id="cz-engine-name">Sleek</b></span>
+              <div class="cz-engines">
+                <button class="cz-engine theme-chip active" type="button" data-theme="sleek"><span class="cz-engine-dot" style="background:#34d399;"></span>Sleek</button>
+                <button class="cz-engine theme-chip" type="button" data-theme="pastel"><span class="cz-engine-dot" style="background:#8b5cf6;"></span>Soft Pastel</button>
+                <button class="cz-engine theme-chip" type="button" data-theme="glass"><span class="cz-engine-dot" style="background:#4a6fa5;"></span>Transparent Glass</button>
+                <button class="cz-engine theme-chip" type="button" data-theme="minimalist"><span class="cz-engine-dot" style="background:#18181b;"></span>Minimalist</button>
+                <button class="cz-engine theme-chip" type="button" data-theme="brutalism"><span class="cz-engine-dot" style="background:#16a34a;"></span>Neo-Brutalism</button>
+              </div>
+            </div>
+            <div class="cz-group">
+              <span class="cz-label">Accent color <b id="cz-accent-name" class="cz-accent-name">Theme default</b></span>
+              <div class="cz-swatches" id="cz-swatches">
+                <button class="cz-accent-reset" type="button" title="Reset to the theme's brand accent">Default</button>
+                <button class="cz-swatch" type="button" data-accent="#34d399" title="Emerald" style="background:#34d399;"></button>
+                <button class="cz-swatch" type="button" data-accent="#8b5cf6" title="Violet" style="background:#8b5cf6;"></button>
+                <button class="cz-swatch" type="button" data-accent="#38bdf8" title="Sky" style="background:#38bdf8;"></button>
+                <button class="cz-swatch" type="button" data-accent="#f59e0b" title="Amber" style="background:#f59e0b;"></button>
+                <button class="cz-swatch" type="button" data-accent="#f43f5e" title="Rose" style="background:#f43f5e;"></button>
+                <button class="cz-swatch" type="button" data-accent="#ffffff" title="White — note the contrast-aware text" style="background:#ffffff;"></button>
+                <label class="cz-swatch cz-swatch-custom" title="Custom hex">
+                  <input type="color" id="cz-accent-custom" class="cz-accent-custom" value="#34d399" aria-label="Custom accent color">
+                </label>
+              </div>
+              <span class="cz-hint-text rt-text-faint">Text drawn on the accent flips between near-black and white by WCAG luminance — try the white swatch.</span>
+            </div>
+          </div>
+
+          <!-- ── Appearance tab ── -->
+          <div class="cz-tabpanel" data-panel="appearance" hidden>
+            <div class="cz-group">
+              <span class="cz-label">Top bar</span>
+              <div class="cz-seg" data-seg="topbar">
+                <button class="active" type="button" data-seg-val="labels">Icons + labels</button>
+                <button type="button" data-seg-val="icons">Icons only</button>
+              </div>
+            </div>
+            <div class="cz-group">
+              <span class="cz-label">Panel toggles</span>
+              <div class="cz-seg" data-seg="paneltoggle">
+                <button class="active" type="button" data-seg-val="strip">Icon strip</button>
+                <button type="button" data-seg-val="dropdown">Dropdown</button>
+              </div>
+            </div>
+            <div class="cz-group">
+              <span class="cz-label">Workspace scale <b id="cz-scale-val">100%</b></span>
+              <input type="range" class="cz-range" id="cz-scale" min="80" max="130" step="5" value="100" aria-label="Workspace text scale">
+            </div>
+          </div>
+
+          <!-- ── Font tab ── -->
+          <div class="cz-tabpanel" data-panel="font" hidden>
+            <div class="cz-group">
+              <span class="cz-label">Bundled typefaces</span>
+              <div class="cz-chips" id="cz-fonts">
+                <button class="cz-chip active" type="button" data-font="'Inter', system-ui, sans-serif">Inter <span class="cz-chip-tag">Minimalist</span></button>
+                <button class="cz-chip" type="button" data-font="'Space Grotesk', system-ui, sans-serif">Space Grotesk <span class="cz-chip-tag">Neo-Brutalism</span></button>
+                <button class="cz-chip" type="button" data-font="'Nunito', system-ui, sans-serif">Nunito <span class="cz-chip-tag">Soft Pastel</span></button>
+                <button class="cz-chip" type="button" data-font="'JetBrains Mono', ui-monospace, monospace">JetBrains Mono <span class="cz-chip-tag">Terminal</span></button>
+              </div>
+            </div>
+            <div class="cz-group">
+              <span class="cz-label">Your own font</span>
+              <button class="cz-upload" type="button" id="cz-upload">
+                <svg class="rt-icon" width="15" height="15" viewBox="0 0 24 24" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" x2="12" y1="3" y2="15"/></svg>
+                Upload .ttf / .otf
+              </button>
+              <span class="cz-hint-text rt-text-faint" id="cz-upload-note">Files are copied in by Rust and registered at runtime, then paired to a theme category.</span>
+            </div>
+          </div>
+
+          <!-- ── Version tab ── -->
+          <div class="cz-tabpanel" data-panel="version" hidden>
+            <div class="cz-version-row">
+              <span class="cz-version-logo">
+                <svg class="rt-icon rt-accent-text" width="22" height="22" viewBox="0 0 24 24" stroke-width="2"><polyline points="4 17 10 11 4 5"/><line x1="12" x2="20" y1="19" y2="19"/></svg>
+              </span>
+              <span>
+                <b style="display:block;">Retermina</b>
+                <span class="rt-text-faint" style="font-size:0.75rem;">Version <span style="font-family:ui-monospace,monospace;">0.1.0</span></span>
+              </span>
+            </div>
+            <div class="cz-group">
+              <button class="rt-btn-outline" type="button" id="cz-check-update" style="align-self:flex-start; padding:0.4rem 0.8rem; font-size:0.78rem;">
+                Check for Updates
+              </button>
+              <span class="cz-hint-text rt-text-faint" id="cz-update-status">Retermina also checks on launch and shows a dismissible banner when a new build is available.</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Live preview -->
+        <div class="customize-preview rt-panel">
+          <div class="cz-preview-chrome">
+            <span class="chrome-dot red" style="background:#f87171;"></span>
+            <span class="chrome-dot yellow" style="background:#fbbf24;"></span>
+            <span class="chrome-dot green" style="background:#34d399;"></span>
+            <span class="cz-preview-title">Settings · live preview</span>
+          </div>
+          <div class="cz-preview-body">
+            <div class="cz-preview-scale" id="cz-preview-scale">
+              <div class="cz-mocktoolbar" id="cz-mocktoolbar">
+                <span class="cz-mtb-chip"><svg class="rt-icon" width="11" height="11" viewBox="0 0 24 24" stroke-width="2"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"/></svg><span class="cz-mtb-label">Explorer</span></span>
+                <span class="cz-mtb-chip"><svg class="rt-icon" width="11" height="11" viewBox="0 0 24 24" stroke-width="2"><polyline points="4 17 10 11 4 5"/><line x1="12" x2="20" y1="19" y2="19"/></svg><span class="cz-mtb-label">Terminal</span></span>
+                <span class="cz-mtb-chip"><svg class="rt-icon" width="11" height="11" viewBox="0 0 24 24" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg><span class="cz-mtb-label">Code</span></span>
+                <span class="cz-mtb-chip"><svg class="rt-icon" width="11" height="11" viewBox="0 0 24 24" stroke-width="2"><circle cx="18" cy="18" r="3"/><circle cx="6" cy="6" r="3"/><path d="M13 6h3a2 2 0 0 1 2 2v7"/><line x1="6" x2="6" y1="9" y2="21"/></svg><span class="cz-mtb-label">Changes</span></span>
+              </div>
+              <div class="cz-preview-h">Good afternoon</div>
+              <div class="cz-preview-sub">A customizable terminal workspace</div>
+              <div class="cz-preview-row" style="margin-top:0.6rem;">
+                <span class="cz-pill">accent</span>
+                <button class="rt-btn-outline" style="padding:0.3rem 0.7rem; font-size:0.75rem;">Launch Terminal</button>
+                <span class="rt-accent-text" style="font-weight:600;">●</span>
+              </div>
+              <div class="cz-preview-mono" style="margin-top:0.6rem;">
+                <span class="rt-accent-text">$</span> iris git push <span style="color:var(--rt-accent-fg); background:var(--rt-accent); padding:0 4px; border-radius:3px;">selected</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- What the Settings overlay covers -->
+      <div class="features-grid" style="margin-top: 1.75rem;">
+        <div class="feature-card rt-panel">
+          <svg class="rt-icon rt-accent-text" width="24" height="24" viewBox="0 0 24 24" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09A1.65 1.65 0 0 0 15 4.6a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          <h3>One Settings overlay</h3>
+          <p class="rt-text-muted">Theme, Appearance, Font, and Version in four tabs. Toggle the top-bar between icons and labels, swap the panel-toggle style, and persist it all to <code style="font-size:0.85em;">settings.json</code>.</p>
+        </div>
+        <div class="feature-card rt-panel">
+          <svg class="rt-icon rt-accent-text" width="24" height="24" viewBox="0 0 24 24" stroke-width="2"><path d="M12 22a10 10 0 1 1 0-20 10 10 0 0 1 10 10 2 2 0 0 1-2 2h-2.5a1.5 1.5 0 0 0-1.06 2.56A1.5 1.5 0 0 1 12 22z"/><circle cx="13.5" cy="6.5" r=".5" fill="currentColor"/><circle cx="17.5" cy="10.5" r=".5" fill="currentColor"/><circle cx="6.5" cy="12.5" r=".5" fill="currentColor"/><circle cx="8.5" cy="7.5" r=".5" fill="currentColor"/></svg>
+          <h3>Accent + contrast-aware</h3>
+          <p class="rt-text-muted">Pick any hex accent and the whole app re-tints. Text drawn on the accent flips between near-black and white by WCAG luminance — try the white swatch and watch the label stay readable.</p>
+        </div>
+        <div class="feature-card rt-panel">
+          <svg class="rt-icon rt-accent-text" width="24" height="24" viewBox="0 0 24 24" stroke-width="2"><polyline points="4 7 4 4 20 4 20 7"/><line x1="9" x2="15" y1="20" y2="20"/><line x1="12" x2="12" y1="4" y2="20"/></svg>
+          <h3>Your fonts, paired</h3>
+          <p class="rt-text-muted">Bundled typefaces or upload your own <code style="font-size:0.85em;">.ttf/.otf</code> — copied in by Rust and registered at runtime. A pairing control suggests the font that suits the active theme.</p>
+        </div>
+        <div class="feature-card rt-panel">
+          <svg class="rt-icon rt-accent-text" width="24" height="24" viewBox="0 0 24 24" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          <h3>Save it as a Loom</h3>
+          <p class="rt-text-muted">Bundle your theme, accent, font, scale, and full panel layout into a portable Loom — apply, export, or import it as JSON (fonts travel with it). Nothing is uploaded; presets stay on your machine.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════ LOOM MARKETPLACE ══════════════════════════════════════════ -->
+    <section class="block spa-view" id="loom" data-view="marketplace" hidden>
+      <div class="loom-hero">
+        <span class="loom-badge">
+          Live marketplace
+        </span>
+        <h2 class="section-title">Retermina Loom Marketplace</h2>
+        <p class="rt-text-muted">One streamlined destination for curated top-rated layouts and all available workplace configurations. Browse, rate, and publish setups in the same flow.</p>
+      </div>
+
+      <div class="loom-subsection">
+        <h3 class="loom-subtitle">Most Highly Rated Looms</h3>
+        <p class="loom-subcopy rt-text-muted">Featured community workspaces with standout usability, thoughtful panel architecture, and reliable daily-driver ergonomics.</p>
+        <div class="top-looms-grid">
+          <article class="rt-card top-loom-card" data-featured-preset="carbon">
+            <div class="top-loom-head">
+              <span class="top-loom-title">Carbon Noir Pro</span>
+              <span class="top-loom-badge">Top 1</span>
+            </div>
+            <p class="top-loom-desc">Ultra-clean dark command center with dense terminal multiplexing and pinned Iris shortcuts for fast Git automation.</p>
+            <div class="top-loom-meta">
+              <span>by k_terminal</span>
+              <span>★ 4.9 · 312 reviews</span>
+            </div>
+            <div class="top-loom-actions">
+              <button type="button" class="rt-btn-outline top-view-btn" data-scroll-to-preset="carbon">View Card</button>
+            </div>
+          </article>
+          <article class="rt-card top-loom-card" data-featured-preset="aurora">
+            <div class="top-loom-head">
+              <span class="top-loom-title">Aurora Ops Grid</span>
+              <span class="top-loom-badge">Top 2</span>
+            </div>
+            <p class="top-loom-desc">Glassmorphism-heavy layout for monitoring logs, build output, and localhost status side-by-side in a vivid neon stack.</p>
+            <div class="top-loom-meta">
+              <span>by astrodev_</span>
+              <span>★ 4.8 · 187 reviews</span>
+            </div>
+            <div class="top-loom-actions">
+              <button type="button" class="rt-btn-outline top-view-btn" data-scroll-to-preset="aurora">View Card</button>
+            </div>
+          </article>
+          <article class="rt-card top-loom-card" data-featured-preset="midnight">
+            <div class="top-loom-head">
+              <span class="top-loom-title">Midnight Indigo</span>
+              <span class="top-loom-badge">Top 3</span>
+            </div>
+            <p class="top-loom-desc">Balanced full-stack workflow tuned for long coding sessions: calm contrast, focused pane hierarchy, and expressive syntax glow.</p>
+            <div class="top-loom-meta">
+              <span>by t3dotgg</span>
+              <span>★ 4.8 · 143 reviews</span>
+            </div>
+            <div class="top-loom-actions">
+              <button type="button" class="rt-btn-outline top-view-btn" data-scroll-to-preset="midnight">View Card</button>
+            </div>
+          </article>
+        </div>
+      </div>
+
+      <div class="loom-subsection">
+        <div class="loom-favorites rt-panel">
+          <div class="loom-favorites-head">
+            <h3 class="loom-favorites-title">My Saved Favorites</h3>
+            <span class="rt-text-faint">Tap hearts to build your quick shelf</span>
+          </div>
+          <p class="loom-favorites-copy">Favorited loom configurations appear here instantly so you can compare your saved setups in one place.</p>
+          <p class="favorites-empty rt-text-muted" id="favorites-empty">No favorites yet — click a heart on any loom card to save it.</p>
+          <div class="favorites-grid" id="favorites-grid" aria-live="polite"></div>
+        </div>
+      </div>
+
+      <div class="loom-subsection">
+        <h3 class="loom-subtitle">Create Workspace Config</h3>
+        <p class="loom-subcopy rt-text-muted">Build and add a new workspace configuration directly to the marketplace list.</p>
+        <div class="loom-toolbar">
+          <div class="loom-spacer"></div>
+          <button class="loom-submit-btn" id="loom-open-modal">
+            <svg class="rt-icon" width="14" height="14" viewBox="0 0 24 24" stroke-width="2.5"><line x1="12" x2="12" y1="5" y2="19"/><line x1="5" x2="19" y1="12" y2="12"/></svg>
+            Submit preset
+          </button>
+        </div>
+        <div class="loom-add-panel rt-panel">
+          <h3>Create Workspace Config</h3>
+          <p>Add a new workspace configuration directly to the marketplace list.</p>
+          <form class="loom-add-form" id="add-config-form">
+            <div class="loom-field">
+              <label for="add-name">Configuration name</label>
+              <input id="add-name" type="text" maxlength="36" placeholder="e.g. Neon Build Station">
+            </div>
+            <div class="loom-field">
+              <label for="add-author">Author</label>
+              <input id="add-author" type="text" maxlength="28" placeholder="e.g. yourhandle">
+            </div>
+            <div class="loom-field">
+              <label for="add-category">Category</label>
+              <select id="add-category">
+                <option value="dark">Dark</option>
+                <option value="light">Light</option>
+                <option value="glass">Glass</option>
+                <option value="community">Community</option>
+              </select>
+            </div>
+            <div class="loom-field">
+              <label for="add-description">Description</label>
+              <input id="add-description" type="text" maxlength="120" placeholder="Describe the setup in one sentence">
+            </div>
+            <div class="loom-add-submit-wrap">
+              <button type="submit" class="loom-submit-btn">Create Workspace Config</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <div class="loom-subsection loom-search-tools">
+        <div class="loom-search-wrap">
+          <input id="loom-search" class="loom-search-input" type="search" placeholder="Search available configurations by title, description, or tag..." aria-label="Search available loom configurations">
+        </div>
+        <div class="loom-filter-tags" id="loom-filter-tags" role="group" aria-label="Quick preset filters"></div>
+      </div>
+
+      <div class="loom-subsection">
+        <h3 class="loom-subtitle">All Available Workplace Configurations</h3>
+        <p class="loom-subcopy rt-text-muted">Explore full preset inventory, filter by style, then create and add your own workspace. Every configuration supports live 5-star reviews.</p>
+
+        <div class="loom-grid" id="loom-grid">
+
+        <!-- Carbon Noir -->
+        <div class="rt-card preset-card revealed" data-preset="carbon" data-tags="dark">
+          <div class="preset-preview">
+            <div class="preset-preview-inner">
+              <div class="pp-chrome">
+                <span class="pp-dot" style="background:#f87171"></span>
+                <span class="pp-dot" style="background:#fbbf24"></span>
+                <span class="pp-dot" style="background:#34d399"></span>
+              </div>
+              <div class="pp-body">
+                <div><span style="color:#34d399">$</span> npm run tauri dev</div>
+                <div style="color:#525252">  VITE ready in 310ms</div>
+                <div><span style="color:#34d399">➜</span> localhost:1420</div>
+              </div>
+            </div>
+          </div>
+          <div class="preset-body">
+            <div class="preset-meta">
+              <span class="preset-name">Carbon Noir</span>
+              <span class="preset-tag">Dark</span>
+            </div>
+            <p class="preset-desc rt-text-muted">Pure black surfaces with emerald accents. The default Sleek engine pushed to its darkest extreme — zero visual noise.</p>
+            <div class="preset-author rt-text-muted">
+              <span class="preset-avatar">K</span>
+              <span>by k_terminal</span>
+              <span style="margin-left:auto" class="rt-text-faint">community</span>
+            </div>
+            <div class="preset-footer">
+              <button class="rt-btn-outline preset-dl-btn" onclick="handleDownload(this,'carbon-noir.json')">
+                <svg class="rt-icon" width="13" height="13" viewBox="0 0 24 24" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="3" y2="15"/></svg>
+                Download
+              </button>
+              <span class="preset-stars">
+                <svg class="rt-icon" width="12" height="12" viewBox="0 0 24 24" stroke-width="2" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                4.9 · 312
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Aurora Glass -->
+        <div class="rt-card preset-card" data-preset="aurora" data-tags="dark glass">
+          <div class="preset-preview">
+            <div class="preset-preview-inner">
+              <div class="pp-chrome">
+                <span class="pp-dot" style="background:#f87171"></span>
+                <span class="pp-dot" style="background:#fbbf24"></span>
+                <span class="pp-dot" style="background:#34d399"></span>
+              </div>
+              <div class="pp-body">
+                <div><span style="color:#38bdf8">$</span> iris git push</div>
+                <div style="color:#64748b">✦ running macro…</div>
+                <div style="color:#38bdf8">→ pushed to main</div>
+              </div>
+            </div>
+          </div>
+          <div class="preset-body">
+            <div class="preset-meta">
+              <span class="preset-name">Aurora Glass</span>
+              <span class="preset-tag">Glass</span>
+            </div>
+            <p class="preset-desc rt-text-muted">Deep navy backdrop with translucent panels, sky-blue accents, and heavy blur. Pairs perfectly with macOS wallpapers.</p>
+            <div class="preset-author rt-text-muted">
+              <span class="preset-avatar" style="background:#38bdf8;color:#0b1220">A</span>
+              <span>by astrodev_</span>
+              <span style="margin-left:auto" class="rt-text-faint">community</span>
+            </div>
+            <div class="preset-footer">
+              <button class="rt-btn-outline preset-dl-btn" onclick="handleDownload(this,'aurora-glass.json')">
+                <svg class="rt-icon" width="13" height="13" viewBox="0 0 24 24" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="3" y2="15"/></svg>
+                Download
+              </button>
+              <span class="preset-stars">
+                <svg class="rt-icon" width="12" height="12" viewBox="0 0 24 24" stroke-width="2" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                4.8 · 187
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sakura -->
+        <div class="rt-card preset-card" data-preset="sakura" data-tags="light">
+          <div class="preset-preview">
+            <div class="preset-preview-inner">
+              <div class="pp-chrome">
+                <span class="pp-dot" style="background:#f87171"></span>
+                <span class="pp-dot" style="background:#fbbf24"></span>
+                <span class="pp-dot" style="background:#34d399"></span>
+              </div>
+              <div class="pp-body">
+                <div><span style="color:#8b5cf6">$</span> npm install</div>
+                <div style="color:#aaa1c0">added 142 packages</div>
+                <div style="color:#8b5cf6">✓ done in 2.4s</div>
+              </div>
+            </div>
+          </div>
+          <div class="preset-body">
+            <div class="preset-meta">
+              <span class="preset-name">Sakura</span>
+              <span class="preset-tag">Light</span>
+            </div>
+            <p class="preset-desc rt-text-muted">Soft violet gradients on a light lavender base. Gentle on the eyes during long daytime sessions with the Soft Pastel engine.</p>
+            <div class="preset-author rt-text-muted">
+              <span class="preset-avatar" style="background:#8b5cf6">S</span>
+              <span>by sakuracodes</span>
+              <span style="margin-left:auto" class="rt-text-faint">community</span>
+            </div>
+            <div class="preset-footer">
+              <button class="rt-btn-outline preset-dl-btn" onclick="handleDownload(this,'sakura.json')">
+                <svg class="rt-icon" width="13" height="13" viewBox="0 0 24 24" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="3" y2="15"/></svg>
+                Download
+              </button>
+              <span class="preset-stars">
+                <svg class="rt-icon" width="12" height="12" viewBox="0 0 24 24" stroke-width="2" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                4.7 · 94
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Mono -->
+        <div class="rt-card preset-card" data-preset="mono" data-tags="light">
+          <div class="preset-preview">
+            <div class="preset-preview-inner">
+              <div class="pp-chrome">
+                <span class="pp-dot" style="background:#f87171"></span>
+                <span class="pp-dot" style="background:#fbbf24"></span>
+                <span class="pp-dot" style="background:#34d399"></span>
+              </div>
+              <div class="pp-body">
+                <div><span style="color:#18181b">$</span> git status</div>
+                <div style="color:#71717a">On branch main</div>
+                <div style="color:#18181b">nothing to commit</div>
+              </div>
+            </div>
+          </div>
+          <div class="preset-body">
+            <div class="preset-meta">
+              <span class="preset-name">Mono</span>
+              <span class="preset-tag">Light</span>
+            </div>
+            <p class="preset-desc rt-text-muted">Pure white canvas, near-zero radius, no shadows. Built on the Minimalist engine for a distraction-free paper-like workflow.</p>
+            <div class="preset-author rt-text-muted">
+              <span class="preset-avatar" style="background:#18181b">M</span>
+              <span>by mxkl</span>
+              <span style="margin-left:auto" class="rt-text-faint">community</span>
+            </div>
+            <div class="preset-footer">
+              <button class="rt-btn-outline preset-dl-btn" onclick="handleDownload(this,'mono.json')">
+                <svg class="rt-icon" width="13" height="13" viewBox="0 0 24 24" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="3" y2="15"/></svg>
+                Download
+              </button>
+              <span class="preset-stars">
+                <svg class="rt-icon" width="12" height="12" viewBox="0 0 24 24" stroke-width="2" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                4.6 · 78
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Brutus -->
+        <div class="rt-card preset-card" data-preset="brutus" data-tags="light community">
+          <div class="preset-preview">
+            <div class="preset-preview-inner">
+              <div class="pp-chrome">
+                <span class="pp-dot" style="background:#f87171"></span>
+                <span class="pp-dot" style="background:#fbbf24"></span>
+                <span class="pp-dot" style="background:#34d399"></span>
+              </div>
+              <div class="pp-body">
+                <div><span style="color:#16a34a">$</span> make build</div>
+                <div style="color:#3f3f46">gcc -o out main.c</div>
+                <div style="color:#16a34a">BUILD SUCCESS</div>
+              </div>
+            </div>
+          </div>
+          <div class="preset-body">
+            <div class="preset-meta">
+              <span class="preset-name">Brutus</span>
+              <span class="preset-tag">Community</span>
+            </div>
+            <p class="preset-desc rt-text-muted">Hard black borders, zero radius, offset box shadows. Neo-Brutalism at full blast — makes every panel feel bolted to the screen.</p>
+            <div class="preset-author rt-text-muted">
+              <span class="preset-avatar" style="background:#16a34a">J</span>
+              <span>by jxnblk</span>
+              <span style="margin-left:auto" class="rt-text-faint">community</span>
+            </div>
+            <div class="preset-footer">
+              <button class="rt-btn-outline preset-dl-btn" onclick="handleDownload(this,'brutus.json')">
+                <svg class="rt-icon" width="13" height="13" viewBox="0 0 24 24" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="3" y2="15"/></svg>
+                Download
+              </button>
+              <span class="preset-stars">
+                <svg class="rt-icon" width="12" height="12" viewBox="0 0 24 24" stroke-width="2" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                4.5 · 61
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Midnight Indigo -->
+        <div class="rt-card preset-card" data-preset="midnight" data-tags="dark community">
+          <div class="preset-preview">
+            <div class="preset-preview-inner">
+              <div class="pp-chrome">
+                <span class="pp-dot" style="background:#f87171"></span>
+                <span class="pp-dot" style="background:#fbbf24"></span>
+                <span class="pp-dot" style="background:#34d399"></span>
+              </div>
+              <div class="pp-body">
+                <div><span style="color:#818cf8">$</span> node server.js</div>
+                <div style="color:#1e1e3a">listening on :3000</div>
+                <div style="color:#818cf8">✓ server ready</div>
+              </div>
+            </div>
+          </div>
+          <div class="preset-body">
+            <div class="preset-meta">
+              <span class="preset-name">Midnight Indigo</span>
+              <span class="preset-tag">Community</span>
+            </div>
+            <p class="preset-desc rt-text-muted">Deep blue-black with indigo panel accents and a subtle purple glow at the top. Inspired by late-night Tokyo dev sessions.</p>
+            <div class="preset-author rt-text-muted">
+              <span class="preset-avatar" style="background:#818cf8;color:#0d0d1a">T</span>
+              <span>by t3dotgg</span>
+              <span style="margin-left:auto" class="rt-text-faint">community</span>
+            </div>
+            <div class="preset-footer">
+              <button class="rt-btn-outline preset-dl-btn" onclick="handleDownload(this,'midnight-indigo.json')">
+                <svg class="rt-icon" width="13" height="13" viewBox="0 0 24 24" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="3" y2="15"/></svg>
+                Download
+              </button>
+              <span class="preset-stars">
+                <svg class="rt-icon" width="12" height="12" viewBox="0 0 24 24" stroke-width="2" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                4.8 · 143
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Neon Forge Stack -->
+        <div class="rt-card preset-card" data-preset="neonforge" data-tags="dark glass community">
+          <div class="preset-preview">
+            <div class="preset-preview-inner">
+              <div class="pp-chrome">
+                <span class="pp-dot" style="background:#f87171"></span>
+                <span class="pp-dot" style="background:#fbbf24"></span>
+                <span class="pp-dot" style="background:#34d399"></span>
+              </div>
+              <div class="pp-body">
+                <div><span style="color:#22d3ee">$</span> pnpm turbo run dev</div>
+                <div style="color:#94a3b8">web, api, worker all online</div>
+                <div style="color:#f472b6">hot reload synced</div>
+              </div>
+            </div>
+          </div>
+          <div class="preset-body">
+            <div class="preset-meta">
+              <span class="preset-name">Neon Forge Stack</span>
+              <span class="preset-tag">Glass</span>
+            </div>
+            <p class="preset-desc rt-text-muted">A neon cyberglass multi-pane setup optimized for monorepo iteration with side-by-side service health and package task streams.</p>
+            <div class="preset-author rt-text-muted">
+              <span class="preset-avatar" style="background:#22d3ee;color:#082f49">N</span>
+              <span>by neonoperator</span>
+              <span style="margin-left:auto" class="rt-text-faint">community</span>
+            </div>
+            <div class="preset-footer">
+              <button class="rt-btn-outline preset-dl-btn" onclick="handleDownload(this,'neon-forge-stack.json')">
+                <svg class="rt-icon" width="13" height="13" viewBox="0 0 24 24" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="3" y2="15"/></svg>
+                Download
+              </button>
+              <span class="preset-stars">
+                <svg class="rt-icon" width="12" height="12" viewBox="0 0 24 24" stroke-width="2" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                4.8 · 129
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Solarized Build Grid -->
+        <div class="rt-card preset-card" data-preset="solarized" data-tags="light community">
+          <div class="preset-preview">
+            <div class="preset-preview-inner">
+              <div class="pp-chrome">
+                <span class="pp-dot" style="background:#f87171"></span>
+                <span class="pp-dot" style="background:#fbbf24"></span>
+                <span class="pp-dot" style="background:#34d399"></span>
+              </div>
+              <div class="pp-body">
+                <div><span style="color:#b45309">$</span> npm run lint && npm test</div>
+                <div style="color:#9a3412">lint clean · tests green</div>
+                <div style="color:#2563eb">coverage 91.2%</div>
+              </div>
+            </div>
+          </div>
+          <div class="preset-body">
+            <div class="preset-meta">
+              <span class="preset-name">Solarized Build Grid</span>
+              <span class="preset-tag">Light</span>
+            </div>
+            <p class="preset-desc rt-text-muted">Warm low-glare palette with focused diagnostics panels and compact split terminals for TDD cycles and review-heavy workflows.</p>
+            <div class="preset-author rt-text-muted">
+              <span class="preset-avatar" style="background:#f59e0b;color:#422006">S</span>
+              <span>by sierra_ci</span>
+              <span style="margin-left:auto" class="rt-text-faint">community</span>
+            </div>
+            <div class="preset-footer">
+              <button class="rt-btn-outline preset-dl-btn" onclick="handleDownload(this,'solarized-build-grid.json')">
+                <svg class="rt-icon" width="13" height="13" viewBox="0 0 24 24" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="3" y2="15"/></svg>
+                Download
+              </button>
+              <span class="preset-stars">
+                <svg class="rt-icon" width="12" height="12" viewBox="0 0 24 24" stroke-width="2" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                4.6 · 82
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Matrix CI Watchtower -->
+        <div class="rt-card preset-card" data-preset="matrix" data-tags="dark community">
+          <div class="preset-preview">
+            <div class="preset-preview-inner">
+              <div class="pp-chrome">
+                <span class="pp-dot" style="background:#f87171"></span>
+                <span class="pp-dot" style="background:#fbbf24"></span>
+                <span class="pp-dot" style="background:#34d399"></span>
+              </div>
+              <div class="pp-body">
+                <div><span style="color:#4ade80">$</span> gh run watch</div>
+                <div style="color:#22c55e">build matrix: linux/mac/win</div>
+                <div style="color:#4ade80">status: all passing</div>
+              </div>
+            </div>
+          </div>
+          <div class="preset-body">
+            <div class="preset-meta">
+              <span class="preset-name">Matrix CI Watchtower</span>
+              <span class="preset-tag">Dark</span>
+            </div>
+            <p class="preset-desc rt-text-muted">Green phosphor observability theme with dedicated panes for CI status, release logs, and git history while coding in parallel.</p>
+            <div class="preset-author rt-text-muted">
+              <span class="preset-avatar" style="background:#16a34a;color:#052e16">M</span>
+              <span>by matrixrunner</span>
+              <span style="margin-left:auto" class="rt-text-faint">community</span>
+            </div>
+            <div class="preset-footer">
+              <button class="rt-btn-outline preset-dl-btn" onclick="handleDownload(this,'matrix-ci-watchtower.json')">
+                <svg class="rt-icon" width="13" height="13" viewBox="0 0 24 24" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="3" y2="15"/></svg>
+                Download
+              </button>
+              <span class="preset-stars">
+                <svg class="rt-icon" width="12" height="12" viewBox="0 0 24 24" stroke-width="2" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                4.7 · 104
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Rust Kernel Lab -->
+        <div class="rt-card preset-card" data-preset="rustlab" data-tags="dark community">
+          <div class="preset-preview">
+            <div class="preset-preview-inner">
+              <div class="pp-chrome">
+                <span class="pp-dot" style="background:#f87171"></span>
+                <span class="pp-dot" style="background:#fbbf24"></span>
+                <span class="pp-dot" style="background:#34d399"></span>
+              </div>
+              <div class="pp-body">
+                <div><span style="color:#fb923c">$</span> cargo test --workspace</div>
+                <div style="color:#9a3412">running 286 tests...</div>
+                <div style="color:#fb923c">ok · 286 passed</div>
+              </div>
+            </div>
+          </div>
+          <div class="preset-body">
+            <div class="preset-meta">
+              <span class="preset-name">Rust Kernel Lab</span>
+              <span class="preset-tag">Community</span>
+            </div>
+            <p class="preset-desc rt-text-muted">Burnt-orange systems theme purpose-built for Rust and low-level work: diagnostics on the right, perf probes below, shell atop.</p>
+            <div class="preset-author rt-text-muted">
+              <span class="preset-avatar" style="background:#ea580c;color:#431407">R</span>
+              <span>by rustacean_ops</span>
+              <span style="margin-left:auto" class="rt-text-faint">community</span>
+            </div>
+            <div class="preset-footer">
+              <button class="rt-btn-outline preset-dl-btn" onclick="handleDownload(this,'rust-kernel-lab.json')">
+                <svg class="rt-icon" width="13" height="13" viewBox="0 0 24 24" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="3" y2="15"/></svg>
+                Download
+              </button>
+              <span class="preset-stars">
+                <svg class="rt-icon" width="12" height="12" viewBox="0 0 24 24" stroke-width="2" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                4.9 · 167
+              </span>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /loom-grid -->
+      </div>
+    </section>
+
+    <!-- Submit preset modal -->
+    <div class="loom-modal-overlay" id="loom-modal" role="dialog" aria-modal="true" aria-labelledby="loom-modal-title">
+      <div class="loom-modal rt-panel">
+        <button class="loom-modal-close" id="loom-close-modal" aria-label="Close">
+          <svg class="rt-icon" width="16" height="16" viewBox="0 0 24 24" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+
+        <div id="loom-form-wrap">
+          <h3 id="loom-modal-title">Submit your preset</h3>
+          <p class="rt-text-muted">Share your Retermina workspace config with the community. Accepted presets appear in Loom within 48 hours.</p>
+          <div class="loom-form">
+            <div class="loom-form-row">
+              <div class="loom-field">
+                <label for="pf-name">Preset name</label>
+                <input id="pf-name" type="text" placeholder="e.g. Neon Dusk" maxlength="32">
+              </div>
+              <div class="loom-field">
+                <label for="pf-author">Your name / handle</label>
+                <input id="pf-author" type="text" placeholder="e.g. yourhandle" maxlength="32">
+              </div>
+            </div>
+            <div class="loom-form-row">
+              <div class="loom-field">
+                <label for="pf-engine">Base theme engine</label>
+                <select id="pf-engine">
+                  <option value="">Select engine…</option>
+                  <option value="sleek">Sleek</option>
+                  <option value="pastel">Soft Pastel</option>
+                  <option value="glass">Transparent Glass</option>
+                  <option value="minimalist">Minimalist</option>
+                  <option value="brutalism">Neo-Brutalism</option>
+                </select>
+              </div>
+              <div class="loom-field">
+                <label for="pf-tag">Category</label>
+                <select id="pf-tag">
+                  <option value="">Select…</option>
+                  <option value="dark">Dark</option>
+                  <option value="light">Light</option>
+                  <option value="glass">Glass</option>
+                  <option value="community">Community</option>
+                </select>
+              </div>
+            </div>
+            <div class="loom-field">
+              <label for="pf-desc">Short description</label>
+              <textarea id="pf-desc" rows="2" placeholder="What makes this preset unique? Max 120 chars." maxlength="120"></textarea>
+            </div>
+            <div class="loom-field">
+              <label for="pf-config">Config JSON or GitHub Gist URL</label>
+              <textarea id="pf-config" rows="3" placeholder='{"theme":"sleek","accent":"#ff6396","panels":[…]} or https://gist.github.com/…'></textarea>
+            </div>
+            <div class="loom-form-footer">
+              <p class="rt-text-faint loom-form-note">Submissions are reviewed before going live. No accounts needed.</p>
+              <button class="loom-form-submit" id="loom-submit-form">
+                <svg class="rt-icon" width="14" height="14" viewBox="0 0 24 24" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                Send preset
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="loom-success" id="loom-success">
+          <div class="loom-success-icon">
+            <svg class="rt-icon" width="22" height="22" viewBox="0 0 24 24" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <h4>Preset received!</h4>
+          <p class="rt-text-muted">Thanks for contributing to Loom. Your preset will be reviewed and published within 48 hours.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="loom-modal-overlay" id="review-modal" role="dialog" aria-modal="true" aria-labelledby="review-modal-title">
+      <div class="loom-modal review-modal rt-panel">
+        <button class="loom-modal-close" id="review-close-modal" aria-label="Close review dialog">
+          <svg class="rt-icon" width="16" height="16" viewBox="0 0 24 24" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+        <h3 id="review-modal-title">Review this configuration</h3>
+        <p class="review-target" id="review-target-name"></p>
+        <div class="review-stars" id="review-stars">
+          <button type="button" class="review-star" data-value="1" aria-label="1 star">★</button>
+          <button type="button" class="review-star" data-value="2" aria-label="2 stars">★</button>
+          <button type="button" class="review-star" data-value="3" aria-label="3 stars">★</button>
+          <button type="button" class="review-star" data-value="4" aria-label="4 stars">★</button>
+          <button type="button" class="review-star" data-value="5" aria-label="5 stars">★</button>
+        </div>
+        <div class="review-actions">
+          <button type="button" class="rt-btn-outline marketplace-nav-btn" id="review-cancel-btn">Cancel</button>
+          <button type="button" class="loom-form-submit" id="review-submit-btn">Submit rating</button>
+        </div>
+        <p class="review-submit-msg" id="review-submit-msg"></p>
+      </div>
+    </div>
+
+    <footer class="rt-text-muted">
+      <div class="footer-content">
+        <section class="team-section" id="team" aria-labelledby="team-heading">
+          <p class="section-label rt-text-muted">Team</p>
+          <h2 class="team-heading" id="team-heading">Meet the Creators</h2>
+          <p class="team-subtitle rt-text-muted">Two University of Waterloo builders focused on making terminal-native workflows beautiful, fast, and practical for daily development.</p>
+          <div class="team-grid">
+            <article class="team-card rt-panel">
+              <img class="team-avatar" src="https://pub-adae489de9fc4141b62f3d1522826b7d.r2.dev/IMG_9373.jpg" alt="Matthew Hamilton profile photo" loading="lazy">
+              <div>
+                <h3 class="team-name">Matthew Hamilton</h3>
+                <p class="team-university rt-text-muted">University of Waterloo Systems Design Engineering</p>
+              </div>
+              <div class="team-links" aria-label="Matthew Hamilton social links">
+                <a class="team-link rt-btn-outline" href="https://github.com/matthewhamilton3141" target="_blank" rel="noopener noreferrer" aria-label="Matthew Hamilton GitHub">
+                  <svg class="rt-icon" viewBox="0 0 24 24" stroke-width="2" fill="none"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.01.28-2.09 0-3.09 0 0-.79-.25-2.65 1.01A9.64 9.64 0 0 0 12 3c-2.35 0-4.27 1.02-5.4 2.01-1.86-1.26-2.65-1.01-2.65-1.01-.28 1-.28 2.09 0 3.09A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65S8.93 17.38 9 18v4"/><path d="M9 18c-4.51 2-5-2-7-2"/></svg>
+                  <span>GitHub</span>
+                </a>
+                <a class="team-link rt-btn-outline" href="https://linkedin.com/in/matthewhamilton3141" target="_blank" rel="noopener noreferrer" aria-label="Matthew Hamilton LinkedIn">
+                  <svg class="rt-icon" viewBox="0 0 24 24" stroke-width="2" fill="none"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect width="4" height="12" x="2" y="9"/><circle cx="4" cy="4" r="2"/></svg>
+                  <span>LinkedIn</span>
+                </a>
+                <a class="team-link rt-btn-outline" href="https://instagram.com/mxtth2w" target="_blank" rel="noopener noreferrer" aria-label="Matthew Hamilton Instagram">
+                  <svg class="rt-icon" viewBox="0 0 24 24" stroke-width="2" fill="none"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
+                  <span>Instagram</span>
+                </a>
+                <a class="team-link rt-btn-outline" href="https://matthewhamilton.dev" target="_blank" rel="noopener noreferrer" aria-label="Matthew Hamilton portfolio">
+                  <svg viewBox="0 0 800 1000" fill="currentColor" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><polygon points="400,0 456,215 400,312 344,215"/><polygon points="0,183 283,222 186,253 371,995"/><polygon points="800,183 517,222 614,253 429,995"/></svg>
+                  <span>Portfolio</span>
+                </a>
+              </div>
+            </article>
+            <article class="team-card rt-panel">
+              <img class="team-avatar" src="https://pub-adae489de9fc4141b62f3d1522826b7d.r2.dev/IMG_2913.jpeg" alt="Aaron Tran profile photo" loading="lazy">
+              <div>
+                <h3 class="team-name">Aaron Tran</h3>
+                <p class="team-university rt-text-muted">University of Waterloo Computer Science</p>
+              </div>
+              <div class="team-links" aria-label="Aaron Tran social links">
+                <a class="team-link rt-btn-outline" href="https://github.com/aarontran321" target="_blank" rel="noopener noreferrer" aria-label="Aaron Tran GitHub">
+                  <svg class="rt-icon" viewBox="0 0 24 24" stroke-width="2" fill="none"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.01.28-2.09 0-3.09 0 0-.79-.25-2.65 1.01A9.64 9.64 0 0 0 12 3c-2.35 0-4.27 1.02-5.4 2.01-1.86-1.26-2.65-1.01-2.65-1.01-.28 1-.28 2.09 0 3.09A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65S8.93 17.38 9 18v4"/><path d="M9 18c-4.51 2-5-2-7-2"/></svg>
+                  <span>GitHub</span>
+                </a>
+                <a class="team-link rt-btn-outline" href="https://www.linkedin.com/in/aaron-tran-157405339/" target="_blank" rel="noopener noreferrer" aria-label="Aaron Tran LinkedIn">
+                  <svg class="rt-icon" viewBox="0 0 24 24" stroke-width="2" fill="none"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect width="4" height="12" x="2" y="9"/><circle cx="4" cy="4" r="2"/></svg>
+                  <span>LinkedIn</span>
+                </a>
+                <a class="team-link rt-btn-outline" href="https://www.instagram.com/aarontrannnn/" target="_blank" rel="noopener noreferrer" aria-label="Aaron Tran Instagram">
+                  <svg class="rt-icon" viewBox="0 0 24 24" stroke-width="2" fill="none"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
+                  <span>Instagram</span>
+                </a>
+                <a class="team-link rt-btn-outline" href="https://aarontran.vercel.app/" target="_blank" rel="noopener noreferrer" aria-label="Aaron Tran portfolio">
+                  <svg class="rt-icon" viewBox="0 0 24 24" stroke-width="2" fill="none"><circle cx="12" cy="12" r="10"/><line x1="2" x2="22" y1="12" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                  <span>Portfolio</span>
+                </a>
+              </div>
+            </article>
+          </div>
+        </section>
+        <div class="footer-bottom rt-text-faint">
+          &copy; 2026 <a href="https://github.com/matthewhamilton3141/Retermina" target="_blank" rel="noopener">Retermina</a> &mdash; MIT License
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    /* Theme engine switcher — mirrors ThemeProvider + data-theme attribute swap */
+    const THEME_LABELS = {
+      sleek: 'Sleek',
+      pastel: 'Soft Pastel',
+      glass: 'Transparent Glass',
+      minimalist: 'Minimalist',
+      brutalism: 'Neo-Brutalism',
+    };
+
+    function setTheme(id) {
+      document.documentElement.setAttribute('data-theme', id);
+      document.getElementById('theme-label').textContent = THEME_LABELS[id];
+      document.querySelectorAll('.theme-dot, .theme-chip').forEach(el => {
+        el.classList.toggle('active', el.dataset.theme === id);
+      });
+      setActiveLoomFilterButton(activeLoomFilter);
+    }
+
+    document.querySelectorAll('[data-theme]').forEach(el => {
+      if (el.classList.contains('theme-dot') || el.classList.contains('theme-chip')) {
+        el.addEventListener('click', () => setTheme(el.dataset.theme));
+      }
+    });
+
+    // Top-bar theme switcher: ‹ name › — cycle engines with the arrows.
+    const THEME_ORDER = ['sleek', 'pastel', 'glass', 'minimalist', 'brutalism'];
+    function cycleTheme(dir) {
+      const cur = document.documentElement.getAttribute('data-theme') || 'sleek';
+      let i = THEME_ORDER.indexOf(cur);
+      if (i < 0) i = 0;
+      i = (i + dir + THEME_ORDER.length) % THEME_ORDER.length;
+      setTheme(THEME_ORDER[i]);
+    }
+    document.getElementById('theme-prev').addEventListener('click', () => cycleTheme(-1));
+    document.getElementById('theme-next').addEventListener('click', () => cycleTheme(1));
+
+    const SPA_DEFAULT_VIEW = 'home';
+    const spaViews = Array.from(document.querySelectorAll('.spa-view[data-view]'));
+    function showView(viewName, options = {}) {
+      const shouldSmoothScroll = options.smooth !== false;
+      spaViews.forEach(viewEl => {
+        const isActive = viewEl.dataset.view === viewName;
+        viewEl.hidden = !isActive;
+        viewEl.classList.toggle('active', isActive);
+      });
+      window.scrollTo({ top: 0, behavior: shouldSmoothScroll ? 'smooth' : 'auto' });
+    }
+
+    document.querySelectorAll('[data-nav-view]').forEach(btn => {
+      btn.addEventListener('click', () => showView(btn.dataset.navView));
+    });
+    showView(SPA_DEFAULT_VIEW, { smooth: false });
+
+
+
+    /* Hero tagline typewriter */
+    const heroPhrases = [
+      'drag-and-drop panels',
+      'Claude Code, built in',
+      'a live git diff',
+      'tokenless Iris macros',
+      'five theme engines',
+      'native, no subscription',
+    ];
+    const heroEl = document.getElementById('hero-typed');
+    let phraseIdx = 0, charIdx = 0, deleting = false;
+
+    function typeHero() {
+      const phrase = heroPhrases[phraseIdx];
+      if (!deleting) {
+        heroEl.textContent = phrase.slice(0, ++charIdx);
+        if (charIdx === phrase.length) {
+          deleting = true;
+          setTimeout(typeHero, 2200);
+          return;
+        }
+        setTimeout(typeHero, 55);
+      } else {
+        heroEl.textContent = phrase.slice(0, --charIdx);
+        if (charIdx === 0) {
+          deleting = false;
+          phraseIdx = (phraseIdx + 1) % heroPhrases.length;
+          setTimeout(typeHero, 400);
+          return;
+        }
+        setTimeout(typeHero, 30);
+      }
+    }
+    typeHero();
+
+    /* Terminal typing demo — uses xterm sleek palette colors */
+    const termLines = [
+      { html: '<span class="term-dim"># Launch Retermina dev server</span>', delay: 400 },
+      { html: '<span class="term-prompt">$</span> npm run tauri dev', delay: 900, type: true },
+      { html: '<span class="term-dim">  VITE v7.0.4  ready in 312 ms</span>', delay: 1800 },
+      { html: '<span class="term-green">  ➜</span>  Local:   <span class="term-blue">http://localhost:1420/</span>', delay: 2300 },
+      { html: '<span class="term-prompt">$</span> iris git push', delay: 3200, type: true },
+      { html: '<span class="term-magenta">✦ Iris</span> <span class="term-dim">→ running contextual macro…</span>', delay: 4100 },
+      { html: '<span class="term-yellow">Enumerating objects: 12, done.</span>', delay: 4700 },
+      { html: '<span class="term-green">To github.com:matthewhamilton3141/Retermina.git</span>', delay: 5300 },
+      { html: '<span class="term-prompt term-cursor-line">$</span>', delay: 6000, cursor: true },
+    ];
+
+    const termBody = document.getElementById('terminal-body');
+    let _termCycle = 0;
+    let _termTimer = null;
+
+    function doTerminal() {
+      if (_termTimer) clearTimeout(_termTimer);
+      const myCycle = ++_termCycle;
+      termBody.innerHTML = '';
+
+      termLines.forEach((line) => {
+        setTimeout(() => {
+          if (_termCycle !== myCycle) return;
+          const div = document.createElement('div');
+          div.className = 'term-line' + (line.cursor ? ' term-cursor-line' : '');
+          if (line.type) {
+            /* Extract just the command text after the "$ " prefix */
+            const cmd = line.html.replace(/<[^>]+>/g, '').replace(/^\$\s*/, '').trim();
+            const promptSpan = document.createElement('span');
+            promptSpan.className = 'term-prompt';
+            promptSpan.textContent = '$';
+            div.appendChild(promptSpan);
+            div.appendChild(document.createTextNode(' '));
+            const cmdSpan = document.createElement('span');
+            div.appendChild(cmdSpan);
+            termBody.appendChild(div);
+            requestAnimationFrame(() => div.classList.add('visible'));
+            let ci = 0;
+            const tick = () => {
+              if (_termCycle !== myCycle) return;
+              cmdSpan.textContent = cmd.slice(0, ci);
+              if (ci < cmd.length) {
+                ci++;
+                setTimeout(tick, 42);
+              }
+            };
+            tick();
+          } else {
+            div.innerHTML = line.html;
+            termBody.appendChild(div);
+            requestAnimationFrame(() => div.classList.add('visible'));
+          }
+        }, line.delay);
+      });
+
+      /* Last line lands at 6000ms. Give ~3s reading time then restart. */
+      _termTimer = setTimeout(doTerminal, 9500);
+    }
+    setTimeout(doTerminal, 1200);
+
+    /* Iris bar typing demo */
+    const irisText = 'git push origin main';
+    const irisEl = document.getElementById('iris-typed');
+    const irisSuggest = document.getElementById('iris-suggest');
+    const irisCursor = document.getElementById('iris-cursor');
+    let irisIdx = 0;
+    let irisDeleting = false;
+
+    function typeIris() {
+      if (!irisDeleting) {
+        irisEl.textContent = irisText.slice(0, irisIdx);
+        /* Show suggestion dropdown once user has typed enough */
+        if (irisIdx >= 4) {
+          irisSuggest.classList.add('shown');
+        } else {
+          irisSuggest.classList.remove('shown');
+        }
+        if (irisIdx < irisText.length) {
+          irisIdx++;
+          setTimeout(typeIris, 110);
+        } else {
+          /* Fully typed — pause, then delete */
+          irisDeleting = true;
+          setTimeout(typeIris, 2200);
+        }
+      } else {
+        irisEl.textContent = irisText.slice(0, irisIdx);
+        if (irisIdx <= 4) irisSuggest.classList.remove('shown');
+        if (irisIdx > 0) {
+          irisIdx--;
+          setTimeout(typeIris, 55);
+        } else {
+          /* Fully deleted — pause, then type again */
+          irisDeleting = false;
+          irisSuggest.classList.remove('shown');
+          setTimeout(typeIris, 1400);
+        }
+      }
+    }
+    setTimeout(typeIris, 2500);
+
+    /* ── Draggable workspace grid ──────────────────────────────────────────
+       A tiny react-grid-layout-style engine: every panel owns a grid
+       rectangle, and dragging one over another SWAPS their rectangles
+       wholesale — which always preserves a perfect tiling (no overlaps, no
+       gaps). A ghost-cursor demo plays on load to show it's interactive and
+       stops the instant a visitor grabs a panel. */
+    (function () {
+      const grid = document.getElementById('mock-grid');
+      if (!grid) return;
+      const placeholder = document.getElementById('mock-placeholder');
+      const cursor = document.getElementById('mock-cursor');
+      const hint = document.getElementById('mock-hint');
+      const COLS = 4, GAP = 10;
+      const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      const panels = Array.from(grid.querySelectorAll('.mock-panel')).map(el => ({
+        el,
+        x: +el.dataset.x, y: +el.dataset.y, w: +el.dataset.w, h: +el.dataset.h,
+      }));
+      const ROWS = Math.max(...panels.map(p => p.y + p.h));
+
+      let cellW = 0, rowH = 56;
+      function measure() {
+        const gw = grid.clientWidth || grid.parentElement.clientWidth;
+        cellW = (gw - GAP * (COLS - 1)) / COLS;
+        const cssRow = parseInt(getComputedStyle(grid).getPropertyValue('--mock-row-h'), 10);
+        rowH = cssRow || 56;
+        grid.style.height = (ROWS * rowH + (ROWS - 1) * GAP) + 'px';
+      }
+      function rectFor(p) {
+        return {
+          left: p.x * (cellW + GAP),
+          top: p.y * (rowH + GAP),
+          width: p.w * cellW + (p.w - 1) * GAP,
+          height: p.h * rowH + (p.h - 1) * GAP,
+        };
+      }
+      function place(p) {
+        const r = rectFor(p);
+        p.el.style.width = r.width + 'px';
+        p.el.style.height = r.height + 'px';
+        p.el.style.transform = `translate(${r.left}px, ${r.top}px)`;
+      }
+      function layoutAll() { panels.forEach(place); }
+      function showPlaceholder(p) {
+        const r = rectFor(p);
+        placeholder.style.width = r.width + 'px';
+        placeholder.style.height = r.height + 'px';
+        placeholder.style.transform = `translate(${r.left}px, ${r.top}px)`;
+        placeholder.classList.add('shown');
+      }
+      function panelAt(gx, gy, exclude) {
+        for (const p of panels) {
+          if (p === exclude) continue;
+          const r = rectFor(p);
+          if (gx >= r.left && gx <= r.left + r.width && gy >= r.top && gy <= r.top + r.height) return p;
+        }
+        return null;
+      }
+      function swap(a, b) {
+        const t = { x: b.x, y: b.y, w: b.w, h: b.h };
+        b.x = a.x; b.y = a.y; b.w = a.w; b.h = a.h;
+        a.x = t.x; a.y = t.y; a.w = t.w; a.h = t.h;
+      }
+
+      // ── Drag state (shared by pointer input and the auto-demo) ──
+      let dragP = null, grabDX = 0, grabDY = 0, dragW = 0, dragH = 0;
+      function beginDrag(p, gx, gy) {
+        dragP = p;
+        const r = rectFor(p);
+        grabDX = gx - r.left; grabDY = gy - r.top;
+        dragW = r.width; dragH = r.height;
+        p.el.classList.add('dragging');
+        showPlaceholder(p);
+      }
+      function moveDrag(gx, gy) {
+        if (!dragP) return;
+        const left = gx - grabDX, top = gy - grabDY;
+        dragP.el.style.transform = `translate(${left}px, ${top}px)`;
+        const t = panelAt(left + dragW / 2, top + dragH / 2, dragP);
+        if (t) { swap(dragP, t); place(t); showPlaceholder(dragP); }
+      }
+      function endDrag() {
+        if (!dragP) return;
+        dragP.el.classList.remove('dragging');
+        place(dragP);
+        placeholder.classList.remove('shown');
+        dragP = null;
+      }
+
+      measure();
+      layoutAll();
+      window.addEventListener('resize', () => { measure(); if (!dragP) layoutAll(); });
+
+      // ── Real pointer interaction ──
+      let userTookOver = false;
+      function stopDemo() {
+        userTookOver = true;
+        clearTimeout(demoTimer);
+        cursor.classList.remove('grabbing');
+        cursor.style.opacity = '0';
+        if (hint) hint.classList.add('hidden');
+      }
+      panels.forEach(p => {
+        p.el.addEventListener('pointerdown', e => {
+          e.preventDefault();
+          if (!userTookOver) stopDemo();
+          if (dragP) endDrag();                 // cancel any in-flight demo drag
+          const rect = grid.getBoundingClientRect();
+          p.el.setPointerCapture(e.pointerId);
+          beginDrag(p, e.clientX - rect.left, e.clientY - rect.top);
+        });
+        p.el.addEventListener('pointermove', e => {
+          if (dragP !== p) return;
+          const rect = grid.getBoundingClientRect();
+          moveDrag(e.clientX - rect.left, e.clientY - rect.top);
+        });
+        const up = () => { if (dragP === p) endDrag(); };
+        p.el.addEventListener('pointerup', up);
+        p.el.addEventListener('pointercancel', up);
+      });
+
+      // ── Ghost-cursor auto-demo ──
+      let demoTimer = null;
+      const centerOf = p => { const r = rectFor(p); return { x: r.left + r.width / 2, y: r.top + r.height / 2 }; };
+      const byName = n => panels.find(p => p.el.querySelector('.mock-panel-header').textContent.trim().startsWith(n));
+
+      function moveCursorTo(gx, gy) { cursor.style.transform = `translate(${gx}px, ${gy}px)`; }
+      function tween(from, to, ms, onStep) {
+        return new Promise(resolve => {
+          const start = performance.now();
+          (function step(now) {
+            if (userTookOver) return resolve();
+            const t = Math.min(1, (now - start) / ms);
+            const e = 1 - Math.pow(1 - t, 3);            // easeOutCubic
+            onStep(from.x + (to.x - from.x) * e, from.y + (to.y - from.y) * e);
+            t < 1 ? requestAnimationFrame(step) : resolve();
+          })(performance.now());
+        });
+      }
+      const wait = ms => new Promise(r => setTimeout(r, ms));
+
+      async function demoDrag(srcName, dstName) {
+        if (userTookOver) return;
+        const src = byName(srcName), dst = byName(dstName);
+        if (!src || !dst) return;
+        const a = centerOf(src);
+        moveCursorTo(a.x, a.y);
+        cursor.style.opacity = '1';
+        await wait(450);
+        if (userTookOver) return;
+        cursor.classList.add('grabbing');
+        const rect = grid.getBoundingClientRect(); void rect;
+        beginDrag(src, a.x, a.y);
+        const b = centerOf(dst);
+        await tween(a, b, 800, (x, y) => { moveCursorTo(x, y); moveDrag(x, y); });
+        if (userTookOver) return;
+        await wait(180);
+        cursor.classList.remove('grabbing');
+        endDrag();
+      }
+
+      async function runDemo() {
+        if (userTookOver || reduceMotion) return;
+        await demoDrag('Claude Code', 'Terminal');
+        if (userTookOver) return;
+        await wait(900);
+        await demoDrag('Localhost', 'Explorer');
+        if (userTookOver) return;
+        await wait(700);
+        cursor.style.opacity = '0';
+        demoTimer = setTimeout(runDemo, 6000);   // loop until the user takes over
+      }
+      if (!reduceMotion) demoTimer = setTimeout(runDemo, 1600);
+    })();
+
+    /* Scroll reveal for feature cards */
+    const cards = document.querySelectorAll('.feature-card');
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach((entry, i) => {
+        if (entry.isIntersecting) {
+          setTimeout(() => entry.target.classList.add('revealed'), i * 100);
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15 });
+    cards.forEach(c => observer.observe(c));
+
+    /* Stagger start cards on scroll */
+    const startCards = document.querySelectorAll('.start-card');
+    const startObs = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          startCards.forEach((card, i) => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(16px)';
+            setTimeout(() => {
+              card.style.transition = 'opacity 0.5s ease, transform 0.5s cubic-bezier(.34,1.56,.64,1)';
+              card.style.opacity = '1';
+              card.style.transform = 'translateY(0)';
+            }, i * 80);
+          });
+          startObs.disconnect();
+        }
+      });
+    }, { threshold: 0.2 });
+    if (startCards.length) startObs.observe(startCards[0].parentElement);
+    /* ── Loom preset card reveal ── */
+    const loomGrid = document.getElementById('loom-grid');
+    const favoritesGrid = document.getElementById('favorites-grid');
+    const favoritesEmpty = document.getElementById('favorites-empty');
+    const loomSearchInput = document.getElementById('loom-search');
+    const loomFilterTags = document.getElementById('loom-filter-tags');
+    const getPresetCards = () => Array.from(loomGrid.querySelectorAll('.preset-card'));
+    const getTopCards = () => Array.from(document.querySelectorAll('.top-loom-card'));
+    const getAllLoomCards = () => [...getTopCards(), ...getPresetCards()];
+    const presetObs = new IntersectionObserver(entries => {
+      entries.forEach((entry, i) => {
+        if (entry.isIntersecting) {
+          setTimeout(() => entry.target.classList.add('revealed'), i * 80);
+          presetObs.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1 });
+    function observePresetCard(card) {
+      if (card) presetObs.observe(card);
+    }
+    getPresetCards().forEach(observePresetCard);
+
+    const HEART_ICON_SVG = `<svg class="rt-icon" width="14" height="14" viewBox="0 0 24 24"><path d="m12 21-1.35-1.23C5.4 15.03 2 11.96 2 8.2 2 5.16 4.42 2.75 7.45 2.75c1.72 0 3.36.8 4.55 2.05 1.19-1.25 2.83-2.05 4.55-2.05C19.58 2.75 22 5.16 22 8.2c0 3.76-3.4 6.83-8.65 11.57L12 21z"/></svg>`;
+    const DOWNLOAD_ICON_SVG = `<svg class="rt-icon" width="13" height="13" viewBox="0 0 24 24" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="3" y2="15"/></svg>`;
+    const PRIORITY_LOOM_FILTERS = ['dark', 'light', 'glass'];
+    const slugifyValue = value => (value || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+    let activeLoomFilter = 'all';
+    let activeSearchQuery = '';
+
+    function setDownloadButtonLabel(button, label) {
+      if (!button) return;
+      button.innerHTML = `${DOWNLOAD_ICON_SVG} ${label}`;
+    }
+    function normalizeTagValue(value) {
+      return (value || '').trim().toLowerCase();
+    }
+    function splitTagValues(value) {
+      return normalizeTagValue(value).split(/[^a-z0-9]+/).filter(Boolean);
+    }
+    function getCardTagValues(card) {
+      const fromData = splitTagValues(card.dataset.tags || '');
+      const fromBadge = splitTagValues(card.querySelector('.preset-tag')?.textContent || '');
+      return Array.from(new Set([...fromData, ...fromBadge]));
+    }
+    function formatFilterLabel(value) {
+      if (value === 'all') return 'All Presets';
+      return value.split('-').filter(Boolean).map(part => part.charAt(0).toUpperCase() + part.slice(1)).join(' ');
+    }
+    function getAvailableLoomFilters() {
+      const discovered = new Set();
+      getPresetCards().forEach(card => {
+        getCardTagValues(card).forEach(tag => discovered.add(tag));
+      });
+      const ordered = PRIORITY_LOOM_FILTERS.filter(tag => discovered.has(tag));
+      const remaining = Array.from(discovered)
+        .filter(tag => !PRIORITY_LOOM_FILTERS.includes(tag))
+        .sort((a, b) => a.localeCompare(b));
+      return ['all', ...ordered, ...remaining];
+    }
+    function setActiveLoomFilterButton(filter) {
+      if (!loomFilterTags) return;
+      loomFilterTags.querySelectorAll('.loom-filter').forEach(button => {
+        button.classList.toggle('active', button.dataset.filter === filter);
+      });
+    }
+    function renderLoomFilterButtons() {
+      if (!loomFilterTags) return;
+      const filters = getAvailableLoomFilters();
+      if (!filters.includes(activeLoomFilter)) activeLoomFilter = 'all';
+      loomFilterTags.innerHTML = '';
+      filters.forEach(filter => {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'rt-btn-outline loom-filter';
+        button.dataset.filter = filter;
+        button.textContent = formatFilterLabel(filter);
+        loomFilterTags.appendChild(button);
+      });
+      setActiveLoomFilterButton(activeLoomFilter);
+    }
+    function cardSearchHaystack(card) {
+      const title = card.querySelector('.preset-name')?.textContent || '';
+      const description = card.querySelector('.preset-desc')?.textContent || '';
+      const tag = card.querySelector('.preset-tag')?.textContent || '';
+      const tags = card.dataset.tags || '';
+      return `${title} ${description} ${tag} ${tags}`.toLowerCase();
+    }
+    function cardMatchesSearch(card, query) {
+      if (!query) return true;
+      return cardSearchHaystack(card).includes(query);
+    }
+    function cardMatchesFilter(card, filter) {
+      if (filter === 'all') return true;
+      return getCardTagValues(card).includes(filter);
+    }
+    function applyLoomFilter(filter = activeLoomFilter) {
+      activeLoomFilter = normalizeTagValue(filter) || 'all';
+      getPresetCards().forEach(card => {
+        const matchesTag = cardMatchesFilter(card, activeLoomFilter);
+        const matchesSearch = cardMatchesSearch(card, activeSearchQuery);
+        card.hidden = !(matchesTag && matchesSearch);
+      });
+      setActiveLoomFilterButton(activeLoomFilter);
+    }
+    if (loomFilterTags) {
+      loomFilterTags.addEventListener('click', event => {
+        const target = event.target.closest('.loom-filter');
+        if (!target || !loomFilterTags.contains(target)) return;
+        applyLoomFilter(target.dataset.filter || 'all');
+      });
+    }
+    if (loomSearchInput) {
+      loomSearchInput.addEventListener('input', () => {
+        activeSearchQuery = loomSearchInput.value.trim().toLowerCase();
+        applyLoomFilter(activeLoomFilter);
+      });
+    }
+
+    function setHeartState(button, isFavorited) {
+      button.classList.toggle('active', isFavorited);
+      button.setAttribute('aria-pressed', isFavorited ? 'true' : 'false');
+      button.setAttribute('aria-label', isFavorited ? 'Remove from favorites' : 'Add to favorites');
+    }
+    function createHeartButton() {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'loom-heart-btn';
+      button.innerHTML = HEART_ICON_SVG;
+      return button;
+    }
+    function getCardTitle(card) {
+      return card.querySelector('.top-loom-title, .preset-name')?.textContent?.trim() || 'Loom configuration';
+    }
+    function getCardDescription(card) {
+      return card.querySelector('.top-loom-desc, .preset-desc')?.textContent?.trim() || 'Saved loom configuration.';
+    }
+    function getCardMeta(card) {
+      if (card.classList.contains('top-loom-card')) {
+        const byline = card.querySelector('.top-loom-meta span:first-child')?.textContent?.trim() || 'community';
+        const rating = card.querySelector('.top-loom-meta span:last-child')?.textContent?.trim() || '';
+        return { badge: 'Top Rated', byline, rating };
+      }
+      const badge = card.querySelector('.preset-tag')?.textContent?.trim() || 'Preset';
+      const byline = card.querySelector('.preset-author span:nth-child(2)')?.textContent?.trim() || 'community';
+      const rating = (card.querySelector('.preset-stars')?.textContent || '').replace(/\s+/g, ' ').trim();
+      return { badge, byline, rating };
+    }
+    function resolveTargetPreset(card) {
+      return card.dataset.featuredPreset || card.dataset.preset || slugifyValue(getCardTitle(card));
+    }
+    function syncFavoriteButton(card) {
+      const button = card.querySelector('.loom-heart-btn');
+      if (!button) return;
+      setHeartState(button, card.dataset.favorited === 'true');
+    }
+    function ensureFavoriteButton(card) {
+      if (!card) return;
+      if (!card.dataset.favorited) card.dataset.favorited = 'false';
+      let button = card.querySelector('.loom-heart-btn');
+      if (!button) {
+        button = createHeartButton();
+        if (card.classList.contains('top-loom-card')) {
+          const head = card.querySelector('.top-loom-head');
+          const badge = head?.querySelector('.top-loom-badge');
+          if (head && badge) {
+            head.insertBefore(button, badge.nextSibling);
+          } else if (head) {
+            head.appendChild(button);
+          }
+        } else {
+          const meta = card.querySelector('.preset-meta');
+          let rightCluster = meta?.querySelector('.preset-meta-right');
+          if (meta && !rightCluster) {
+            rightCluster = document.createElement('div');
+            rightCluster.className = 'preset-meta-right';
+            const tag = meta.querySelector('.preset-tag');
+            if (tag) rightCluster.appendChild(tag);
+            meta.appendChild(rightCluster);
+          }
+          if (rightCluster) {
+            rightCluster.appendChild(button);
+          } else if (meta) {
+            meta.appendChild(button);
+          }
+        }
+        button.addEventListener('click', () => {
+          const next = card.dataset.favorited !== 'true';
+          card.dataset.favorited = next ? 'true' : 'false';
+          syncFavoriteButton(card);
+          renderFavoritesShelf();
+        });
+      }
+      syncFavoriteButton(card);
+    }
+    function highlightPresetCard(card) {
+      card.classList.add('loom-focus-highlight');
+      setTimeout(() => card.classList.remove('loom-focus-highlight'), 1100);
+    }
+    function scrollToPresetCard(presetId) {
+      if (!presetId) return;
+      const targetCard = loomGrid.querySelector(`.preset-card[data-preset="${presetId}"]`);
+      if (!targetCard) return;
+      if (activeLoomFilter !== 'all' || activeSearchQuery) {
+        activeSearchQuery = '';
+        if (loomSearchInput) loomSearchInput.value = '';
+        applyLoomFilter('all');
+      }
+      showView('marketplace');
+      targetCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      highlightPresetCard(targetCard);
+    }
+    document.querySelectorAll('.top-view-btn').forEach(btn => {
+      btn.addEventListener('click', () => scrollToPresetCard(btn.dataset.scrollToPreset));
+    });
+
+    function buildFavoriteItem(card) {
+      const meta = getCardMeta(card);
+      const targetPreset = resolveTargetPreset(card);
+      const item = document.createElement('article');
+      item.className = 'rt-card favorite-item';
+
+      const head = document.createElement('div');
+      head.className = 'favorite-item-head';
+      const badge = document.createElement('span');
+      badge.className = 'favorite-item-badge';
+      badge.textContent = meta.badge;
+      const removeBtn = createHeartButton();
+      removeBtn.classList.add('favorite-remove-btn');
+      setHeartState(removeBtn, true);
+      removeBtn.addEventListener('click', () => {
+        card.dataset.favorited = 'false';
+        syncFavoriteButton(card);
+        renderFavoritesShelf();
+      });
+      head.append(badge, removeBtn);
+
+      const title = document.createElement('h4');
+      title.textContent = getCardTitle(card);
+      const description = document.createElement('p');
+      description.textContent = getCardDescription(card);
+      const metaLine = document.createElement('div');
+      metaLine.className = 'favorite-item-meta';
+      metaLine.textContent = `${meta.byline}${meta.rating ? ` · ${meta.rating}` : ''}`;
+      const jumpBtn = document.createElement('button');
+      jumpBtn.type = 'button';
+      jumpBtn.className = 'rt-btn-outline favorite-jump-btn';
+      jumpBtn.textContent = 'View Card';
+      jumpBtn.addEventListener('click', () => scrollToPresetCard(targetPreset));
+
+      item.append(head, title, description, metaLine, jumpBtn);
+      return item;
+    }
+    function renderFavoritesShelf() {
+      if (!favoritesGrid || !favoritesEmpty) return;
+      favoritesGrid.innerHTML = '';
+      const favoriteCards = getAllLoomCards().filter(card => card.dataset.favorited === 'true');
+      favoritesEmpty.hidden = favoriteCards.length > 0;
+      favoriteCards.forEach(card => favoritesGrid.appendChild(buildFavoriteItem(card)));
+    }
+
+    getAllLoomCards().forEach(card => ensureFavoriteButton(card));
+    document.querySelectorAll('.preset-dl-btn').forEach(btn => setDownloadButtonLabel(btn, 'Download Config'));
+    renderFavoritesShelf();
+    renderLoomFilterButtons();
+    applyLoomFilter('all');
+
+    /* ── Download button simulation ── */
+    function handleDownload(btn, filename) {
+      btn.classList.add('downloading');
+      setDownloadButtonLabel(btn, 'Config Downloaded');
+      // In production this would trigger a real file download
+      setTimeout(() => {
+        btn.classList.remove('downloading');
+        setDownloadButtonLabel(btn, 'Download Config');
+      }, 2800);
+    }
+
+    /* ── Loom modal open / close ── */
+    const loomOverlay = document.getElementById('loom-modal');
+    const loomFormWrap = document.getElementById('loom-form-wrap');
+    const loomSuccess = document.getElementById('loom-success');
+    const reviewOverlay = document.getElementById('review-modal');
+    const reviewTargetName = document.getElementById('review-target-name');
+    const reviewSubmitMsg = document.getElementById('review-submit-msg');
+    const reviewStars = Array.from(document.querySelectorAll('.review-star'));
+    let reviewTargetCard = null;
+    let selectedReview = 0;
+
+    const STAR_ICON = `<svg class="rt-icon" width="12" height="12" viewBox="0 0 24 24" stroke-width="2" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`;
+    const toTitleCase = value => value.charAt(0).toUpperCase() + value.slice(1);
+    function updateModalBodyLock() {
+      const anyModalOpen = loomOverlay.classList.contains('open') || reviewOverlay.classList.contains('open');
+      document.body.style.overflow = anyModalOpen ? 'hidden' : '';
+    }
+    function paintReviewStars(rating) {
+      reviewStars.forEach(star => {
+        star.classList.toggle('active', Number(star.dataset.value) <= rating);
+      });
+    }
+    function parseCardRating(card) {
+      const ratingText = card.querySelector('.preset-stars')?.textContent || '';
+      const matches = ratingText.match(/([0-9]+(?:\.[0-9]+)?)\s*·\s*([0-9]+)/);
+      if (!matches) return { total: 5, count: 1 };
+      const avg = Number(matches[1]);
+      const count = Number(matches[2]);
+      return { total: avg * count, count };
+    }
+    function refreshCardRating(card) {
+      const total = Number(card.dataset.ratingTotal || 5);
+      const count = Number(card.dataset.ratingCount || 1);
+      const average = count ? (total / count) : 0;
+      const ratingNode = card.querySelector('.preset-stars');
+      if (!ratingNode) return;
+      ratingNode.innerHTML = `${STAR_ICON} ${average.toFixed(1)} · ${count}`;
+    }
+    function ensureReviewButton(card) {
+      const footer = card.querySelector('.preset-footer');
+      const ratingNode = card.querySelector('.preset-stars');
+      if (!footer || !ratingNode) return;
+      if (!card.dataset.ratingCount || !card.dataset.ratingTotal) {
+        const parsed = parseCardRating(card);
+        card.dataset.ratingTotal = String(parsed.total);
+        card.dataset.ratingCount = String(parsed.count);
+      }
+      if (!footer.querySelector('.preset-review-btn')) {
+        const reviewBtn = document.createElement('button');
+        reviewBtn.type = 'button';
+        reviewBtn.className = 'rt-btn-outline preset-review-btn';
+        reviewBtn.textContent = 'Review';
+        reviewBtn.addEventListener('click', () => openReviewModal(card));
+        footer.insertBefore(reviewBtn, ratingNode);
+      }
+      refreshCardRating(card);
+    }
+    function openReviewModal(card) {
+      reviewTargetCard = card;
+      selectedReview = 0;
+      paintReviewStars(0);
+      reviewSubmitMsg.textContent = '';
+      reviewTargetName.textContent = `Rate “${card.querySelector('.preset-name')?.textContent || 'Workspace config'}” from 1 to 5 stars.`;
+      reviewOverlay.classList.add('open');
+      updateModalBodyLock();
+    }
+    function closeReviewModal() {
+      reviewOverlay.classList.remove('open');
+      reviewTargetCard = null;
+      selectedReview = 0;
+      paintReviewStars(0);
+      reviewSubmitMsg.textContent = '';
+      updateModalBodyLock();
+    }
+
+    function openLoomModal() {
+      loomFormWrap.style.display = '';
+      loomSuccess.classList.remove('shown');
+      loomOverlay.classList.add('open');
+      updateModalBodyLock();
+    }
+    function closeLoomModal() {
+      loomOverlay.classList.remove('open');
+      updateModalBodyLock();
+    }
+
+    document.getElementById('loom-open-modal').addEventListener('click', openLoomModal);
+    document.getElementById('loom-close-modal').addEventListener('click', closeLoomModal);
+    loomOverlay.addEventListener('click', e => { if (e.target === loomOverlay) closeLoomModal(); });
+    document.getElementById('review-close-modal').addEventListener('click', closeReviewModal);
+    document.getElementById('review-cancel-btn').addEventListener('click', closeReviewModal);
+    reviewOverlay.addEventListener('click', e => { if (e.target === reviewOverlay) closeReviewModal(); });
+    reviewStars.forEach(star => {
+      star.addEventListener('click', () => {
+        selectedReview = Number(star.dataset.value);
+        paintReviewStars(selectedReview);
+      });
+    });
+    document.getElementById('review-submit-btn').addEventListener('click', () => {
+      if (!reviewTargetCard || selectedReview < 1) {
+        reviewSubmitMsg.textContent = 'Select a star rating before submitting.';
+        return;
+      }
+      const currentTotal = Number(reviewTargetCard.dataset.ratingTotal || 0);
+      const currentCount = Number(reviewTargetCard.dataset.ratingCount || 0);
+      reviewTargetCard.dataset.ratingTotal = String(currentTotal + selectedReview);
+      reviewTargetCard.dataset.ratingCount = String(currentCount + 1);
+      refreshCardRating(reviewTargetCard);
+      reviewSubmitMsg.textContent = 'Rating submitted.';
+      setTimeout(closeReviewModal, 500);
+    });
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') {
+        closeLoomModal();
+        closeReviewModal();
+      }
+    });
+
+    function createPresetCardFromForm(values) {
+      const slug = values.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || `preset-${Date.now()}`;
+      const card = document.createElement('div');
+      card.className = 'rt-card preset-card revealed';
+      card.dataset.preset = 'custom';
+      card.dataset.tags = `${values.category} community`;
+      card.dataset.ratingTotal = '0';
+      card.dataset.ratingCount = '0';
+      card.innerHTML = `
+        <div class="preset-preview" style="background:var(--rt-terminal-bg);">
+          <div class="preset-preview-inner" style="background:var(--rt-surface-strong);border-color:var(--rt-border);">
+            <div class="pp-chrome">
+              <span class="pp-dot" style="background:#f87171"></span>
+              <span class="pp-dot" style="background:#fbbf24"></span>
+              <span class="pp-dot" style="background:#34d399"></span>
+            </div>
+            <div class="pp-body">
+              <div><span style="color:var(--rt-accent)">$</span> workspace load ${slug}</div>
+              <div style="color:var(--rt-text-faint)">community configuration</div>
+              <div style="color:var(--rt-accent)">ready</div>
+            </div>
+          </div>
+        </div>
+        <div class="preset-body">
+          <div class="preset-meta">
+            <span class="preset-name">${values.name}</span>
+            <span class="preset-tag">${toTitleCase(values.category)}</span>
+          </div>
+          <p class="preset-desc rt-text-muted">${values.description}</p>
+          <div class="preset-author rt-text-muted">
+            <span class="preset-avatar">${values.author.slice(0, 1).toUpperCase()}</span>
+            <span>by ${values.author}</span>
+            <span style="margin-left:auto" class="rt-text-faint">community</span>
+          </div>
+          <div class="preset-footer">
+            <button class="rt-btn-outline preset-dl-btn" onclick="handleDownload(this,'${slug}.json')">
+              <svg class="rt-icon" width="13" height="13" viewBox="0 0 24 24" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="3" y2="15"/></svg>
+              Download
+            </button>
+            <span class="preset-stars">${STAR_ICON} 0.0 · 0</span>
+          </div>
+        </div>
+      `;
+      return card;
+    }
+    document.getElementById('add-config-form').addEventListener('submit', event => {
+      event.preventDefault();
+      const nameEl = document.getElementById('add-name');
+      const authorEl = document.getElementById('add-author');
+      const categoryEl = document.getElementById('add-category');
+      const descriptionEl = document.getElementById('add-description');
+      const values = {
+        name: nameEl.value.trim(),
+        author: authorEl.value.trim(),
+        category: categoryEl.value,
+        description: descriptionEl.value.trim(),
+      };
+      [nameEl, authorEl, descriptionEl].forEach(el => {
+        el.style.borderColor = el.value.trim() ? '' : 'var(--rt-accent)';
+      });
+      if (!values.name || !values.author || !values.description) return;
+      const newCard = createPresetCardFromForm(values);
+      loomGrid.prepend(newCard);
+      observePresetCard(newCard);
+      ensureFavoriteButton(newCard);
+      setDownloadButtonLabel(newCard.querySelector('.preset-dl-btn'), 'Download Config');
+      ensureReviewButton(newCard);
+      renderLoomFilterButtons();
+      applyLoomFilter(activeLoomFilter);
+      renderFavoritesShelf();
+      event.target.reset();
+    });
+    getPresetCards().forEach(card => ensureReviewButton(card));
+
+    /* ── Loom form submit (demo — no real backend) ── */
+    document.getElementById('loom-submit-form').addEventListener('click', () => {
+      const name = document.getElementById('pf-name').value.trim();
+      const config = document.getElementById('pf-config').value.trim();
+      if (!name || !config) {
+        document.getElementById('pf-name').style.borderColor = name ? '' : 'var(--rt-accent)';
+        document.getElementById('pf-config').style.borderColor = config ? '' : 'var(--rt-accent)';
+        return;
+      }
+      loomFormWrap.style.display = 'none';
+      loomSuccess.classList.add('shown');
+    });
+
+    /* ── Customization controls — live accent / font / scale, mirroring the
+       app's Settings overlay (accent override + WCAG contrast-aware text). ── */
+    (function () {
+      const root = document.documentElement;
+
+      function hexToRgba(hex, a) {
+        const n = parseInt(hex.replace('#', ''), 16);
+        return `rgba(${(n >> 16) & 255}, ${(n >> 8) & 255}, ${n & 255}, ${a})`;
+      }
+      function luminance(hex) {
+        const n = parseInt(hex.replace('#', ''), 16);
+        const ch = c => { c /= 255; return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4); };
+        return 0.2126 * ch((n >> 16) & 255) + 0.7152 * ch((n >> 8) & 255) + 0.0722 * ch(n & 255);
+      }
+      const accentContrast = hex =>
+        (1.05 / (luminance(hex) + 0.05)) >= ((luminance(hex) + 0.05) / 0.05) ? '#ffffff' : '#0a0a0a';
+
+      // Accent — shared by the top-bar quick picker AND the Settings demo, so
+      // both swatch rows stay in sync. Any override re-tints the whole page.
+      const allSwatches = Array.from(document.querySelectorAll('.cz-swatch'));
+      const accentNames = Array.from(document.querySelectorAll('.cz-accent-name'));
+
+      function applyAccent(hex, label, customEl) {
+        if (!hex) {
+          // Back to the engine's brand accent — drop the inline overrides.
+          ['--rt-accent', '--rt-accent-soft', '--rt-ring', '--rt-grid-placeholder', '--rt-accent-fg']
+            .forEach(p => root.style.removeProperty(p));
+        } else {
+          root.style.setProperty('--rt-accent', hex);
+          root.style.setProperty('--rt-accent-soft', hexToRgba(hex, 0.14));
+          root.style.setProperty('--rt-ring', hexToRgba(hex, 0.5));
+          root.style.setProperty('--rt-grid-placeholder', hex);
+          root.style.setProperty('--rt-accent-fg', accentContrast(hex));
+        }
+        accentNames.forEach(el => { el.textContent = hex ? (label || hex.toUpperCase()) : 'Theme default'; });
+        allSwatches.forEach(s => {
+          if (s.classList.contains('cz-swatch-custom')) s.classList.toggle('active', !!customEl && s === customEl);
+          else s.classList.toggle('active', (s.dataset.accent || '') === (hex || ''));
+        });
+      }
+
+      allSwatches.forEach(s => {
+        if (s.classList.contains('cz-swatch-custom')) return;
+        s.addEventListener('click', () => applyAccent(s.dataset.accent, s.title, null));
+      });
+      document.querySelectorAll('.cz-accent-custom').forEach(inp => {
+        const sw = inp.closest('.cz-swatch');
+        inp.addEventListener('input', () => applyAccent(inp.value, inp.value.toUpperCase(), sw));
+      });
+      // Default — revert to the theme's brand accent (drops the override)
+      document.querySelectorAll('.cz-accent-reset').forEach(btn => {
+        btn.addEventListener('click', () => applyAccent('', null, null));
+      });
+
+      // Font picker — live --rt-font-sans swap
+      document.querySelectorAll('#cz-fonts .cz-chip').forEach(chip => {
+        chip.addEventListener('click', () => {
+          root.style.setProperty('--rt-font-sans', chip.dataset.font);
+          document.querySelectorAll('#cz-fonts .cz-chip').forEach(c => c.classList.toggle('active', c === chip));
+        });
+      });
+
+      // Workspace scale — scales the preview pane (the app scales root font-size)
+      const scale = document.getElementById('cz-scale');
+      const scaleVal = document.getElementById('cz-scale-val');
+      const previewScale = document.getElementById('cz-preview-scale');
+      if (scale) {
+        scale.addEventListener('input', () => {
+          const pct = +scale.value;
+          scaleVal.textContent = pct + '%';
+          if (previewScale) previewScale.style.transform = `scale(${pct / 100})`;
+        });
+      }
+
+      // Tabs — switch the visible Settings panel
+      const tabs = Array.from(document.querySelectorAll('.cz-tab'));
+      const panels = Array.from(document.querySelectorAll('.cz-tabpanel'));
+      tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+          tabs.forEach(t => t.classList.toggle('active', t === tab));
+          panels.forEach(p => { p.hidden = p.dataset.panel !== tab.dataset.tab; });
+        });
+      });
+
+      // Keep the Theme tab's engine label + active chip in sync with the engine chosen
+      const engineName = document.getElementById('cz-engine-name');
+      document.querySelectorAll('.cz-engine').forEach(btn => {
+        btn.addEventListener('click', () => {
+          if (engineName && typeof THEME_LABELS !== 'undefined') engineName.textContent = THEME_LABELS[btn.dataset.theme];
+        });
+      });
+
+      // Appearance — segmented controls; the Top bar one drives the preview toolbar
+      const mockToolbar = document.getElementById('cz-mocktoolbar');
+      document.querySelectorAll('.cz-seg').forEach(seg => {
+        seg.querySelectorAll('button').forEach(btn => {
+          btn.addEventListener('click', () => {
+            seg.querySelectorAll('button').forEach(b => b.classList.toggle('active', b === btn));
+            if (seg.dataset.seg === 'topbar' && mockToolbar) {
+              mockToolbar.classList.toggle('icons-only', btn.dataset.segVal === 'icons');
+            }
+          });
+        });
+      });
+
+      // Font upload — visual acknowledgement (the real app installs the family)
+      const uploadBtn = document.getElementById('cz-upload');
+      const uploadNote = document.getElementById('cz-upload-note');
+      if (uploadBtn && uploadNote) {
+        uploadBtn.addEventListener('click', () => {
+          uploadNote.textContent = 'In Retermina this opens a picker — your .ttf/.otf installs instantly and joins the font list.';
+        });
+      }
+
+      // Version — fake the check-for-updates round trip
+      const checkBtn = document.getElementById('cz-check-update');
+      const updateStatus = document.getElementById('cz-update-status');
+      if (checkBtn && updateStatus) {
+        checkBtn.addEventListener('click', () => {
+          checkBtn.disabled = true;
+          updateStatus.textContent = 'Checking…';
+          setTimeout(() => {
+            updateStatus.textContent = '✓ You’re on the latest version (v0.1.0).';
+            checkBtn.disabled = false;
+          }, 900);
+        });
+      }
+    })();
+  </script>
+</body>
+</html>
