@@ -920,6 +920,92 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
+    /* ── macOS install note ── */
+    .hero-install-note {
+      margin-top: 0.65rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.32rem 0.75rem;
+      border-radius: 999px;
+      border: var(--rt-border-width) solid var(--rt-border);
+      background: var(--rt-surface);
+      font-size: 0.7rem;
+      color: var(--rt-text-muted);
+      animation: fade-up 0.7s ease 0.55s both;
+      cursor: default;
+    }
+    .hero-install-note code {
+      font-family: ui-monospace, "SF Mono", Menlo, monospace;
+      color: var(--rt-accent);
+      font-size: 0.68rem;
+    }
+
+    /* ── Installation section ── */
+    .install-steps {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      margin-top: 2rem;
+      max-width: 560px;
+    }
+    .install-step {
+      display: flex;
+      gap: 1rem;
+      align-items: flex-start;
+      padding: 1.1rem 1.25rem;
+      cursor: default;
+    }
+    .install-step-num {
+      width: 1.75rem;
+      height: 1.75rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      background: var(--rt-accent-soft);
+      color: var(--rt-accent);
+      font-size: 0.72rem;
+      font-weight: 700;
+      flex-shrink: 0;
+      transition: background 0.4s, color 0.4s;
+    }
+    .install-step-title {
+      margin: 0 0 0.2rem;
+      font-weight: 600;
+      font-size: 0.875rem;
+    }
+    .install-step-desc {
+      margin: 0;
+      font-size: 0.8rem;
+      line-height: 1.55;
+    }
+    .install-step-cmd {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-top: 0.6rem;
+      padding: 0.45rem 0.75rem;
+      background: var(--rt-subsurface);
+      border: var(--rt-border-width) solid var(--rt-border);
+      border-radius: var(--rt-radius-sm);
+      font-family: ui-monospace, "SF Mono", Menlo, monospace;
+      font-size: 0.78rem;
+      color: var(--rt-accent);
+      transition: background 0.2s, border-color 0.2s;
+      cursor: pointer;
+      user-select: all;
+    }
+    .install-step-cmd:hover {
+      border-color: var(--rt-accent);
+      background: var(--rt-accent-soft);
+    }
+    .install-step-copy-tip {
+      font-size: 0.65rem;
+      color: var(--rt-text-faint);
+      font-family: inherit;
+    }
+
     @media (max-width: 600px) {
       /* Draggable grid scales itself (JS computes cell size from width);
          shrink the row height a touch on small screens for proportion. */
@@ -1814,6 +1900,10 @@
         <span class="hero-version-dot"></span>
         Retermina <span class="hero-version-beta">beta</span> · v0.1.0 — early acess
       </p>
+      <p class="hero-install-note">
+        <svg class="rt-icon" width="12" height="12" viewBox="0 0 24 24" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg>
+        macOS "damaged" warning? Run <code>xattr -cr /Applications/Retermina.app</code>
+      </p>
 
       <!-- Live terminal demo -->
       <div class="terminal-demo-wrap rt-panel" id="terminal-demo">
@@ -1906,6 +1996,43 @@
         </div>
       </div>
     </header>
+
+    <section class="block spa-view active" id="install" data-view="home">
+      <p class="section-label rt-text-muted">Installation</p>
+      <h2 class="section-title">Get up and running</h2>
+      <p class="rt-text-muted" style="max-width: 520px; margin: 0;">Download, drag to Applications, and open — three steps. macOS may quarantine the app on first launch; step 3 clears that.</p>
+
+      <div class="install-steps">
+        <div class="rt-card install-step">
+          <span class="install-step-num">1</span>
+          <div>
+            <p class="install-step-title">Download the .dmg</p>
+            <p class="install-step-desc rt-text-muted">Click <strong>Download for Mac</strong> above, or grab the latest build from the GitHub releases page.</p>
+          </div>
+        </div>
+
+        <div class="rt-card install-step">
+          <span class="install-step-num">2</span>
+          <div>
+            <p class="install-step-title">Drag to Applications</p>
+            <p class="install-step-desc rt-text-muted">Mount the .dmg and drag Retermina into your <code style="font-family: ui-monospace, monospace; font-size: 0.8em;">/Applications</code> folder.</p>
+          </div>
+        </div>
+
+        <div class="rt-card install-step">
+          <span class="install-step-num">3</span>
+          <div>
+            <p class="install-step-title">Clear the macOS quarantine flag</p>
+            <p class="install-step-desc rt-text-muted">If macOS says <em>"Retermina is damaged and can't be opened"</em>, this is Gatekeeper's quarantine — not actual corruption. Open Terminal and run:</p>
+            <div class="install-step-cmd" id="install-cmd" title="Click to copy">
+              xattr -cr /Applications/Retermina.app
+              <span class="install-step-copy-tip" id="install-copy-tip">click to copy</span>
+            </div>
+            <p class="install-step-desc rt-text-muted" style="margin-top: 0.5rem;">Then open Retermina normally.</p>
+          </div>
+        </div>
+      </div>
+    </section>
 
     <section class="block spa-view active" id="features" data-view="home">
       <p class="section-label rt-text-muted">Start</p>
@@ -3874,6 +4001,22 @@
         });
       }
     })();
+
+    // Copy xattr command to clipboard
+    const installCmd = document.getElementById('install-cmd');
+    const installCopyTip = document.getElementById('install-copy-tip');
+    if (installCmd) {
+      installCmd.addEventListener('click', () => {
+        navigator.clipboard.writeText('xattr -cr /Applications/Retermina.app').then(() => {
+          installCopyTip.textContent = 'copied!';
+          installCopyTip.style.color = 'var(--rt-accent)';
+          setTimeout(() => {
+            installCopyTip.textContent = 'click to copy';
+            installCopyTip.style.color = '';
+          }, 2000);
+        });
+      });
+    }
   </script>
 </body>
 </html>
