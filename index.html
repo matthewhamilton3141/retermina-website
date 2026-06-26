@@ -450,6 +450,38 @@
     }
     .cta-primary:hover { transform: translateY(-2px) scale(1.02); }
 
+    /* Joined unit: hint segment (left) + GitHub button (right) in one box. */
+    .cta-group {
+      display: inline-flex;
+      align-items: stretch;
+      border: var(--rt-border-width) solid var(--rt-accent);
+      border-radius: var(--rt-radius-sm);
+      overflow: hidden;
+      box-shadow: 0 0 24px -4px color-mix(in srgb, var(--rt-accent) 50%, transparent);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .cta-group:hover { transform: translateY(-2px) scale(1.02); }
+    /* Inside the joined box the button drops its own corners, glow, and hover. */
+    .cta-group .cta-primary { border-radius: 0; box-shadow: none; }
+    .cta-group .cta-primary:hover { transform: none; }
+
+    .hero-repo-hint {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.4rem 0.8rem;
+      border-right: var(--rt-border-width) solid var(--rt-accent);
+      background: color-mix(in srgb, var(--rt-accent) 12%, transparent);
+      font-size: 0.68rem;
+      font-weight: 500;
+      line-height: 1.25;
+      color: var(--rt-accent);
+      max-width: 9.5rem;
+      text-align: left;
+      cursor: default;
+    }
+    .hero-repo-hint svg { flex-shrink: 0; }
+
     .hero-version {
       margin-top: 1rem;
       font-size: 0.72rem;
@@ -1883,10 +1915,16 @@
         A customizable terminal workspace — <span class="hero-typed" id="hero-typed"></span>
       </p>
       <div class="hero-cta">
-        <a class="cta-primary" href="https://github.com/matthewhamilton3141/Retermina" target="_blank" rel="noopener">
-          <svg class="rt-icon" width="18" height="18" viewBox="0 0 24 24" stroke-width="2"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.01.28-2.09 0-3.09 0 0-.79-.25-2.65 1.01A9.64 9.64 0 0 0 12 3c-2.35 0-4.27 1.02-5.4 2.01-1.86-1.26-2.65-1.01-2.65-1.01-.28 1-.28 2.09 0 3.09A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65S8.93 17.38 9 18v4"/><path d="M9 18c-4.51 2-5-2-7-2"/></svg>
-          View on GitHub
-        </a>
+        <div class="cta-group">
+          <span class="hero-repo-hint">
+            <svg class="rt-icon" width="14" height="14" viewBox="0 0 24 24" stroke-width="2"><path d="M12 3l1.6 4.9a2 2 0 0 0 1.3 1.3L20 11l-5 1.6a2 2 0 0 0-1.3 1.3L12 19l-1.6-4.9a2 2 0 0 0-1.3-1.3L4 11l5-1.6a2 2 0 0 0 1.3-1.3z"/></svg>
+            Easiest install &middot; newest features to test
+          </span>
+          <a class="cta-primary" href="https://github.com/matthewhamilton3141/Retermina" target="_blank" rel="noopener">
+            <svg class="rt-icon" width="18" height="18" viewBox="0 0 24 24" stroke-width="2"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.01.28-2.09 0-3.09 0 0-.79-.25-2.65 1.01A9.64 9.64 0 0 0 12 3c-2.35 0-4.27 1.02-5.4 2.01-1.86-1.26-2.65-1.01-2.65-1.01-.28 1-.28 2.09 0 3.09A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65S8.93 17.38 9 18v4"/><path d="M9 18c-4.51 2-5-2-7-2"/></svg>
+            View on GitHub
+          </a>
+        </div>
         <a class="hero-dmg-btn" href="https://github.com/matthewhamilton3141/Retermina/releases/latest/download/Retermina-macos.dmg" target="_blank" rel="noopener">
           <svg class="rt-icon" width="14" height="14" viewBox="0 0 24 24" stroke-width="2">
             <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
@@ -2125,12 +2163,22 @@
         <div class="feature-card rt-panel">
           <svg class="rt-icon rt-accent-text" width="24" height="24" viewBox="0 0 24 24" stroke-width="2"><polyline points="4 17 10 11 4 5"/><line x1="12" x2="20" y1="19" y2="19"/></svg>
           <h3>Real xterm.js terminals</h3>
-          <p class="rt-text-muted">Native shells (Zsh, Bash, PowerShell) over a Rust <code style="font-size:0.85em;">portable-pty</code>, streamed to xterm.js. Split panes horizontally or vertically, each with its own PTY and per-engine palette.</p>
+          <p class="rt-text-muted">Native shells (Zsh, Bash) over a Rust <code style="font-size:0.85em;">portable-pty</code>, streamed to xterm.js. Split panes horizontally or vertically, each with its own PTY and per-engine palette — plus scrollback search (⌘F) and clickable links that open in your browser.</p>
         </div>
         <div class="feature-card rt-panel">
           <svg class="rt-icon rt-accent-text" width="24" height="24" viewBox="0 0 24 24" stroke-width="2"><rect width="20" height="8" x="2" y="2" rx="2" ry="2"/><rect width="20" height="8" x="2" y="14" rx="2" ry="2"/><line x1="6" x2="6.01" y1="6" y2="6"/><line x1="6" x2="6.01" y1="18" y2="18"/></svg>
           <h3>Native Tauri, no cloud</h3>
           <p class="rt-text-muted">A Rust + React desktop app — your shell runs locally with no token limits, no subscription, and nothing uploaded. Quick-open (⌘P), a command palette (⌘K), and self-updates are built in.</p>
+        </div>
+        <div class="feature-card rt-panel">
+          <svg class="rt-icon rt-accent-text" width="24" height="24" viewBox="0 0 24 24" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+          <h3>Search across files</h3>
+          <p class="rt-text-muted">Project-wide content search (⌘⇧F) backed by a native Rust walk — no <code style="font-size:0.85em;">ripgrep</code> dependency. Results group by file with line numbers; pick one to open it in the Code panel scrolled straight to the match.</p>
+        </div>
+        <div class="feature-card rt-panel">
+          <svg class="rt-icon rt-accent-text" width="24" height="24" viewBox="0 0 24 24" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></svg>
+          <h3>Picks up where you left off</h3>
+          <p class="rt-text-muted">Relaunch and Retermina restores your last workspace, panel layout, and open file — paths and layout only, never file contents or shell history. Head back to the Launch Hub and it forgets, so a deliberate exit lands on the hub.</p>
         </div>
       </div>
     </section>
