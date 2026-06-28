@@ -3516,25 +3516,6 @@
     }, { threshold: 0.15 });
     cards.forEach(c => observer.observe(c));
 
-    /* Stagger start cards on scroll */
-    const startCards = document.querySelectorAll('.start-card');
-    const startObs = new IntersectionObserver(entries => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          startCards.forEach((card, i) => {
-            card.style.opacity = '0';
-            card.style.transform = 'translateY(16px)';
-            setTimeout(() => {
-              card.style.transition = 'opacity 0.5s ease, transform 0.5s cubic-bezier(.34,1.56,.64,1)';
-              card.style.opacity = '1';
-              card.style.transform = 'translateY(0)';
-            }, i * 80);
-          });
-          startObs.disconnect();
-        }
-      });
-    }, { threshold: 0.2 });
-    if (startCards.length) startObs.observe(startCards[0].parentElement);
     /* ── Loom preset card reveal ── */
     const loomGrid = document.getElementById('loom-grid');
     const favoritesGrid = document.getElementById('favorites-grid');
