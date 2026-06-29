@@ -2447,583 +2447,30 @@
     <!-- ══════════════════════════════════════════ LOOM MARKETPLACE ══════════════════════════════════════════ -->
     <section class="block spa-view" id="loom" data-view="marketplace" hidden>
       <div class="loom-hero">
-        <span class="loom-badge">
-          Loom gallery
-        </span>
-        <h2 class="section-title">Retermina Loom Marketplace Preview</h2>
-        <p class="rt-text-muted">One streamlined destination for curated top-rated layouts and all available workplace configurations. Browse, rate, and publish setups in the same flow.</p>
-      </div>
-
-      <div class="loom-subsection">
-        <h3 class="loom-subtitle">Most Highly Rated Looms</h3>
-        <p class="loom-subcopy rt-text-muted">Featured community workspaces with standout usability, thoughtful panel architecture, and reliable daily-driver ergonomics.</p>
-        <div class="top-looms-grid">
-          <article class="rt-card top-loom-card" data-featured-preset="carbon">
-            <div class="top-loom-head">
-              <span class="top-loom-title">Carbon Noir Pro</span>
-              <span class="top-loom-badge">Top 1</span>
-            </div>
-            <p class="top-loom-desc">Ultra-clean dark command center with dense terminal multiplexing and pinned Iris shortcuts for fast Git automation.</p>
-            <div class="top-loom-meta">
-              <span>by Claude</span>
-            </div>
-            <div class="top-loom-actions">
-              <button type="button" class="rt-btn-outline top-view-btn" data-scroll-to-preset="carbon">View Card</button>
-            </div>
-          </article>
-          <article class="rt-card top-loom-card" data-featured-preset="aurora">
-            <div class="top-loom-head">
-              <span class="top-loom-title">Aurora Ops Grid</span>
-              <span class="top-loom-badge">Top 2</span>
-            </div>
-            <p class="top-loom-desc">Glassmorphism-heavy layout for monitoring logs, build output, and localhost status side-by-side in a vivid neon stack.</p>
-            <div class="top-loom-meta">
-              <span>by Claude</span>
-            </div>
-            <div class="top-loom-actions">
-              <button type="button" class="rt-btn-outline top-view-btn" data-scroll-to-preset="aurora">View Card</button>
-            </div>
-          </article>
-          <article class="rt-card top-loom-card" data-featured-preset="midnight">
-            <div class="top-loom-head">
-              <span class="top-loom-title">Midnight Indigo</span>
-              <span class="top-loom-badge">Top 3</span>
-            </div>
-            <p class="top-loom-desc">Balanced full-stack workflow tuned for long coding sessions: calm contrast, focused pane hierarchy, and expressive syntax glow.</p>
-            <div class="top-loom-meta">
-              <span>by Claude</span>
-            </div>
-            <div class="top-loom-actions">
-              <button type="button" class="rt-btn-outline top-view-btn" data-scroll-to-preset="midnight">View Card</button>
-            </div>
-          </article>
-        </div>
-      </div>
-
-      <div class="loom-subsection">
-        <div class="loom-favorites rt-panel">
-          <div class="loom-favorites-head">
-            <h3 class="loom-favorites-title">My Saved Favorites</h3>
-            <span class="rt-text-faint">Tap hearts to build your quick shelf</span>
-          </div>
-          <p class="loom-favorites-copy">Favorited loom configurations appear here instantly so you can compare your saved setups in one place.</p>
-          <p class="favorites-empty rt-text-muted" id="favorites-empty">No favorites yet — click a heart on any loom card to save it.</p>
-          <div class="favorites-grid" id="favorites-grid" aria-live="polite"></div>
-        </div>
-      </div>
-
-      <div class="loom-subsection">
-        <h3 class="loom-subtitle">Create Workspace Config</h3>
-        <p class="loom-subcopy rt-text-muted">Build and add a new workspace configuration directly to the marketplace list.</p>
-        <div class="loom-toolbar">
-          <div class="loom-spacer"></div>
-          <button class="loom-submit-btn" id="loom-open-modal">
-            <svg class="rt-icon" width="14" height="14" viewBox="0 0 24 24" stroke-width="2.5"><line x1="12" x2="12" y1="5" y2="19"/><line x1="5" x2="19" y1="12" y2="12"/></svg>
-            Submit preset
-          </button>
-        </div>
-        <div class="loom-add-panel rt-panel">
-          <h3>Create Workspace Config</h3>
-          <p>Add a new workspace configuration directly to the marketplace list.</p>
-          <form class="loom-add-form" id="add-config-form">
-            <div class="loom-field">
-              <label for="add-name">Configuration name</label>
-              <input id="add-name" type="text" maxlength="36" placeholder="e.g. Neon Build Station">
-            </div>
-            <div class="loom-field">
-              <label for="add-author">Author</label>
-              <input id="add-author" type="text" maxlength="28" placeholder="e.g. yourhandle">
-            </div>
-            <div class="loom-field">
-              <label for="add-category">Category</label>
-              <select id="add-category">
-                <option value="dark">Dark</option>
-                <option value="light">Light</option>
-                <option value="glass">Glass</option>
-                <option value="community">Community</option>
-              </select>
-            </div>
-            <div class="loom-field">
-              <label for="add-description">Description</label>
-              <input id="add-description" type="text" maxlength="120" placeholder="Describe the setup in one sentence">
-            </div>
-            <div class="loom-add-submit-wrap">
-              <button type="submit" class="loom-submit-btn">Create Workspace Config</button>
-            </div>
-          </form>
-        </div>
+        <span class="loom-badge">Loom gallery</span>
+        <h2 class="section-title">Community Looms</h2>
+        <p class="rt-text-muted">Theme + layout presets shared by the community. Install one in the app — Settings &#9656; Loom &#9656; Import — or download the <code>.json</code>. Sharing your own opens a pull request on GitHub.</p>
       </div>
 
       <div class="loom-subsection loom-search-tools">
         <div class="loom-search-wrap">
-          <input id="loom-search" class="loom-search-input" type="search" placeholder="Search available configurations by title, description, or tag..." aria-label="Search available loom configurations">
+          <input id="loom-search" class="loom-search-input" type="search" placeholder="Search Looms by name, description, or theme&hellip;" aria-label="Search community Looms">
         </div>
-        <div class="loom-filter-tags" id="loom-filter-tags" role="group" aria-label="Quick preset filters"></div>
+        <div class="loom-filter-tags" id="loom-filter-tags" role="group" aria-label="Filter Looms by theme"></div>
       </div>
 
       <div class="loom-subsection">
-        <h3 class="loom-subtitle">All Available Workplace Configurations</h3>
-        <p class="loom-subcopy rt-text-muted">Explore full preset inventory, filter by style, then create and add your own workspace.</p>
-
-        <div class="loom-grid" id="loom-grid">
-
-        <!-- Carbon Noir -->
-        <div class="rt-card preset-card revealed" data-preset="carbon" data-tags="dark">
-          <div class="preset-preview">
-            <div class="preset-preview-inner">
-              <div class="pp-chrome">
-                <span class="pp-dot" style="background:#f87171"></span>
-                <span class="pp-dot" style="background:#fbbf24"></span>
-                <span class="pp-dot" style="background:#34d399"></span>
-              </div>
-              <div class="pp-body">
-                <div><span style="color:#34d399">$</span> npm run tauri dev</div>
-                <div style="color:#525252">  VITE ready in 310ms</div>
-                <div><span style="color:#34d399">➜</span> localhost:1420</div>
-              </div>
-            </div>
-          </div>
-          <div class="preset-body">
-            <div class="preset-meta">
-              <span class="preset-name">Carbon Noir</span>
-              <span class="preset-tag">Dark</span>
-            </div>
-            <p class="preset-desc rt-text-muted">Pure black surfaces with emerald accents. The default Sleek engine pushed to its darkest extreme — zero visual noise.</p>
-            <div class="preset-author rt-text-muted">
-              <span class="preset-avatar">C</span>
-              <span>by Claude</span>
-              <span style="margin-left:auto" class="rt-text-faint">community</span>
-            </div>
-            <div class="preset-footer">
-              <button class="rt-btn-outline preset-dl-btn" onclick="handleDownload(this,'carbon-noir.json')">
-                <svg class="rt-icon" width="13" height="13" viewBox="0 0 24 24" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="3" y2="15"/></svg>
-                Download
-              </button>
-            </div>
-          </div>
+        <div class="loom-toolbar">
+          <div class="loom-spacer"></div>
+          <a class="loom-submit-btn" id="loom-submit-link" href="https://github.com/matthewhamilton3141/retermina-looms/issues/new?template=loom-submission.yml" target="_blank" rel="noopener">
+            <svg class="rt-icon" width="14" height="14" viewBox="0 0 24 24" stroke-width="2.5"><line x1="12" x2="12" y1="5" y2="19"/><line x1="5" x2="19" y1="12" y2="12"/></svg>
+            Submit a Loom
+          </a>
         </div>
-
-        <!-- Aurora Glass -->
-        <div class="rt-card preset-card" data-preset="aurora" data-tags="dark glass">
-          <div class="preset-preview">
-            <div class="preset-preview-inner">
-              <div class="pp-chrome">
-                <span class="pp-dot" style="background:#f87171"></span>
-                <span class="pp-dot" style="background:#fbbf24"></span>
-                <span class="pp-dot" style="background:#34d399"></span>
-              </div>
-              <div class="pp-body">
-                <div><span style="color:#38bdf8">$</span> git push origin main</div>
-                <div style="color:#64748b">  Enumerating objects: 12, done.</div>
-                <div style="color:#38bdf8">➜ main -> main</div>
-              </div>
-            </div>
-          </div>
-          <div class="preset-body">
-            <div class="preset-meta">
-              <span class="preset-name">Aurora Glass</span>
-              <span class="preset-tag">Glass</span>
-            </div>
-            <p class="preset-desc rt-text-muted">Deep navy backdrop with translucent panels, sky-blue accents, and heavy blur. Pairs perfectly with macOS wallpapers.</p>
-            <div class="preset-author rt-text-muted">
-              <span class="preset-avatar" style="background:#38bdf8;color:#0b1220">C</span>
-              <span>by Claude</span>
-              <span style="margin-left:auto" class="rt-text-faint">community</span>
-            </div>
-            <div class="preset-footer">
-              <button class="rt-btn-outline preset-dl-btn" onclick="handleDownload(this,'aurora-glass.json')">
-                <svg class="rt-icon" width="13" height="13" viewBox="0 0 24 24" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="3" y2="15"/></svg>
-                Download
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Sakura -->
-        <div class="rt-card preset-card" data-preset="sakura" data-tags="light">
-          <div class="preset-preview">
-            <div class="preset-preview-inner">
-              <div class="pp-chrome">
-                <span class="pp-dot" style="background:#f87171"></span>
-                <span class="pp-dot" style="background:#fbbf24"></span>
-                <span class="pp-dot" style="background:#34d399"></span>
-              </div>
-              <div class="pp-body">
-                <div><span style="color:#8b5cf6">$</span> npm install</div>
-                <div style="color:#aaa1c0">added 142 packages</div>
-                <div style="color:#8b5cf6">✓ done in 2.4s</div>
-              </div>
-            </div>
-          </div>
-          <div class="preset-body">
-            <div class="preset-meta">
-              <span class="preset-name">Sakura</span>
-              <span class="preset-tag">Light</span>
-            </div>
-            <p class="preset-desc rt-text-muted">Soft violet gradients on a light lavender base. Gentle on the eyes during long daytime sessions with the Soft Pastel engine.</p>
-            <div class="preset-author rt-text-muted">
-              <span class="preset-avatar" style="background:#8b5cf6">C</span>
-              <span>by Claude</span>
-              <span style="margin-left:auto" class="rt-text-faint">community</span>
-            </div>
-            <div class="preset-footer">
-              <button class="rt-btn-outline preset-dl-btn" onclick="handleDownload(this,'sakura.json')">
-                <svg class="rt-icon" width="13" height="13" viewBox="0 0 24 24" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="3" y2="15"/></svg>
-                Download
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Mono -->
-        <div class="rt-card preset-card" data-preset="mono" data-tags="light">
-          <div class="preset-preview">
-            <div class="preset-preview-inner">
-              <div class="pp-chrome">
-                <span class="pp-dot" style="background:#f87171"></span>
-                <span class="pp-dot" style="background:#fbbf24"></span>
-                <span class="pp-dot" style="background:#34d399"></span>
-              </div>
-              <div class="pp-body">
-                <div><span style="color:#18181b">$</span> git status</div>
-                <div style="color:#71717a">On branch main</div>
-                <div style="color:#18181b">nothing to commit</div>
-              </div>
-            </div>
-          </div>
-          <div class="preset-body">
-            <div class="preset-meta">
-              <span class="preset-name">Mono</span>
-              <span class="preset-tag">Light</span>
-            </div>
-            <p class="preset-desc rt-text-muted">Pure white canvas, near-zero radius, no shadows. Built on the Minimalist engine for a distraction-free paper-like workflow.</p>
-            <div class="preset-author rt-text-muted">
-              <span class="preset-avatar" style="background:#18181b">C</span>
-              <span>by Claude</span>
-              <span style="margin-left:auto" class="rt-text-faint">community</span>
-            </div>
-            <div class="preset-footer">
-              <button class="rt-btn-outline preset-dl-btn" onclick="handleDownload(this,'mono.json')">
-                <svg class="rt-icon" width="13" height="13" viewBox="0 0 24 24" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="3" y2="15"/></svg>
-                Download
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Brutus -->
-        <div class="rt-card preset-card" data-preset="brutus" data-tags="light community">
-          <div class="preset-preview">
-            <div class="preset-preview-inner">
-              <div class="pp-chrome">
-                <span class="pp-dot" style="background:#f87171"></span>
-                <span class="pp-dot" style="background:#fbbf24"></span>
-                <span class="pp-dot" style="background:#34d399"></span>
-              </div>
-              <div class="pp-body">
-                <div><span style="color:#16a34a">$</span> make build</div>
-                <div style="color:#3f3f46">gcc -o out main.c</div>
-                <div style="color:#16a34a">BUILD SUCCESS</div>
-              </div>
-            </div>
-          </div>
-          <div class="preset-body">
-            <div class="preset-meta">
-              <span class="preset-name">Brutus</span>
-              <span class="preset-tag">Community</span>
-            </div>
-            <p class="preset-desc rt-text-muted">Hard black borders, zero radius, offset box shadows. Neo-Brutalism at full blast — makes every panel feel bolted to the screen.</p>
-            <div class="preset-author rt-text-muted">
-              <span class="preset-avatar" style="background:#16a34a">C</span>
-              <span>by Claude</span>
-              <span style="margin-left:auto" class="rt-text-faint">community</span>
-            </div>
-            <div class="preset-footer">
-              <button class="rt-btn-outline preset-dl-btn" onclick="handleDownload(this,'brutus.json')">
-                <svg class="rt-icon" width="13" height="13" viewBox="0 0 24 24" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="3" y2="15"/></svg>
-                Download
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Midnight Indigo -->
-        <div class="rt-card preset-card" data-preset="midnight" data-tags="dark community">
-          <div class="preset-preview">
-            <div class="preset-preview-inner">
-              <div class="pp-chrome">
-                <span class="pp-dot" style="background:#f87171"></span>
-                <span class="pp-dot" style="background:#fbbf24"></span>
-                <span class="pp-dot" style="background:#34d399"></span>
-              </div>
-              <div class="pp-body">
-                <div><span style="color:#818cf8">$</span> node server.js</div>
-                <div style="color:#1e1e3a">listening on :3000</div>
-                <div style="color:#818cf8">✓ server ready</div>
-              </div>
-            </div>
-          </div>
-          <div class="preset-body">
-            <div class="preset-meta">
-              <span class="preset-name">Midnight Indigo</span>
-              <span class="preset-tag">Community</span>
-            </div>
-            <p class="preset-desc rt-text-muted">Deep blue-black with indigo panel accents and a subtle purple glow at the top. Inspired by late-night Tokyo dev sessions.</p>
-            <div class="preset-author rt-text-muted">
-              <span class="preset-avatar" style="background:#818cf8;color:#0d0d1a">C</span>
-              <span>by Claude</span>
-              <span style="margin-left:auto" class="rt-text-faint">community</span>
-            </div>
-            <div class="preset-footer">
-              <button class="rt-btn-outline preset-dl-btn" onclick="handleDownload(this,'midnight-indigo.json')">
-                <svg class="rt-icon" width="13" height="13" viewBox="0 0 24 24" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="3" y2="15"/></svg>
-                Download
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Neon Forge Stack -->
-        <div class="rt-card preset-card" data-preset="neonforge" data-tags="dark glass community">
-          <div class="preset-preview">
-            <div class="preset-preview-inner">
-              <div class="pp-chrome">
-                <span class="pp-dot" style="background:#f87171"></span>
-                <span class="pp-dot" style="background:#fbbf24"></span>
-                <span class="pp-dot" style="background:#34d399"></span>
-              </div>
-              <div class="pp-body">
-                <div><span style="color:#22d3ee">$</span> pnpm turbo run dev</div>
-                <div style="color:#94a3b8">web, api, worker all online</div>
-                <div style="color:#f472b6">hot reload synced</div>
-              </div>
-            </div>
-          </div>
-          <div class="preset-body">
-            <div class="preset-meta">
-              <span class="preset-name">Neon Forge Stack</span>
-              <span class="preset-tag">Glass</span>
-            </div>
-            <p class="preset-desc rt-text-muted">A neon cyberglass multi-pane setup optimized for monorepo iteration with side-by-side service health and package task streams.</p>
-            <div class="preset-author rt-text-muted">
-              <span class="preset-avatar" style="background:#22d3ee;color:#082f49">C</span>
-              <span>by Claude</span>
-              <span style="margin-left:auto" class="rt-text-faint">community</span>
-            </div>
-            <div class="preset-footer">
-              <button class="rt-btn-outline preset-dl-btn" onclick="handleDownload(this,'neon-forge-stack.json')">
-                <svg class="rt-icon" width="13" height="13" viewBox="0 0 24 24" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="3" y2="15"/></svg>
-                Download
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Solarized Build Grid -->
-        <div class="rt-card preset-card" data-preset="solarized" data-tags="light community">
-          <div class="preset-preview">
-            <div class="preset-preview-inner">
-              <div class="pp-chrome">
-                <span class="pp-dot" style="background:#f87171"></span>
-                <span class="pp-dot" style="background:#fbbf24"></span>
-                <span class="pp-dot" style="background:#34d399"></span>
-              </div>
-              <div class="pp-body">
-                <div><span style="color:#b45309">$</span> npm run lint && npm test</div>
-                <div style="color:#9a3412">lint clean · tests green</div>
-                <div style="color:#2563eb">coverage 91.2%</div>
-              </div>
-            </div>
-          </div>
-          <div class="preset-body">
-            <div class="preset-meta">
-              <span class="preset-name">Solarized Build Grid</span>
-              <span class="preset-tag">Light</span>
-            </div>
-            <p class="preset-desc rt-text-muted">Warm low-glare palette with focused diagnostics panels and compact split terminals for TDD cycles and review-heavy workflows.</p>
-            <div class="preset-author rt-text-muted">
-              <span class="preset-avatar" style="background:#f59e0b;color:#422006">C</span>
-              <span>by Claude</span>
-              <span style="margin-left:auto" class="rt-text-faint">community</span>
-            </div>
-            <div class="preset-footer">
-              <button class="rt-btn-outline preset-dl-btn" onclick="handleDownload(this,'solarized-build-grid.json')">
-                <svg class="rt-icon" width="13" height="13" viewBox="0 0 24 24" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="3" y2="15"/></svg>
-                Download
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Matrix CI Watchtower -->
-        <div class="rt-card preset-card" data-preset="matrix" data-tags="dark community">
-          <div class="preset-preview">
-            <div class="preset-preview-inner">
-              <div class="pp-chrome">
-                <span class="pp-dot" style="background:#f87171"></span>
-                <span class="pp-dot" style="background:#fbbf24"></span>
-                <span class="pp-dot" style="background:#34d399"></span>
-              </div>
-              <div class="pp-body">
-                <div><span style="color:#4ade80">$</span> gh run watch</div>
-                <div style="color:#22c55e">build matrix: linux/mac/win</div>
-                <div style="color:#4ade80">status: all passing</div>
-              </div>
-            </div>
-          </div>
-          <div class="preset-body">
-            <div class="preset-meta">
-              <span class="preset-name">Matrix CI Watchtower</span>
-              <span class="preset-tag">Dark</span>
-            </div>
-            <p class="preset-desc rt-text-muted">Green phosphor observability theme with dedicated panes for CI status, release logs, and git history while coding in parallel.</p>
-            <div class="preset-author rt-text-muted">
-              <span class="preset-avatar" style="background:#16a34a;color:#052e16">C</span>
-              <span>by Claude</span>
-              <span style="margin-left:auto" class="rt-text-faint">community</span>
-            </div>
-            <div class="preset-footer">
-              <button class="rt-btn-outline preset-dl-btn" onclick="handleDownload(this,'matrix-ci-watchtower.json')">
-                <svg class="rt-icon" width="13" height="13" viewBox="0 0 24 24" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="3" y2="15"/></svg>
-                Download
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Rust Kernel Lab -->
-        <div class="rt-card preset-card" data-preset="rustlab" data-tags="dark community">
-          <div class="preset-preview">
-            <div class="preset-preview-inner">
-              <div class="pp-chrome">
-                <span class="pp-dot" style="background:#f87171"></span>
-                <span class="pp-dot" style="background:#fbbf24"></span>
-                <span class="pp-dot" style="background:#34d399"></span>
-              </div>
-              <div class="pp-body">
-                <div><span style="color:#fb923c">$</span> cargo test --workspace</div>
-                <div style="color:#9a3412">running 286 tests...</div>
-                <div style="color:#fb923c">ok · 286 passed</div>
-              </div>
-            </div>
-          </div>
-          <div class="preset-body">
-            <div class="preset-meta">
-              <span class="preset-name">Rust Kernel Lab</span>
-              <span class="preset-tag">Community</span>
-            </div>
-            <p class="preset-desc rt-text-muted">Burnt-orange systems theme purpose-built for Rust and low-level work: diagnostics on the right, perf probes below, shell atop.</p>
-            <div class="preset-author rt-text-muted">
-              <span class="preset-avatar" style="background:#ea580c;color:#431407">C</span>
-              <span>by Claude</span>
-              <span style="margin-left:auto" class="rt-text-faint">community</span>
-            </div>
-            <div class="preset-footer">
-              <button class="rt-btn-outline preset-dl-btn" onclick="handleDownload(this,'rust-kernel-lab.json')">
-                <svg class="rt-icon" width="13" height="13" viewBox="0 0 24 24" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="3" y2="15"/></svg>
-                Download
-              </button>
-            </div>
-          </div>
-        </div>
-
-      </div><!-- /loom-grid -->
+        <div class="loom-grid" id="loom-grid" aria-live="polite"></div>
       </div>
     </section>
 
-    <!-- Submit preset modal -->
-    <div class="loom-modal-overlay" id="loom-modal" role="dialog" aria-modal="true" aria-labelledby="loom-modal-title">
-      <div class="loom-modal rt-panel">
-        <button class="loom-modal-close" id="loom-close-modal" aria-label="Close">
-          <svg class="rt-icon" width="16" height="16" viewBox="0 0 24 24" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-        </button>
-
-        <div id="loom-form-wrap">
-          <h3 id="loom-modal-title">Submit your preset</h3>
-          <p class="rt-text-muted">Share your Retermina workspace config with the community. Accepted presets appear in Loom within 48 hours.</p>
-          <div class="loom-form">
-            <div class="loom-form-row">
-              <div class="loom-field">
-                <label for="pf-name">Preset name</label>
-                <input id="pf-name" type="text" placeholder="e.g. Neon Dusk" maxlength="32">
-              </div>
-              <div class="loom-field">
-                <label for="pf-author">Your name / handle</label>
-                <input id="pf-author" type="text" placeholder="e.g. yourhandle" maxlength="32">
-              </div>
-            </div>
-            <div class="loom-form-row">
-              <div class="loom-field">
-                <label for="pf-engine">Base theme engine</label>
-                <select id="pf-engine">
-                  <option value="">Select engine…</option>
-                  <option value="sleek">Sleek</option>
-                  <option value="pastel">Soft Pastel</option>
-                  <option value="glass">Transparent Glass</option>
-                  <option value="minimalist">Minimalist</option>
-                  <option value="brutalism">Neo-Brutalism</option>
-                </select>
-              </div>
-              <div class="loom-field">
-                <label for="pf-tag">Category</label>
-                <select id="pf-tag">
-                  <option value="">Select…</option>
-                  <option value="dark">Dark</option>
-                  <option value="light">Light</option>
-                  <option value="glass">Glass</option>
-                  <option value="community">Community</option>
-                </select>
-              </div>
-            </div>
-            <div class="loom-field">
-              <label for="pf-desc">Short description</label>
-              <textarea id="pf-desc" rows="2" placeholder="What makes this preset unique? Max 120 chars." maxlength="120"></textarea>
-            </div>
-            <div class="loom-field">
-              <label for="pf-config">Config JSON or GitHub Gist URL</label>
-              <textarea id="pf-config" rows="3" placeholder='{"theme":"sleek","accent":"#ff6396","panels":[…]} or https://gist.github.com/…'></textarea>
-            </div>
-            <div class="loom-form-footer">
-              <p class="rt-text-faint loom-form-note">Submissions are reviewed before going live. No accounts needed.</p>
-              <button class="loom-form-submit" id="loom-submit-form">
-                <svg class="rt-icon" width="14" height="14" viewBox="0 0 24 24" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-                Send preset
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <div class="loom-success" id="loom-success">
-          <div class="loom-success-icon">
-            <svg class="rt-icon" width="22" height="22" viewBox="0 0 24 24" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-          </div>
-          <h4>Preset received!</h4>
-          <p class="rt-text-muted">Thanks for contributing to Loom. Your preset will be reviewed and published within 48 hours.</p>
-        </div>
-      </div>
-    </div>
-
-    <div class="loom-modal-overlay" id="review-modal" role="dialog" aria-modal="true" aria-labelledby="review-modal-title">
-      <div class="loom-modal review-modal rt-panel">
-        <button class="loom-modal-close" id="review-close-modal" aria-label="Close review dialog">
-          <svg class="rt-icon" width="16" height="16" viewBox="0 0 24 24" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-        </button>
-        <h3 id="review-modal-title">Review this configuration</h3>
-        <p class="review-target" id="review-target-name"></p>
-        <div class="review-stars" id="review-stars">
-          <button type="button" class="review-star" data-value="1" aria-label="1 star">★</button>
-          <button type="button" class="review-star" data-value="2" aria-label="2 stars">★</button>
-          <button type="button" class="review-star" data-value="3" aria-label="3 stars">★</button>
-          <button type="button" class="review-star" data-value="4" aria-label="4 stars">★</button>
-          <button type="button" class="review-star" data-value="5" aria-label="5 stars">★</button>
-        </div>
-        <div class="review-actions">
-          <button type="button" class="rt-btn-outline marketplace-nav-btn" id="review-cancel-btn">Cancel</button>
-          <button type="button" class="loom-form-submit" id="review-submit-btn">Submit rating</button>
-        </div>
-        <p class="review-submit-msg" id="review-submit-msg"></p>
-      </div>
-    </div>
 
     <footer class="rt-text-muted">
       <div class="footer-content">
@@ -3472,487 +2919,162 @@
     }, { threshold: 0.15 });
     cards.forEach(c => observer.observe(c));
 
-    /* ── Loom preset card reveal ── */
-    const loomGrid = document.getElementById('loom-grid');
-    const favoritesGrid = document.getElementById('favorites-grid');
-    const favoritesEmpty = document.getElementById('favorites-empty');
-    const loomSearchInput = document.getElementById('loom-search');
-    const loomFilterTags = document.getElementById('loom-filter-tags');
-    const getPresetCards = () => Array.from(loomGrid.querySelectorAll('.preset-card'));
-    const getTopCards = () => Array.from(document.querySelectorAll('.top-loom-card'));
-    const getAllLoomCards = () => [...getTopCards(), ...getPresetCards()];
-    const presetObs = new IntersectionObserver(entries => {
-      entries.forEach((entry, i) => {
-        if (entry.isIntersecting) {
-          setTimeout(() => entry.target.classList.add('revealed'), i * 80);
-          presetObs.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.1 });
-    function observePresetCard(card) {
-      if (card) presetObs.observe(card);
-    }
-    getPresetCards().forEach(observePresetCard);
+    /* ── Community Loom gallery — live catalog (read path) ───────────────── */
+    (function () {
+      const CATALOG_URL = 'https://raw.githubusercontent.com/matthewhamilton3141/retermina-looms/main/catalog.json';
+      const grid = document.getElementById('loom-grid');
+      const searchEl = document.getElementById('loom-search');
+      const tagsEl = document.getElementById('loom-filter-tags');
+      if (!grid) return;
 
-    const HEART_ICON_SVG = `<svg class="rt-icon" width="14" height="14" viewBox="0 0 24 24"><path d="m12 21-1.35-1.23C5.4 15.03 2 11.96 2 8.2 2 5.16 4.42 2.75 7.45 2.75c1.72 0 3.36.8 4.55 2.05 1.19-1.25 2.83-2.05 4.55-2.05C19.58 2.75 22 5.16 22 8.2c0 3.76-3.4 6.83-8.65 11.57L12 21z"/></svg>`;
-    const DOWNLOAD_ICON_SVG = `<svg class="rt-icon" width="13" height="13" viewBox="0 0 24 24" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="3" y2="15"/></svg>`;
-    const PRIORITY_LOOM_FILTERS = ['dark', 'light', 'glass'];
-    const slugifyValue = value => (value || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
-    let activeLoomFilter = 'all';
-    let activeSearchQuery = '';
-
-    function setDownloadButtonLabel(button, label) {
-      if (!button) return;
-      button.innerHTML = `${DOWNLOAD_ICON_SVG} ${label}`;
-    }
-    function normalizeTagValue(value) {
-      return (value || '').trim().toLowerCase();
-    }
-    function splitTagValues(value) {
-      return normalizeTagValue(value).split(/[^a-z0-9]+/).filter(Boolean);
-    }
-    function getCardTagValues(card) {
-      const fromData = splitTagValues(card.dataset.tags || '');
-      const fromBadge = splitTagValues(card.querySelector('.preset-tag')?.textContent || '');
-      return Array.from(new Set([...fromData, ...fromBadge]));
-    }
-    function formatFilterLabel(value) {
-      if (value === 'all') return 'All Presets';
-      return value.split('-').filter(Boolean).map(part => part.charAt(0).toUpperCase() + part.slice(1)).join(' ');
-    }
-    function getAvailableLoomFilters() {
-      const discovered = new Set();
-      getPresetCards().forEach(card => {
-        getCardTagValues(card).forEach(tag => discovered.add(tag));
-      });
-      const ordered = PRIORITY_LOOM_FILTERS.filter(tag => discovered.has(tag));
-      const remaining = Array.from(discovered)
-        .filter(tag => !PRIORITY_LOOM_FILTERS.includes(tag))
-        .sort((a, b) => a.localeCompare(b));
-      return ['all', ...ordered, ...remaining];
-    }
-    function setActiveLoomFilterButton(filter) {
-      if (!loomFilterTags) return;
-      loomFilterTags.querySelectorAll('.loom-filter').forEach(button => {
-        button.classList.toggle('active', button.dataset.filter === filter);
-      });
-    }
-    function renderLoomFilterButtons() {
-      if (!loomFilterTags) return;
-      const filters = getAvailableLoomFilters();
-      if (!filters.includes(activeLoomFilter)) activeLoomFilter = 'all';
-      loomFilterTags.innerHTML = '';
-      filters.forEach(filter => {
-        const button = document.createElement('button');
-        button.type = 'button';
-        button.className = 'rt-btn-outline loom-filter';
-        button.dataset.filter = filter;
-        button.textContent = formatFilterLabel(filter);
-        loomFilterTags.appendChild(button);
-      });
-      setActiveLoomFilterButton(activeLoomFilter);
-    }
-    function cardSearchHaystack(card) {
-      const title = card.querySelector('.preset-name')?.textContent || '';
-      const description = card.querySelector('.preset-desc')?.textContent || '';
-      const tag = card.querySelector('.preset-tag')?.textContent || '';
-      const tags = card.dataset.tags || '';
-      return `${title} ${description} ${tag} ${tags}`.toLowerCase();
-    }
-    function cardMatchesSearch(card, query) {
-      if (!query) return true;
-      return cardSearchHaystack(card).includes(query);
-    }
-    function cardMatchesFilter(card, filter) {
-      if (filter === 'all') return true;
-      return getCardTagValues(card).includes(filter);
-    }
-    function applyLoomFilter(filter = activeLoomFilter) {
-      activeLoomFilter = normalizeTagValue(filter) || 'all';
-      getPresetCards().forEach(card => {
-        const matchesTag = cardMatchesFilter(card, activeLoomFilter);
-        const matchesSearch = cardMatchesSearch(card, activeSearchQuery);
-        card.hidden = !(matchesTag && matchesSearch);
-      });
-      setActiveLoomFilterButton(activeLoomFilter);
-    }
-    if (loomFilterTags) {
-      loomFilterTags.addEventListener('click', event => {
-        const target = event.target.closest('.loom-filter');
-        if (!target || !loomFilterTags.contains(target)) return;
-        applyLoomFilter(target.dataset.filter || 'all');
-      });
-    }
-    if (loomSearchInput) {
-      loomSearchInput.addEventListener('input', () => {
-        activeSearchQuery = loomSearchInput.value.trim().toLowerCase();
-        applyLoomFilter(activeLoomFilter);
-      });
-    }
-
-    function setHeartState(button, isFavorited) {
-      button.classList.toggle('active', isFavorited);
-      button.setAttribute('aria-pressed', isFavorited ? 'true' : 'false');
-      button.setAttribute('aria-label', isFavorited ? 'Remove from favorites' : 'Add to favorites');
-    }
-    function createHeartButton() {
-      const button = document.createElement('button');
-      button.type = 'button';
-      button.className = 'loom-heart-btn';
-      button.innerHTML = HEART_ICON_SVG;
-      return button;
-    }
-    function getCardTitle(card) {
-      return card.querySelector('.top-loom-title, .preset-name')?.textContent?.trim() || 'Loom configuration';
-    }
-    function getCardDescription(card) {
-      return card.querySelector('.top-loom-desc, .preset-desc')?.textContent?.trim() || 'Saved loom configuration.';
-    }
-    function getCardMeta(card) {
-      if (card.classList.contains('top-loom-card')) {
-        const byline = card.querySelector('.top-loom-meta span:first-child')?.textContent?.trim() || 'community';
-        const rating = card.querySelector('.top-loom-meta span:last-child')?.textContent?.trim() || '';
-        return { badge: 'Top Rated', byline, rating };
-      }
-      const badge = card.querySelector('.preset-tag')?.textContent?.trim() || 'Preset';
-      const byline = card.querySelector('.preset-author span:nth-child(2)')?.textContent?.trim() || 'community';
-      const rating = (card.querySelector('.preset-stars')?.textContent || '').replace(/\s+/g, ' ').trim();
-      return { badge, byline, rating };
-    }
-    function resolveTargetPreset(card) {
-      return card.dataset.featuredPreset || card.dataset.preset || slugifyValue(getCardTitle(card));
-    }
-    function syncFavoriteButton(card) {
-      const button = card.querySelector('.loom-heart-btn');
-      if (!button) return;
-      setHeartState(button, card.dataset.favorited === 'true');
-    }
-    function ensureFavoriteButton(card) {
-      if (!card) return;
-      if (!card.dataset.favorited) card.dataset.favorited = 'false';
-      let button = card.querySelector('.loom-heart-btn');
-      if (!button) {
-        button = createHeartButton();
-        if (card.classList.contains('top-loom-card')) {
-          const head = card.querySelector('.top-loom-head');
-          const badge = head?.querySelector('.top-loom-badge');
-          if (head && badge) {
-            head.insertBefore(button, badge.nextSibling);
-          } else if (head) {
-            head.appendChild(button);
-          }
-        } else {
-          const meta = card.querySelector('.preset-meta');
-          let rightCluster = meta?.querySelector('.preset-meta-right');
-          if (meta && !rightCluster) {
-            rightCluster = document.createElement('div');
-            rightCluster.className = 'preset-meta-right';
-            const tag = meta.querySelector('.preset-tag');
-            if (tag) rightCluster.appendChild(tag);
-            meta.appendChild(rightCluster);
-          }
-          if (rightCluster) {
-            rightCluster.appendChild(button);
-          } else if (meta) {
-            meta.appendChild(button);
-          }
-        }
-        button.addEventListener('click', () => {
-          const next = card.dataset.favorited !== 'true';
-          card.dataset.favorited = next ? 'true' : 'false';
-          syncFavoriteButton(card);
-          renderFavoritesShelf();
-        });
-      }
-      syncFavoriteButton(card);
-    }
-    function highlightPresetCard(card) {
-      card.classList.add('loom-focus-highlight');
-      setTimeout(() => card.classList.remove('loom-focus-highlight'), 1100);
-    }
-    function scrollToPresetCard(presetId) {
-      if (!presetId) return;
-      const targetCard = loomGrid.querySelector(`.preset-card[data-preset="${presetId}"]`);
-      if (!targetCard) return;
-      if (activeLoomFilter !== 'all' || activeSearchQuery) {
-        activeSearchQuery = '';
-        if (loomSearchInput) loomSearchInput.value = '';
-        applyLoomFilter('all');
-      }
-      showView('marketplace');
-      targetCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      highlightPresetCard(targetCard);
-    }
-    document.querySelectorAll('.top-view-btn').forEach(btn => {
-      btn.addEventListener('click', () => scrollToPresetCard(btn.dataset.scrollToPreset));
-    });
-
-    function buildFavoriteItem(card) {
-      const meta = getCardMeta(card);
-      const targetPreset = resolveTargetPreset(card);
-      const item = document.createElement('article');
-      item.className = 'rt-card favorite-item';
-
-      const head = document.createElement('div');
-      head.className = 'favorite-item-head';
-      const badge = document.createElement('span');
-      badge.className = 'favorite-item-badge';
-      badge.textContent = meta.badge;
-      const removeBtn = createHeartButton();
-      removeBtn.classList.add('favorite-remove-btn');
-      setHeartState(removeBtn, true);
-      removeBtn.addEventListener('click', () => {
-        card.dataset.favorited = 'false';
-        syncFavoriteButton(card);
-        renderFavoritesShelf();
-      });
-      head.append(badge, removeBtn);
-
-      const title = document.createElement('h4');
-      title.textContent = getCardTitle(card);
-      const description = document.createElement('p');
-      description.textContent = getCardDescription(card);
-      const metaLine = document.createElement('div');
-      metaLine.className = 'favorite-item-meta';
-      metaLine.textContent = `${meta.byline}${meta.rating ? ` · ${meta.rating}` : ''}`;
-      const jumpBtn = document.createElement('button');
-      jumpBtn.type = 'button';
-      jumpBtn.className = 'rt-btn-outline favorite-jump-btn';
-      jumpBtn.textContent = 'View Card';
-      jumpBtn.addEventListener('click', () => scrollToPresetCard(targetPreset));
-
-      item.append(head, title, description, metaLine, jumpBtn);
-      return item;
-    }
-    function renderFavoritesShelf() {
-      if (!favoritesGrid || !favoritesEmpty) return;
-      favoritesGrid.innerHTML = '';
-      const favoriteCards = getAllLoomCards().filter(card => card.dataset.favorited === 'true');
-      favoritesEmpty.hidden = favoriteCards.length > 0;
-      favoriteCards.forEach(card => favoritesGrid.appendChild(buildFavoriteItem(card)));
-    }
-
-    getAllLoomCards().forEach(card => ensureFavoriteButton(card));
-    document.querySelectorAll('.preset-dl-btn').forEach(btn => setDownloadButtonLabel(btn, 'Download Config'));
-    renderFavoritesShelf();
-    renderLoomFilterButtons();
-    applyLoomFilter('all');
-
-    /* ── Download button simulation ── */
-    function handleDownload(btn, filename) {
-      btn.classList.add('downloading');
-      setDownloadButtonLabel(btn, 'Config Downloaded');
-      // In production this would trigger a real file download
-      setTimeout(() => {
-        btn.classList.remove('downloading');
-        setDownloadButtonLabel(btn, 'Download Config');
-      }, 2800);
-    }
-
-    /* ── Loom modal open / close ── */
-    const loomOverlay = document.getElementById('loom-modal');
-    const loomFormWrap = document.getElementById('loom-form-wrap');
-    const loomSuccess = document.getElementById('loom-success');
-    const reviewOverlay = document.getElementById('review-modal');
-    const reviewTargetName = document.getElementById('review-target-name');
-    const reviewSubmitMsg = document.getElementById('review-submit-msg');
-    const reviewStars = Array.from(document.querySelectorAll('.review-star'));
-    let reviewTargetCard = null;
-    let selectedReview = 0;
-
-    const STAR_ICON = `<svg class="rt-icon" width="12" height="12" viewBox="0 0 24 24" stroke-width="2" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`;
-    const toTitleCase = value => value.charAt(0).toUpperCase() + value.slice(1);
-    function updateModalBodyLock() {
-      const anyModalOpen = loomOverlay.classList.contains('open') || reviewOverlay.classList.contains('open');
-      document.body.style.overflow = anyModalOpen ? 'hidden' : '';
-    }
-    function paintReviewStars(rating) {
-      reviewStars.forEach(star => {
-        star.classList.toggle('active', Number(star.dataset.value) <= rating);
-      });
-    }
-    function parseCardRating(card) {
-      const ratingText = card.querySelector('.preset-stars')?.textContent || '';
-      const matches = ratingText.match(/([0-9]+(?:\.[0-9]+)?)\s*·\s*([0-9]+)/);
-      if (!matches) return { total: 5, count: 1 };
-      const avg = Number(matches[1]);
-      const count = Number(matches[2]);
-      return { total: avg * count, count };
-    }
-    function refreshCardRating(card) {
-      const total = Number(card.dataset.ratingTotal || 5);
-      const count = Number(card.dataset.ratingCount || 1);
-      const average = count ? (total / count) : 0;
-      const ratingNode = card.querySelector('.preset-stars');
-      if (!ratingNode) return;
-      ratingNode.innerHTML = `${STAR_ICON} ${average.toFixed(1)} · ${count}`;
-    }
-    function ensureReviewButton(card) {
-      const footer = card.querySelector('.preset-footer');
-      const ratingNode = card.querySelector('.preset-stars');
-      if (!footer || !ratingNode) return;
-      if (!card.dataset.ratingCount || !card.dataset.ratingTotal) {
-        const parsed = parseCardRating(card);
-        card.dataset.ratingTotal = String(parsed.total);
-        card.dataset.ratingCount = String(parsed.count);
-      }
-      if (!footer.querySelector('.preset-review-btn')) {
-        const reviewBtn = document.createElement('button');
-        reviewBtn.type = 'button';
-        reviewBtn.className = 'rt-btn-outline preset-review-btn';
-        reviewBtn.textContent = 'Review';
-        reviewBtn.addEventListener('click', () => openReviewModal(card));
-        footer.insertBefore(reviewBtn, ratingNode);
-      }
-      refreshCardRating(card);
-    }
-    function openReviewModal(card) {
-      reviewTargetCard = card;
-      selectedReview = 0;
-      paintReviewStars(0);
-      reviewSubmitMsg.textContent = '';
-      reviewTargetName.textContent = `Rate “${card.querySelector('.preset-name')?.textContent || 'Workspace config'}” from 1 to 5 stars.`;
-      reviewOverlay.classList.add('open');
-      updateModalBodyLock();
-    }
-    function closeReviewModal() {
-      reviewOverlay.classList.remove('open');
-      reviewTargetCard = null;
-      selectedReview = 0;
-      paintReviewStars(0);
-      reviewSubmitMsg.textContent = '';
-      updateModalBodyLock();
-    }
-
-    function openLoomModal() {
-      loomFormWrap.style.display = '';
-      loomSuccess.classList.remove('shown');
-      loomOverlay.classList.add('open');
-      updateModalBodyLock();
-    }
-    function closeLoomModal() {
-      loomOverlay.classList.remove('open');
-      updateModalBodyLock();
-    }
-
-    document.getElementById('loom-open-modal').addEventListener('click', openLoomModal);
-    document.getElementById('loom-close-modal').addEventListener('click', closeLoomModal);
-    loomOverlay.addEventListener('click', e => { if (e.target === loomOverlay) closeLoomModal(); });
-    document.getElementById('review-close-modal').addEventListener('click', closeReviewModal);
-    document.getElementById('review-cancel-btn').addEventListener('click', closeReviewModal);
-    reviewOverlay.addEventListener('click', e => { if (e.target === reviewOverlay) closeReviewModal(); });
-    reviewStars.forEach(star => {
-      star.addEventListener('click', () => {
-        selectedReview = Number(star.dataset.value);
-        paintReviewStars(selectedReview);
-      });
-    });
-    document.getElementById('review-submit-btn').addEventListener('click', () => {
-      if (!reviewTargetCard || selectedReview < 1) {
-        reviewSubmitMsg.textContent = 'Select a star rating before submitting.';
-        return;
-      }
-      const currentTotal = Number(reviewTargetCard.dataset.ratingTotal || 0);
-      const currentCount = Number(reviewTargetCard.dataset.ratingCount || 0);
-      reviewTargetCard.dataset.ratingTotal = String(currentTotal + selectedReview);
-      reviewTargetCard.dataset.ratingCount = String(currentCount + 1);
-      refreshCardRating(reviewTargetCard);
-      reviewSubmitMsg.textContent = 'Rating submitted.';
-      setTimeout(closeReviewModal, 500);
-    });
-    document.addEventListener('keydown', e => {
-      if (e.key === 'Escape') {
-        closeLoomModal();
-        closeReviewModal();
-      }
-    });
-
-    function createPresetCardFromForm(values) {
-      const slug = values.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || `preset-${Date.now()}`;
-      const card = document.createElement('div');
-      card.className = 'rt-card preset-card revealed';
-      card.dataset.preset = 'custom';
-      card.dataset.tags = `${values.category} community`;
-      card.dataset.ratingTotal = '0';
-      card.dataset.ratingCount = '0';
-      card.innerHTML = `
-        <div class="preset-preview" style="background:var(--rt-terminal-bg);">
-          <div class="preset-preview-inner" style="background:var(--rt-surface-strong);border-color:var(--rt-border);">
-            <div class="pp-chrome">
-              <span class="pp-dot" style="background:#f87171"></span>
-              <span class="pp-dot" style="background:#fbbf24"></span>
-              <span class="pp-dot" style="background:#34d399"></span>
-            </div>
-            <div class="pp-body">
-              <div><span style="color:var(--rt-accent)">$</span> workspace load ${slug}</div>
-              <div style="color:var(--rt-text-faint)">community configuration</div>
-              <div style="color:var(--rt-accent)">ready</div>
-            </div>
-          </div>
-        </div>
-        <div class="preset-body">
-          <div class="preset-meta">
-            <span class="preset-name">${values.name}</span>
-            <span class="preset-tag">${toTitleCase(values.category)}</span>
-          </div>
-          <p class="preset-desc rt-text-muted">${values.description}</p>
-          <div class="preset-author rt-text-muted">
-            <span class="preset-avatar">C</span>
-            <span>by Claude</span>
-            <span style="margin-left:auto" class="rt-text-faint">community</span>
-          </div>
-          <div class="preset-footer">
-            <button class="rt-btn-outline preset-dl-btn" onclick="handleDownload(this,'${slug}.json')">
-              <svg class="rt-icon" width="13" height="13" viewBox="0 0 24 24" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="3" y2="15"/></svg>
-              Download
-            </button>
-          </div>
-        </div>
-      `;
-      return card;
-    }
-    document.getElementById('add-config-form').addEventListener('submit', event => {
-      event.preventDefault();
-      const nameEl = document.getElementById('add-name');
-      const authorEl = document.getElementById('add-author');
-      const categoryEl = document.getElementById('add-category');
-      const descriptionEl = document.getElementById('add-description');
-      const values = {
-        name: nameEl.value.trim(),
-        author: authorEl.value.trim(),
-        category: categoryEl.value,
-        description: descriptionEl.value.trim(),
+      const PALETTE = {
+        sleek:      { bg: '#0a0a0a', surface: '#171717', text: '#f5f5f5' },
+        pastel:     { bg: '#f6f4fb', surface: '#ffffff', text: '#4c4361' },
+        glass:      { bg: '#dde0e8', surface: '#f5f6f8', text: '#1c1e21' },
+        minimalist: { bg: '#ffffff', surface: '#fafafa', text: '#18181b' },
+        brutalism:  { bg: '#fafaf5', surface: '#ffffff', text: '#0a0a0a' },
       };
-      [nameEl, authorEl, descriptionEl].forEach(el => {
-        el.style.borderColor = el.value.trim() ? '' : 'var(--rt-accent)';
-      });
-      if (!values.name || !values.author || !values.description) return;
-      const newCard = createPresetCardFromForm(values);
-      loomGrid.prepend(newCard);
-      observePresetCard(newCard);
-      ensureFavoriteButton(newCard);
-      setDownloadButtonLabel(newCard.querySelector('.preset-dl-btn'), 'Download Config');
-      ensureReviewButton(newCard);
-      renderLoomFilterButtons();
-      applyLoomFilter(activeLoomFilter);
-      renderFavoritesShelf();
-      event.target.reset();
-    });
-    getPresetCards().forEach(card => ensureReviewButton(card));
+      const ENGINE_ACCENT = { sleek: '#34d399', pastel: '#8b5cf6', glass: '#4a6fa5', minimalist: '#111111', brutalism: '#16a34a' };
+      const LABEL = { sleek: 'Sleek', pastel: 'Soft Pastel', glass: 'Glass', minimalist: 'Minimalist', brutalism: 'Brutalism' };
 
-    /* ── Loom form submit (demo — no real backend) ── */
-    document.getElementById('loom-submit-form').addEventListener('click', () => {
-      const name = document.getElementById('pf-name').value.trim();
-      const config = document.getElementById('pf-config').value.trim();
-      if (!name || !config) {
-        document.getElementById('pf-name').style.borderColor = name ? '' : 'var(--rt-accent)';
-        document.getElementById('pf-config').style.borderColor = config ? '' : 'var(--rt-accent)';
-        return;
+      const hexRgba = (hex, a) => {
+        const m = /^#?([0-9a-f]{6})$/i.exec(hex || '');
+        if (!m) return 'rgba(0,0,0,' + a + ')';
+        const n = parseInt(m[1], 16);
+        return 'rgba(' + ((n >> 16) & 255) + ',' + ((n >> 8) & 255) + ',' + (n & 255) + ',' + a + ')';
+      };
+      const gradientCss = (g) => {
+        if (!g || !Array.isArray(g.stops)) return null;
+        const stops = g.stops.map((s) => s.color + ' ' + s.pos + '%').join(', ');
+        return g.type === 'radial'
+          ? 'radial-gradient(circle at 50% 50%, ' + stops + ')'
+          : 'linear-gradient(' + (g.angle || 135) + 'deg, ' + stops + ')';
+      };
+      const backdropCss = (style, custom, accent) => {
+        if (style === 'custom') return gradientCss(custom);
+        if (style === 'gradient') return 'radial-gradient(120% 120% at 0% 0%, ' + hexRgba(accent, 0.22) + ', transparent 55%), radial-gradient(120% 120% at 100% 100%, ' + hexRgba(accent, 0.14) + ', transparent 55%)';
+        if (style === 'mesh') return 'radial-gradient(45% 45% at 15% 20%, ' + hexRgba(accent, 0.26) + ', transparent 70%), radial-gradient(48% 48% at 85% 15%, ' + hexRgba(accent, 0.16) + ', transparent 70%), radial-gradient(52% 52% at 78% 88%, ' + hexRgba(accent, 0.22) + ', transparent 72%)';
+        return null;
+      };
+      const esc = (s) => String(s == null ? '' : s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+      const slug = (s) => ((s || 'loom').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 40) || 'loom');
+
+      let entries = [];
+      let activeTag = 'all';
+
+      function cardHtml(entry) {
+        const loom = entry.loom || {};
+        const t = loom.theme || {};
+        const themeId = PALETTE[t.themeId] ? t.themeId : 'sleek';
+        const pal = PALETTE[themeId];
+        const accent = (t.accentColor && /^#[0-9a-fA-F]{6}$/.test(t.accentColor)) ? t.accentColor : ENGINE_ACCENT[themeId];
+        const bd = backdropCss(t.backdropStyle, t.customBackdrop, accent);
+        const brut = themeId === 'brutalism';
+        const innerStyle = 'background:' + pal.surface + ';border-color:' + pal.text + '1f;' + (brut ? 'border:2px solid #000;border-radius:0;box-shadow:3px 3px 0 #000;' : '');
+        const preview =
+          '<div class="preset-preview" style="background:' + pal.bg + ';' + (bd ? 'background-image:' + bd + ';' : '') + '">' +
+            '<div class="preset-preview-inner" style="' + innerStyle + '">' +
+              '<div class="pp-chrome" style="border-bottom:1px solid ' + pal.text + '14;">' +
+                '<span class="pp-dot" style="background:#f87171"></span><span class="pp-dot" style="background:#fbbf24"></span><span class="pp-dot" style="background:#34d399"></span>' +
+              '</div>' +
+              '<div class="pp-body" style="color:' + pal.text + '99;">' +
+                '<div><span style="color:' + accent + '">$</span> <span style="color:' + pal.text + '">npm run dev</span></div>' +
+                '<div>&#10003; ready in 312 ms</div>' +
+                '<div style="color:' + accent + '">&#10148; localhost:1420</div>' +
+              '</div>' +
+            '</div>' +
+          '</div>';
+        const author = entry.author || 'community';
+        return '<div class="rt-card preset-card revealed" data-theme="' + esc(themeId) + '" data-tags="' + esc(themeId) + '">' +
+          preview +
+          '<div class="preset-body">' +
+            '<div class="preset-meta">' +
+              '<span class="preset-name">' + esc(loom.name || 'Untitled Loom') + '</span>' +
+              '<span class="preset-tag">' + esc(LABEL[themeId]) + '</span>' +
+            '</div>' +
+            '<p class="preset-desc rt-text-muted">' + esc(entry.description || '') + '</p>' +
+            '<div class="preset-author rt-text-muted">' +
+              '<span class="preset-avatar">' + esc(author.charAt(0).toUpperCase()) + '</span>' +
+              '<span>by ' + esc(author) + '</span>' +
+            '</div>' +
+            '<div class="preset-footer">' +
+              '<button class="rt-btn-outline preset-dl-btn" type="button">' +
+                '<svg class="rt-icon" width="13" height="13" viewBox="0 0 24 24" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="3" y2="15"/></svg>' +
+                'Download' +
+              '</button>' +
+            '</div>' +
+          '</div>' +
+        '</div>';
       }
-      loomFormWrap.style.display = 'none';
-      loomSuccess.classList.add('shown');
-    });
 
+      function downloadEntry(entry) {
+        const loom = entry.loom || {};
+        const blob = new Blob([JSON.stringify(loom, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = slug(loom.name) + '.json';
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+      }
+
+      function render(list) {
+        if (!list.length) {
+          grid.innerHTML = '<p class="rt-text-muted" style="grid-column:1/-1;text-align:center;padding:2rem;">No Looms match your search.</p>';
+          return;
+        }
+        grid.innerHTML = list.map(cardHtml).join('');
+        const btns = grid.querySelectorAll('.preset-dl-btn');
+        btns.forEach((btn, i) => btn.addEventListener('click', () => downloadEntry(list[i])));
+      }
+
+      function applyFilters() {
+        const q = ((searchEl && searchEl.value) || '').trim().toLowerCase();
+        const filtered = entries.filter((e) => {
+          const loom = e.loom || {};
+          const t = loom.theme || {};
+          if (activeTag !== 'all' && t.themeId !== activeTag) return false;
+          if (!q) return true;
+          return [loom.name || '', e.description || '', e.author || '', LABEL[t.themeId] || ''].join(' ').toLowerCase().includes(q);
+        });
+        render(filtered);
+      }
+
+      function buildTags() {
+        if (!tagsEl) return;
+        const ids = Array.from(new Set(entries.map((e) => (e.loom && e.loom.theme && e.loom.theme.themeId) || 'sleek')));
+        const mk = (id, label) => '<button type="button" class="rt-btn-outline loom-filter-tag" data-tag="' + id + '" style="padding:.3rem .7rem;font-size:.78rem;">' + label + '</button>';
+        tagsEl.innerHTML = mk('all', 'All') + ids.map((id) => mk(id, LABEL[id] || id)).join('');
+        const paint = () => tagsEl.querySelectorAll('.loom-filter-tag').forEach((x) => {
+          const on = x.dataset.tag === activeTag;
+          x.style.borderColor = on ? 'var(--rt-accent)' : '';
+          x.style.color = on ? 'var(--rt-accent)' : '';
+        });
+        tagsEl.querySelectorAll('.loom-filter-tag').forEach((b) => b.addEventListener('click', () => {
+          activeTag = b.dataset.tag;
+          paint();
+          applyFilters();
+        }));
+        paint();
+      }
+
+      grid.innerHTML = '<p class="rt-text-muted" style="grid-column:1/-1;text-align:center;padding:2rem;">Loading the gallery&hellip;</p>';
+      fetch(CATALOG_URL, { cache: 'no-store' })
+        .then((r) => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+        .then((data) => {
+          const rows = Array.isArray(data.looms) ? data.looms : [];
+          entries = rows.map((row) => (row && row.loom ? row : { loom: row, author: 'community', description: '' }));
+          buildTags();
+          applyFilters();
+        })
+        .catch(() => {
+          grid.innerHTML = '<p class="rt-text-muted" style="grid-column:1/-1;text-align:center;padding:2rem;">Couldn’t reach the gallery right now. It’s published from <a href="https://github.com/matthewhamilton3141/retermina-looms" target="_blank" rel="noopener">GitHub</a>.</p>';
+        });
+
+      if (searchEl) searchEl.addEventListener('input', applyFilters);
+    })();
     /* ── Customization controls — live accent / font / scale, mirroring the
        app's Settings overlay (accent override + WCAG contrast-aware text). ── */
     (function () {
