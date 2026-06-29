@@ -2615,12 +2615,20 @@
         const n = parseInt(m[1], 16);
         return 'rgba(' + ((n >> 16) & 255) + ',' + ((n >> 8) & 255) + ',' + (n & 255) + ',' + a + ')';
       };
+      const HEX6 = /^#[0-9a-fA-F]{6}$/;
       const gradientCss = (g) => {
+        // Guard every value before it lands in an inline style — colours must be
+        // strict #rrggbb and positions/angle numeric, so a bad catalog entry
+        // can't inject CSS.
         if (!g || !Array.isArray(g.stops)) return null;
-        const stops = g.stops.map((s) => s.color + ' ' + s.pos + '%').join(', ');
+        const stops = g.stops
+          .filter((s) => s && HEX6.test(s.color) && typeof s.pos === 'number')
+          .map((s) => s.color + ' ' + Math.max(0, Math.min(100, s.pos)) + '%');
+        if (stops.length < 2) return null;
+        const angle = (typeof g.angle === 'number') ? (((g.angle % 360) + 360) % 360) : 135;
         return g.type === 'radial'
-          ? 'radial-gradient(circle at 50% 50%, ' + stops + ')'
-          : 'linear-gradient(' + (g.angle || 135) + 'deg, ' + stops + ')';
+          ? 'radial-gradient(circle at 50% 50%, ' + stops.join(', ') + ')'
+          : 'linear-gradient(' + angle + 'deg, ' + stops.join(', ') + ')';
       };
       const backdropCss = (style, custom, accent) => {
         if (style === 'custom') return gradientCss(custom);
