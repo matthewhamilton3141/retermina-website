@@ -365,6 +365,35 @@
     .theme-dot[data-theme="minimalist"] { background: #18181b; }
     .theme-dot[data-theme="brutalism"] { background: #16a34a; border-color: #000; }
 
+    /* Mobile: the fixed top-right stack (theme + accent pickers + nav) blankets
+       the page on a phone, so the two pickers collapse behind a palette button
+       and only the compact nav row stays visible. */
+    .pickers-toggle { display: none; }
+    @media (max-width: 700px) {
+      .pickers-toggle {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 34px;
+        height: 34px;
+        padding: 0;
+        flex-shrink: 0;
+      }
+      .pickers-toggle[aria-expanded="true"] {
+        color: var(--rt-accent);
+        border-color: var(--rt-accent);
+        background: var(--rt-accent-soft);
+      }
+      /* Nav row stays on top; the pickers drop down beneath it when opened. */
+      .top-bar-actions { order: -1; }
+      .top-bar-right .theme-switcher { display: none; }
+      .top-bar-right.pickers-open .theme-switcher {
+        display: flex;
+        /* Opaque backing — these float over page content when expanded. */
+        background: var(--rt-bg);
+      }
+    }
+
     /* ── Hero ── */
     .hero {
       min-height: 100vh;
@@ -1100,6 +1129,19 @@
         width: min(92vw, 360px);
         justify-content: center;
       }
+      /* Stack the joined hint + GitHub unit so it can't overflow the viewport. */
+      .cta-group {
+        flex-direction: column;
+        align-items: stretch;
+        width: min(92vw, 360px);
+      }
+      .cta-group .hero-repo-hint {
+        border-right: none;
+        border-bottom: var(--rt-border-width) solid var(--rt-accent);
+        max-width: none;
+        justify-content: center;
+      }
+      .cta-group .cta-primary { justify-content: center; }
     }
 
     /* ── Loom Marketplace section ── */
@@ -1621,6 +1663,9 @@
           </div>
         </div>
         <div class="top-bar-actions">
+          <button type="button" class="rt-btn-outline pickers-toggle" id="pickers-toggle" aria-expanded="false" aria-label="Theme and accent options">
+            <svg class="rt-icon" width="16" height="16" viewBox="0 0 24 24" stroke-width="2"><circle cx="13.5" cy="6.5" r=".5" fill="currentColor"/><circle cx="17.5" cy="10.5" r=".5" fill="currentColor"/><circle cx="8.5" cy="7.5" r=".5" fill="currentColor"/><circle cx="6.5" cy="12.5" r=".5" fill="currentColor"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"/></svg>
+          </button>
           <button type="button" class="rt-btn-outline marketplace-nav-btn" data-nav-view="home">Home</button>
           <button type="button" class="loom-btn" id="nav-loom" data-nav-view="marketplace" aria-label="Browse Retermina Loom marketplace">
             Retermina Loom
@@ -1650,7 +1695,7 @@
             View on GitHub
           </a>
         </div>
-        <a class="hero-dmg-btn" href="https://github.com/matthewhamilton3141/Retermina/releases/latest/download/retermina_0.2.5_universal.dmg" target="_blank" rel="noopener">
+        <a class="hero-dmg-btn" href="https://github.com/matthewhamilton3141/Retermina/releases/latest/download/retermina_0.2.6_universal.dmg" target="_blank" rel="noopener">
           <svg class="rt-icon" width="14" height="14" viewBox="0 0 24 24" stroke-width="2">
             <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
             <polyline points="7 10 12 15 17 10"/>
@@ -1662,7 +1707,7 @@
 
       <p class="hero-version rt-text-faint">
         <span class="hero-version-dot"></span>
-        Retermina <span class="hero-version-beta">beta</span> · v0.2.5 — early access
+        Retermina <span class="hero-version-beta">beta</span> · v0.2.6 — early access
       </p>
       <p class="hero-install-note">
         <svg class="rt-icon" width="12" height="12" viewBox="0 0 24 24" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg>
@@ -1673,42 +1718,32 @@
         <details class="whats-new-details" open>
           <summary class="whats-new-toggle">
             <svg class="rt-icon wn-spark" width="16" height="16" viewBox="0 0 24 24" stroke-width="2"><path d="M12 3l1.6 4.9a2 2 0 0 0 1.3 1.3L20 11l-5 1.6a2 2 0 0 0-1.3 1.3L12 19l-1.6-4.9a2 2 0 0 0-1.3-1.3L4 11l5-1.6a2 2 0 0 0 1.3-1.3z"/></svg>
-            See what's new in v0.2.5
+            See what's new in v0.2.6
             <svg class="rt-icon whats-new-chevron" width="16" height="16" viewBox="0 0 24 24" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
           </summary>
           <div class="whats-new-content">
             <p class="rt-text-muted" style="max-width: 560px; margin: 0;">The newest additions to Retermina — shipped via the built-in updater, so installed copies pick them up automatically.</p>
 
-            <div class="features-grid grid-balanced" data-count="6" style="margin-top: 1.25rem;">
-              <div class="feature-card rt-panel">
-                <svg class="rt-icon rt-accent-text" width="24" height="24" viewBox="0 0 24 24" stroke-width="2"><path d="M12 3l1.6 4.9a2 2 0 0 0 1.3 1.3L20 11l-5 1.6a2 2 0 0 0-1.3 1.3L12 19l-1.6-4.9a2 2 0 0 0-1.3-1.3L4 11l5-1.6a2 2 0 0 0 1.3-1.3z"/></svg>
-                <h3>Custom Iris macros</h3>
-                <p class="rt-text-muted">Teach Iris your own commands — a name, keywords, and a command line. They join the suggestion list and run with a keystroke, so your repeated workflows are one fuzzy match away.</p>
-              </div>
-              <div class="feature-card rt-panel">
-                <svg class="rt-icon rt-accent-text" width="24" height="24" viewBox="0 0 24 24" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-                <h3>Tasks panel</h3>
-                <p class="rt-text-muted">Auto-detects your <code>package.json</code> scripts (npm/pnpm/yarn/bun), <code>Makefile</code> targets, and Cargo commands — each a one-click button that runs in the terminal.</p>
-              </div>
+            <div class="features-grid grid-balanced" data-count="4" style="margin-top: 1.25rem;">
               <div class="feature-card rt-panel">
                 <svg class="rt-icon rt-accent-text" width="24" height="24" viewBox="0 0 24 24" stroke-width="2"><circle cx="18" cy="18" r="3"/><circle cx="6" cy="6" r="3"/><path d="M6 21V9a9 9 0 0 0 9 9"/></svg>
-                <h3>Commit from the Changes panel</h3>
-                <p class="rt-text-muted">The live working-tree diff is now actionable: write a message and commit straight from the panel, or discard a file's changes — no context switch to the terminal.</p>
+                <h3>Commit SHA in the status bar</h3>
+                <p class="rt-text-muted">The Iris bar now shows the short HEAD commit right beside the branch — parsed from the git call it already makes, so it's free and always current.</p>
               </div>
               <div class="feature-card rt-panel">
-                <svg class="rt-icon rt-accent-text" width="24" height="24" viewBox="0 0 24 24" stroke-width="2"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
-                <h3>Broadcast across split panes</h3>
-                <p class="rt-text-muted">Split a terminal and flip on broadcast — what you type goes to every pane at once. Ideal for driving several servers or SSH sessions in lockstep.</p>
+                <svg class="rt-icon rt-accent-text" width="24" height="24" viewBox="0 0 24 24" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+                <h3>Highlighting while you edit</h3>
+                <p class="rt-text-muted">The Code panel keeps full syntax colour as you type — editing no longer drops the file to a plain, colourless textarea.</p>
               </div>
               <div class="feature-card rt-panel">
-                <svg class="rt-icon rt-accent-text" width="24" height="24" viewBox="0 0 24 24" stroke-width="2"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="M6 12h4m-4 4V8l2 2 2-2v8m4-8v8m0-8h2a2 2 0 1 1 0 4h-2"/></svg>
-                <h3>Markdown preview</h3>
-                <p class="rt-text-muted">Open a <code>.md</code> file and read it rendered — headings, lists, links, code — with a one-click toggle back to the raw source whenever you need it.</p>
+                <svg class="rt-icon rt-accent-text" width="24" height="24" viewBox="0 0 24 24" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                <h3>Find &amp; replace in files</h3>
+                <p class="rt-text-muted">⌘F inside the Code panel: jump between matches, see the count, and replace one or all — right in the file you're editing.</p>
               </div>
               <div class="feature-card rt-panel">
-                <svg class="rt-icon rt-accent-text" width="24" height="24" viewBox="0 0 24 24" stroke-width="2"><path d="m9 9 5 12 1.8-5.2L21 14Z"/><path d="M7.2 2.2 8 5.1"/><path d="m5.1 8-2.9-.8"/><path d="M14 4.1 12 6"/><path d="m6 12-1.9 2"/></svg>
-                <h3>Command palette, supercharged</h3>
-                <p class="rt-text-muted">⌘K now applies any saved Loom and deep-links straight to a Settings tab, alongside panel toggles, themes, and recent folders.</p>
+                <svg class="rt-icon rt-accent-text" width="24" height="24" viewBox="0 0 24 24" stroke-width="2"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg>
+                <h3>Tidier under the hood</h3>
+                <p class="rt-text-muted">Closed terminals now fully release their shell processes, and a dependency security advisory was patched — nothing to configure, just a cleaner build.</p>
               </div>
             </div>
           </div>
@@ -2251,6 +2286,23 @@
     }
     document.getElementById('theme-prev').addEventListener('click', () => cycleTheme(-1));
     document.getElementById('theme-next').addEventListener('click', () => cycleTheme(1));
+
+    // Mobile: palette button shows/hides the theme + accent pickers; a tap
+    // anywhere outside the top bar puts them away again.
+    const pickersToggle = document.getElementById('pickers-toggle');
+    const topBarRight = document.querySelector('.top-bar-right');
+    if (pickersToggle && topBarRight) {
+      pickersToggle.addEventListener('click', () => {
+        const open = topBarRight.classList.toggle('pickers-open');
+        pickersToggle.setAttribute('aria-expanded', String(open));
+      });
+      document.addEventListener('click', (e) => {
+        if (topBarRight.classList.contains('pickers-open') && !topBarRight.contains(e.target)) {
+          topBarRight.classList.remove('pickers-open');
+          pickersToggle.setAttribute('aria-expanded', 'false');
+        }
+      });
+    }
 
     const SPA_DEFAULT_VIEW = 'home';
     const spaViews = Array.from(document.querySelectorAll('.spa-view[data-view]'));
@@ -2882,7 +2934,7 @@
           checkBtn.disabled = true;
           updateStatus.textContent = 'Checking…';
           setTimeout(() => {
-            updateStatus.textContent = '✓ You’re on the latest version (v0.2.5).';
+            updateStatus.textContent = '✓ You’re on the latest version (v0.2.6).';
             checkBtn.disabled = false;
           }, 900);
         });
