@@ -13,10 +13,10 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=Nunito:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Retermina is a highly-customizable terminal workspace built with Tauri & React. Modular drag-and-drop panels, a built-in Claude Agent view, and five structural theme engines.">
+  <meta name="description" content="Retermina is a highly-customizable terminal workspace built with Tauri & React. A resizable multi-panel layout, a built-in Claude Agent view, and five structural theme engines.">
   <!-- Open Graph -->
   <meta property="og:title" content="Retermina — Terminal Workspace">
-  <meta property="og:description" content="A customizable terminal workspace — five theme engines, drag-and-drop panels, a built-in Claude Agent view.">
+  <meta property="og:description" content="A customizable terminal workspace — five theme engines, a resizable panel layout, a built-in Claude Agent view.">
   <meta property="og:image" content="https://retermina.com/og-image.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
@@ -24,7 +24,7 @@
   <!-- Twitter / X -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Retermina — Terminal Workspace">
-  <meta name="twitter:description" content="A customizable terminal workspace — five theme engines, drag-and-drop panels, a built-in Claude Agent view.">
+  <meta name="twitter:description" content="A customizable terminal workspace — five theme engines, a resizable panel layout, a built-in Claude Agent view.">
   <meta name="twitter:image" content="https://retermina.com/og-image.png">
   <style>
     /* ── Theme engine tokens (from retermina/src/index.css) ── */
@@ -631,111 +631,6 @@
       margin-left: 1px;
     }
 
-    /* ── Workspace grid mock ── */
-    .workspace-mock {
-      width: min(720px, 92vw);
-      margin-top: 1.5rem;
-      padding: 1rem;
-      position: relative;
-      animation: fade-up 0.9s ease 0.65s both;
-    }
-    .mock-hint {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.4rem;
-      margin: 0 auto 0.75rem;
-      padding: 0.3rem 0.7rem;
-      font-size: 0.7rem;
-      color: var(--rt-text-muted);
-      background: var(--rt-surface);
-      border: var(--rt-border-width) solid var(--rt-border);
-      border-radius: 999px;
-      width: max-content;
-      transition: opacity 0.4s ease, transform 0.4s ease;
-    }
-    .mock-hint .rt-icon { color: var(--rt-accent); }
-    .mock-hint.hidden { opacity: 0; transform: translateY(-4px); pointer-events: none; }
-
-    .mock-grid {
-      position: relative;
-      width: 100%;
-      touch-action: none;       /* let the drag own the gesture on touch */
-    }
-    .mock-panel {
-      position: absolute;
-      top: 0; left: 0;
-      box-sizing: border-box;
-      border: var(--rt-border-width) solid var(--rt-border);
-      border-radius: var(--rt-radius-lg);
-      background: var(--rt-terminal-bg);
-      overflow: hidden;
-      cursor: grab;
-      user-select: none;
-      /* transform driven by JS; animate the snap + reflow of non-dragged panels */
-      transition: transform 0.32s cubic-bezier(.34,1.32,.5,1),
-                  width 0.32s cubic-bezier(.34,1.32,.5,1),
-                  height 0.32s cubic-bezier(.34,1.32,.5,1),
-                  border-color 0.2s ease, box-shadow 0.2s ease;
-      animation: mock-fade 0.5s ease both;
-    }
-    @keyframes mock-fade { from { opacity: 0; } to { opacity: 1; } }
-    .mock-panel:hover { border-color: color-mix(in srgb, var(--rt-accent) 45%, var(--rt-border)); }
-    .mock-panel.dragging {
-      cursor: grabbing;
-      z-index: 30;
-      transition: width 0.2s ease, height 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
-      border-color: var(--rt-grid-placeholder);
-      box-shadow: 0 12px 30px -8px rgba(0,0,0,0.45);
-    }
-    .mock-panel-header {
-      padding: 0.35rem 0.6rem;
-      font-size: 0.65rem;
-      color: var(--rt-text-muted);
-      background: var(--rt-surface-strong);
-      border-bottom: var(--rt-border-width) solid var(--rt-border);
-      display: flex;
-      align-items: center;
-      gap: 0.35rem;
-    }
-    .mock-tag { margin-left: auto; font-size: 0.6rem; }
-    .mock-panel-body {
-      padding: 0.5rem 0.6rem;
-      font-family: ui-monospace, monospace;
-      font-size: 0.68rem;
-      color: var(--rt-text-muted);
-      line-height: 1.5;
-    }
-    .mock-tree, .mock-code { display: flex; flex-direction: column; gap: 1px; }
-    .mock-code { font-size: 0.63rem; white-space: nowrap; }
-    .mock-sep { margin: 0 0.5rem; color: var(--rt-border); }
-    .term-accent { color: var(--rt-accent); }
-
-    .mock-placeholder {
-      position: absolute;
-      top: 0; left: 0;
-      box-sizing: border-box;
-      border: 2px dashed var(--rt-grid-placeholder);
-      border-radius: var(--rt-radius-lg);
-      background: color-mix(in srgb, var(--rt-grid-placeholder) 10%, transparent);
-      opacity: 0;
-      pointer-events: none;
-      z-index: 5;
-      transition: transform 0.22s ease, width 0.22s ease, height 0.22s ease, opacity 0.25s ease;
-    }
-    .mock-placeholder.shown { opacity: 1; }
-
-    .mock-cursor {
-      position: absolute;
-      top: 0; left: 0;
-      color: var(--rt-text);
-      filter: drop-shadow(0 1px 2px rgba(0,0,0,0.5));
-      pointer-events: none;
-      opacity: 0;
-      z-index: 40;
-      transition: opacity 0.3s ease, transform 0.12s ease;
-    }
-    .mock-cursor.grabbing { transform: scale(0.82); }
-
     /* ── Sections ── */
     section.block {
       max-width: 960px;
@@ -1123,9 +1018,6 @@
     }
 
     @media (max-width: 600px) {
-      /* Draggable grid scales itself (JS computes cell size from width);
-         shrink the row height a touch on small screens for proportion. */
-      .mock-grid { --mock-row-h: 46px; }
       .top-bar { padding: 0.5rem; }
       .theme-switcher { font-size: 0.68rem; padding: 0.3rem 0.4rem; }
       .loom-btn { font-size: 0.72rem; padding: 0.35rem 0.7rem; }
@@ -1811,68 +1703,6 @@
         </div>
         <div class="terminal-body" id="terminal-body"></div>
       </div>
-
-      <!-- Workspace grid mock — genuinely draggable (swap-tiling), with an
-           auto-playing ghost-cursor demo that stops on first real interaction -->
-      <div class="workspace-mock rt-panel">
-        <div class="mock-hint" id="mock-hint" aria-hidden="true">
-          <svg class="rt-icon" width="13" height="13" viewBox="0 0 24 24" stroke-width="2"><path d="M18 11V6a2 2 0 0 0-2-2 2 2 0 0 0-2 2 2 2 0 0 0-2-2 2 2 0 0 0-2 2v0a2 2 0 0 0-2-2 2 2 0 0 0-2 2v6"/><path d="M14 10V4a2 2 0 0 0-2-2 2 2 0 0 0-2 2v2"/><path d="m7 15-1.7-1.7a2 2 0 0 0-2.8 2.8L6 19.5A6 6 0 0 0 11 22h2a6 6 0 0 0 6-6v-5a2 2 0 0 0-2-2"/></svg>
-          Drag the panels — rearrange the workspace
-        </div>
-        <div class="mock-grid" id="mock-grid">
-          <div class="mock-panel" data-x="0" data-y="0" data-w="1" data-h="2">
-            <div class="mock-panel-header">
-              <svg class="rt-icon" width="12" height="12" viewBox="0 0 24 24" stroke-width="2"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"/></svg>
-              Explorer
-            </div>
-            <div class="mock-panel-body mock-tree">
-              <span class="term-accent">▸ app/</span>
-              <span class="term-accent">▸ components/</span>
-              <span class="term-dim">▸ lib/</span>
-              <span class="term-dim">  index.tsx</span>
-            </div>
-          </div>
-          <div class="mock-panel" data-x="1" data-y="0" data-w="2" data-h="2">
-            <div class="mock-panel-header">
-              <svg class="rt-icon rt-accent-text" width="12" height="12" viewBox="0 0 24 24" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
-              Code <span class="mock-tag term-dim">App.tsx</span>
-            </div>
-            <div class="mock-panel-body mock-code">
-              <div><span class="term-magenta">export function</span> <span class="term-blue">App</span>() {</div>
-              <div>  <span class="term-magenta">const</span> view = <span class="term-blue">useStore</span>(s =&gt; s.view);</div>
-              <div>  <span class="term-magenta">return</span> &lt;<span class="term-green">Workspace</span> /&gt;;</div>
-              <div>}</div>
-            </div>
-          </div>
-          <div class="mock-panel" data-x="3" data-y="0" data-w="1" data-h="1">
-            <div class="mock-panel-header">
-              <svg class="rt-icon rt-accent-text" width="12" height="12" viewBox="0 0 24 24" stroke-width="2"><polyline points="4 17 10 11 4 5"/><line x1="12" x2="20" y1="19" y2="19"/></svg>
-              Terminal
-            </div>
-            <div class="mock-panel-body"><span class="rt-accent-text">$</span> npm run dev</div>
-          </div>
-          <div class="mock-panel" data-x="3" data-y="1" data-w="1" data-h="1">
-            <div class="mock-panel-header">
-              <svg class="rt-icon rt-accent-text" width="12" height="12" viewBox="0 0 24 24" stroke-width="2"><path d="M12 3l1.6 4.9a2 2 0 0 0 1.3 1.3L20 11l-5 1.6a2 2 0 0 0-1.3 1.3L12 19l-1.6-4.9a2 2 0 0 0-1.3-1.3L4 11l5-1.6a2 2 0 0 0 1.3-1.3z"/></svg>
-              Claude Code
-            </div>
-            <div class="mock-panel-body"><span class="term-magenta">✦</span> <span class="term-dim">68K tok · 3 sessions</span></div>
-          </div>
-          <div class="mock-panel" data-x="0" data-y="2" data-w="4" data-h="1">
-            <div class="mock-panel-header">
-              <svg class="rt-icon" width="12" height="12" viewBox="0 0 24 24" stroke-width="2"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
-              Localhost
-            </div>
-            <div class="mock-panel-body"><span class="term-green">●</span> :1420 <span class="term-dim">vite</span><span class="mock-sep">·</span><span class="term-green">●</span> :3000 <span class="term-dim">next</span></div>
-          </div>
-
-          <!-- Drop-target preview + ghost cursor for the auto-demo -->
-          <div class="mock-placeholder" id="mock-placeholder" aria-hidden="true"></div>
-          <div class="mock-cursor" id="mock-cursor" aria-hidden="true">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M5.5 3.2 19 12l-5.6 1.3 3 6-2.5 1.2-3-6L7 18.5z"/></svg>
-          </div>
-        </div>
-      </div>
     </header>
 
 
@@ -1984,7 +1814,7 @@
         <div class="feature-card rt-panel">
           <svg class="rt-icon rt-accent-text" width="24" height="24" viewBox="0 0 24 24" stroke-width="2"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
           <h3>Modular Workspace</h3>
-          <p class="rt-text-muted">Eight draggable, resizable panels on a react-grid-layout grid — Explorer, Terminal, Code, Localhost, Claude Code, Preview, Changes, and Tasks — arranged however you work, across as many workspace tabs as you need. (Try dragging the demo above.)</p>
+          <p class="rt-text-muted">Eight resizable panels on a react-grid-layout grid — Explorer, Terminal, Code, Localhost, Claude Code, Preview, Changes, and Tasks — arranged however you work, across as many workspace tabs as you need.</p>
         </div>
         <div class="feature-card rt-panel">
           <svg class="rt-icon rt-accent-text" width="24" height="24" viewBox="0 0 24 24" stroke-width="2"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="m7 9 3 3-3 3"/><path d="M13 15h3"/></svg>
@@ -2060,7 +1890,7 @@
               <span class="mq-chip rt-surface"><b>Rebindable shortcuts</b><span class="rt-text-muted">every chord, plus a cheat-sheet</span><span class="mq-kbd">⌘/</span></span>
               <span class="mq-chip rt-surface"><b>Gradient backdrops</b><span class="rt-text-muted">built in an in-app editor</span></span>
               <span class="mq-chip rt-surface"><b>Accessibility</b><span class="rt-text-muted">motion, contrast, transparency, cursor blink</span></span>
-              <span class="mq-chip rt-surface"><b>OS drag-and-drop</b><span class="rt-text-muted">drop Finder folders and files anywhere</span></span>
+              <span class="mq-chip rt-surface"><b>Finder drop targets</b><span class="rt-text-muted">drop Finder folders and files anywhere</span></span>
               <span class="mq-chip rt-surface"><b>Editor history</b><span class="rt-text-muted">recent VSCode / Cursor folders on the hub</span></span>
               <span class="mq-chip rt-surface"><b>Terminal typeface</b><span class="rt-text-muted">its own monospace font + size</span></span>
             </div>
@@ -2411,7 +2241,7 @@
 
     /* Hero tagline typewriter */
     const heroPhrases = [
-      'drag-and-drop panels',
+      'terminals that survive a restart',
       'Claude Code, built in',
       'a live git diff',
       'a structured Claude Agent view',
@@ -2504,182 +2334,6 @@
       _termTimer = setTimeout(doTerminal, 9500);
     }
     setTimeout(doTerminal, 1200);
-
-    /* ── Draggable workspace grid ──────────────────────────────────────────
-       A tiny react-grid-layout-style engine: every panel owns a grid
-       rectangle, and dragging one over another SWAPS their rectangles
-       wholesale — which always preserves a perfect tiling (no overlaps, no
-       gaps). A ghost-cursor demo plays on load to show it's interactive and
-       stops the instant a visitor grabs a panel. */
-    (function () {
-      const grid = document.getElementById('mock-grid');
-      if (!grid) return;
-      const placeholder = document.getElementById('mock-placeholder');
-      const cursor = document.getElementById('mock-cursor');
-      const hint = document.getElementById('mock-hint');
-      const COLS = 4, GAP = 10;
-      const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-      const panels = Array.from(grid.querySelectorAll('.mock-panel')).map(el => ({
-        el,
-        x: +el.dataset.x, y: +el.dataset.y, w: +el.dataset.w, h: +el.dataset.h,
-      }));
-      const ROWS = Math.max(...panels.map(p => p.y + p.h));
-
-      let cellW = 0, rowH = 56;
-      function measure() {
-        const gw = grid.clientWidth || grid.parentElement.clientWidth;
-        cellW = (gw - GAP * (COLS - 1)) / COLS;
-        const cssRow = parseInt(getComputedStyle(grid).getPropertyValue('--mock-row-h'), 10);
-        rowH = cssRow || 56;
-        grid.style.height = (ROWS * rowH + (ROWS - 1) * GAP) + 'px';
-      }
-      function rectFor(p) {
-        return {
-          left: p.x * (cellW + GAP),
-          top: p.y * (rowH + GAP),
-          width: p.w * cellW + (p.w - 1) * GAP,
-          height: p.h * rowH + (p.h - 1) * GAP,
-        };
-      }
-      function place(p) {
-        const r = rectFor(p);
-        p.el.style.width = r.width + 'px';
-        p.el.style.height = r.height + 'px';
-        p.el.style.transform = `translate(${r.left}px, ${r.top}px)`;
-      }
-      function layoutAll() { panels.forEach(place); }
-      function showPlaceholder(p) {
-        const r = rectFor(p);
-        placeholder.style.width = r.width + 'px';
-        placeholder.style.height = r.height + 'px';
-        placeholder.style.transform = `translate(${r.left}px, ${r.top}px)`;
-        placeholder.classList.add('shown');
-      }
-      function panelAt(gx, gy, exclude) {
-        for (const p of panels) {
-          if (p === exclude) continue;
-          const r = rectFor(p);
-          if (gx >= r.left && gx <= r.left + r.width && gy >= r.top && gy <= r.top + r.height) return p;
-        }
-        return null;
-      }
-      function swap(a, b) {
-        const t = { x: b.x, y: b.y, w: b.w, h: b.h };
-        b.x = a.x; b.y = a.y; b.w = a.w; b.h = a.h;
-        a.x = t.x; a.y = t.y; a.w = t.w; a.h = t.h;
-      }
-
-      // ── Drag state (shared by pointer input and the auto-demo) ──
-      let dragP = null, grabDX = 0, grabDY = 0, dragW = 0, dragH = 0;
-      function beginDrag(p, gx, gy) {
-        dragP = p;
-        const r = rectFor(p);
-        grabDX = gx - r.left; grabDY = gy - r.top;
-        dragW = r.width; dragH = r.height;
-        p.el.classList.add('dragging');
-        showPlaceholder(p);
-      }
-      function moveDrag(gx, gy) {
-        if (!dragP) return;
-        const left = gx - grabDX, top = gy - grabDY;
-        dragP.el.style.transform = `translate(${left}px, ${top}px)`;
-        const t = panelAt(left + dragW / 2, top + dragH / 2, dragP);
-        if (t) { swap(dragP, t); place(t); showPlaceholder(dragP); }
-      }
-      function endDrag() {
-        if (!dragP) return;
-        dragP.el.classList.remove('dragging');
-        place(dragP);
-        placeholder.classList.remove('shown');
-        dragP = null;
-      }
-
-      measure();
-      layoutAll();
-      window.addEventListener('resize', () => { measure(); if (!dragP) layoutAll(); });
-
-      // ── Real pointer interaction ──
-      let userTookOver = false;
-      function stopDemo() {
-        userTookOver = true;
-        clearTimeout(demoTimer);
-        cursor.classList.remove('grabbing');
-        cursor.style.opacity = '0';
-        if (hint) hint.classList.add('hidden');
-      }
-      panels.forEach(p => {
-        p.el.addEventListener('pointerdown', e => {
-          e.preventDefault();
-          if (!userTookOver) stopDemo();
-          if (dragP) endDrag();                 // cancel any in-flight demo drag
-          const rect = grid.getBoundingClientRect();
-          p.el.setPointerCapture(e.pointerId);
-          beginDrag(p, e.clientX - rect.left, e.clientY - rect.top);
-        });
-        p.el.addEventListener('pointermove', e => {
-          if (dragP !== p) return;
-          const rect = grid.getBoundingClientRect();
-          moveDrag(e.clientX - rect.left, e.clientY - rect.top);
-        });
-        const up = () => { if (dragP === p) endDrag(); };
-        p.el.addEventListener('pointerup', up);
-        p.el.addEventListener('pointercancel', up);
-      });
-
-      // ── Ghost-cursor auto-demo ──
-      let demoTimer = null;
-      const centerOf = p => { const r = rectFor(p); return { x: r.left + r.width / 2, y: r.top + r.height / 2 }; };
-      const byName = n => panels.find(p => p.el.querySelector('.mock-panel-header').textContent.trim().startsWith(n));
-
-      function moveCursorTo(gx, gy) { cursor.style.transform = `translate(${gx}px, ${gy}px)`; }
-      function tween(from, to, ms, onStep) {
-        return new Promise(resolve => {
-          const start = performance.now();
-          (function step(now) {
-            if (userTookOver) return resolve();
-            const t = Math.min(1, (now - start) / ms);
-            const e = 1 - Math.pow(1 - t, 3);            // easeOutCubic
-            onStep(from.x + (to.x - from.x) * e, from.y + (to.y - from.y) * e);
-            t < 1 ? requestAnimationFrame(step) : resolve();
-          })(performance.now());
-        });
-      }
-      const wait = ms => new Promise(r => setTimeout(r, ms));
-
-      async function demoDrag(srcName, dstName) {
-        if (userTookOver) return;
-        const src = byName(srcName), dst = byName(dstName);
-        if (!src || !dst) return;
-        const a = centerOf(src);
-        moveCursorTo(a.x, a.y);
-        cursor.style.opacity = '1';
-        await wait(450);
-        if (userTookOver) return;
-        cursor.classList.add('grabbing');
-        const rect = grid.getBoundingClientRect(); void rect;
-        beginDrag(src, a.x, a.y);
-        const b = centerOf(dst);
-        await tween(a, b, 800, (x, y) => { moveCursorTo(x, y); moveDrag(x, y); });
-        if (userTookOver) return;
-        await wait(180);
-        cursor.classList.remove('grabbing');
-        endDrag();
-      }
-
-      async function runDemo() {
-        if (userTookOver || reduceMotion) return;
-        await demoDrag('Claude Code', 'Terminal');
-        if (userTookOver) return;
-        await wait(900);
-        await demoDrag('Localhost', 'Explorer');
-        if (userTookOver) return;
-        await wait(700);
-        cursor.style.opacity = '0';
-        demoTimer = setTimeout(runDemo, 6000);   // loop until the user takes over
-      }
-      if (!reduceMotion) demoTimer = setTimeout(runDemo, 1600);
-    })();
 
     /* Scroll reveal for feature cards */
     const cards = document.querySelectorAll('.feature-card');
